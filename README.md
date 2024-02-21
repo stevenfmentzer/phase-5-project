@@ -16,21 +16,26 @@ Status
 U:Update your account status to indicate whether or not you specifically want your account promoted to your friends
 
 Friends
+````
 C: Find your friends and all them to your friends list
 R: View all your friends to see who you should reach out to
 U: Set your friend as a close friend, Unfriend someone and set is_active to false. 
+```
 
 Notifications
+```
 C: Your account will automatically send you random prompt notifications
 R: View all your friends to see who you should reach out to
 U: Set your friend as a close friend, Unfriend someone and set is_active to false. 
+```
 
 Messages
+```
 C: Send Messages
 C: Stretch - Send Messages with a delay
 R: Get Messages
 U: Stretch - Edit a sent message
-
+```
 
 
 
@@ -74,6 +79,11 @@ U: Stretch - Edit a sent message
 #### One to Many - Friends to Notifications
 * A `Friend` relationship has many `Notifications`
 * A `Notification` has one `Friend` relationship
+
+#### Many to One - PromptNotifications to Prompts and Notifications
+* A `PromptNotification` relationship links one `Prompt` and one `Notifications`
+* A `Notification` has one `PromptNotification` relationship
+* A `Prompt` has one `PromptNotification` relationship
 
 #### Many to Many - Users through Friends
 * `Friend`s are bi-directional, where many `Users` can have a `Friend` relationship with many other `Users`
