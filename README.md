@@ -9,11 +9,11 @@ The HereIM app provides users with the ability to log on and connect with friend
 ### MVP
 - [ ] Users can login and add friends and set them as 'close friends'
 - [ ] Instant Messaging works
-- [ ] Users are notified to send messages to random friends with prompts
 - [ ] Users can view a friends-list
 - [ ] Users can indicate if they want to be contacted with Status
 
 ### Stretch Goals
+- [ ] Users are notified to send messages to random friends with prompts
 - [ ] Allows a user to send a delayed text message
 - [ ] If messages are drafted and not sent, A notification syaing ‘someone was thinking of you’ is sent
 - [ ] Edit a sent message
