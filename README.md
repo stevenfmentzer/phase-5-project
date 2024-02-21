@@ -150,8 +150,7 @@ Friends  --- (/friends)
  ### ORD Database Table: 
  The entity relationship database is illustrated here: 
 
- https://dbdiagram.io/d/65d528fdac844320ae9d8903
-![cli](./HereIM_ERD.png)
+![cli](./HereIM_ORD.png)
 
  ### Front End Wireframe:  
 
