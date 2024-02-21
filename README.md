@@ -70,8 +70,7 @@ U: Stretch - Edit a sent message
 
 ## Backend (API)
 ### Model Relationships
-#### One to One - User to Status & Message to Message
-* A `User` has one `Status` that can be updated
+#### One to One - Message to Message
 * A `Message` can have a `Message` as a child/parent relationship
 
 #### One to One - InboxUser to Message
@@ -101,9 +100,6 @@ U: Stretch - Edit a sent message
 * `first_name` and `last_name` must be Strings under 20 characters
 * `username` must be 7-20 characters and not already exist
 * `password` must be 7-20 characters`
-
-#### Status
-
 
 #### Friends
 
@@ -184,7 +180,7 @@ Home  --- (rootRoute)
  The entity relationship database is illustrated here: 
 
  https://dbdiagram.io/d/65d528fdac844320ae9d8903
-![cli](./P5-ERD.png)
+![cli](./HereIM_ERD.png)
 
  ### Front End Wireframe:  
 
