@@ -1,9 +1,30 @@
-# Title
+# Here IM 'Instant Messenger'
 <sup> Creator: Steven Mentzer </sup>
 
-### Sentence Description
+### Where connections thrive, profiles shine, and friendships are rekindled with every prompt.
 
-Paragraph Description
+The HereIM app provides users with the ability to create and customize their profiles, connect with friends, and stay updated on community activities through notifications. With features for account management, friend connections, and notification preferences, HereIM offers a comprehensive platform for social interaction and communication. Additionally, HereIM prompts users to reach out to people they may not have talked to in a while, fostering reconnections and strengthening relationships within the community. Through personalized reminders and suggestions, HereIM encourages users to stay connected and engaged with their network, promoting a sense of community and support.
+
+
+### CRUD
+
+User
+C:Create a new user account to join the HereIM community 
+U:Update account information
+
+Status
+U:Update your account status to indicate whether or not you specifically want your account promoted to your friends
+
+Friends
+C: Find your friends and all them to your friends list
+R: View all your friends to see who you should reach out to
+U: Set your friend as a close friend, Unfriend someone and set is_active to false. 
+
+Notifications
+C: Your account will automatically send you random prompt notifications
+R: View all your friends to see who you should reach out to
+U: Set your friend as a close friend, Unfriend someone and set is_active to false. 
+
 
 
 ## Installation Instructions
@@ -29,17 +50,22 @@ Paragraph Description
 
 ## Backend (API)
 ### Model Relationships
-#### One to Many - User to Bills, Banks, and Incomes
-* A `User` has many `Bills`, `Banks`, and `Incomes`
-* A `User` has many `Payments` through `Bills` and `Banks`
-* A `Bill` belongs to a `User`
-* A `Bank` belongs to a `User`
-* A `Income` belongs to a `User`
+#### One to One - User to Status & Message to Message
+* A `User` has one `Status` that can be updated
+* A `Message` can have a `Message` as a child/parent relationship
 
-#### Many to Many - Bills and Banks to Payments
-* A `Bill` has many `Payments` through the payments table.
-* A `Bank` has many `Payments` through the payments table.
-* A `Payment` belongs to `Bill` and `Bank`
+#### One to One - InboxUser to Message
+* An `InboxUser` is asociated with one `Messages`
+* A `Message` belongs to one `InboxUser`
+
+#### One to Many - User to Friends, Messages, Notifications, and Inboxes
+* A `User` has many `Messages`, `Notifications`, and `Inboxes`
+* A `Message` belongs to one `User`
+* A `Notification` belongs to one `User`
+* A `Inbox` belongs to one `User`
+
+#### Many to Many - Users through Friends
+* `Friend`s are bi-directional, where many `Users` can have a `Friend` relationship with many other `Users`
 
 ### Model Validations
 
@@ -48,77 +74,76 @@ Paragraph Description
 * `username` must be 7-20 characters and not already exist
 * `password` must be 7-20 characters`
 
-#### Banks
-* `name` is a String under 20 characters
-* `balance` must be a positive Float
+#### Status
 
-#### Incomes
-* `pay_value` must be Float greater than 0
-* `pay_freq` must be Integer between 1-4 (payouts per month)
 
-#### Bills
-* `name` is String under 20 characters
-* `lender_name` is an optional String less than 20 characters
-* `description` is an optional String less than 50 characters
-* `bill_type`, and `pay_date` must exist
-* `balance_init`, `balance_remain`, and `min_pay_value` must all be positive Floats
-* `apr_rate` must be a positive float between 0-100, with a max of two decimal points
+#### Friends
 
-#### Payments
-* `pay_value` must be greater than 0
+
+#### Notifications
+
+
+#### Messages
+
+#### Prompts
+
 
 ## Controllers
 ### API routes RESTful conventions
 #### Users
 ```
-    GET/users
     POST/users
 ```
 ```
-    GET/user/<int:id>
-    PATCH/user/<int:id>
-    DELETE/user/<int:id>
+    GET/user-<int:id>
+    PATCH/user-<int:id>
+    DELETE/user-<int:id>
 ```
-#### Bills
+#### Messages
 ```
-    GET/bills
-    POST/bills
-```
-```
-    GET/bill/<int:id>
-    PATCH/bill/<int:id>
-    DELETE/bill/<int:id>
-```
-#### Banks
-```
-    GET/banks
-    POST/banks
+    POST/messages
 ```
 ```
-    GET/bank/<int:id>
-    PATCH/bank/<int:id>
-    DELETE/bank/<int:id>
-```
-#### Incomes
-```
-    GET/incomes
-    POST/incomes
+    GET/message/<int:id>
+    PATCH/message/<int:id>
+    DELETE/message/<int:id>
 ```
 ```
-    GET/income/<int:id>
-    PATCH/income/<int:id>
-    DELETE/income/<int:id>
+    GET/user<int:id>/messages
 ```
-#### Payments
+#### Status
 ```
-    GET/payments
-    POST/payments
+    GET/user-<int:id>/status
+    PATCH/user-<int:id>/status
+
+```
+#### Friends
+```
+    GET/user-<int:id>/friends
+    POST/user-<int:id>/friends
 ```
 ```
-    GET/payment/<int:id>
-    PATCH/payment/<int:id>
-    DELETE/payment/<int:id>
+    PATCH/user-<int:id>/friend<int:id>
+    DELETE/user-<int:id>/friend<int:id>
 ```
+#### Notifications
+```
+    GET/user-<int:id>/notifications
+    POST/user-<int:id>/notifications
+```
+```
+    DELETE/user-<int:id>/notifications/<int:id>
+```
+#### Inboxes
+```
+    GET/user-<int:id>/inbox
+```
+#### InboxUsers
+```
+    GET/user-<int:id>/inbox
+    GET/user-<int:id>/inbox/<int:id>
+```
+
 
 ### React Routes
 ```
@@ -130,9 +155,12 @@ Home  --- (rootRoute)
  ### ORD Database Table: 
  The entity relationship database is illustrated here: 
 
+ https://dbdiagram.io/d/65d528fdac844320ae9d8903
+![cli](./P5-ERD.png)
 
  ### Front End Wireframe:  
 
+https://www.figma.com/file/VS2cu5JyvLj5hw440Iv1Yz/Final-Project?type=whiteboard&node-id=0%3A1&t=EZPzWHMwZd3h14gG-1
 
 ## Technologies Used
 
