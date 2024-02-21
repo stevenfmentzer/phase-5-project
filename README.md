@@ -3,8 +3,20 @@
 
 ### Where connections thrive, profiles shine, and friendships are rekindled with every prompt.
 
-The HereIM app provides users with the ability to create and customize their profiles, connect with friends, and stay updated on community activities through notifications. With features for account management, friend connections, and notification preferences, HereIM offers a comprehensive platform for social interaction and communication. Additionally, HereIM prompts users to reach out to people they may not have talked to in a while, fostering reconnections and strengthening relationships within the community. Through personalized reminders and suggestions, HereIM encourages users to stay connected and engaged with their network, promoting a sense of community and support.
+The HereIM app provides users with the ability to log on and connect with friends. With features for account management, friend connections, and notification preferences, HereIM offers a comprehensive platform for social interaction and communication. HereIM prompts users to reach out to people they may not have talked to in a while, fostering reconnections and strengthening relationships within the community. Through personalized reminders and suggestions, HereIM encourages users to stay connected and engaged with their network, promoting a sense of community and support.
 
+
+### MVP
+- [ ] Users can login and add friends and set them as 'close friends'
+- [ ] Instant Messaging works
+- [ ] Users are notified to send messages to random friends with prompts
+- [ ] Users can view a friends-list
+- [ ] Users can indicate if they want to be contacted with Status
+
+### Stretch Goals
+- [ ] Allows a user to send a delayed text message
+- [ ] If messages are drafted and not sent, A notification syaing ‘someone was thinking of you’ is sent
+- [ ] Edit a sent message
 
 ### CRUD
 
