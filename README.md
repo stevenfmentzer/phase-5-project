@@ -6,47 +6,6 @@
 The HereIM app provides users with the ability to log on and connect with friends. With features for account management, friend connections, and notification preferences, HereIM offers a comprehensive platform for social interaction and communication. HereIM prompts users to reach out to people they may not have talked to in a while, fostering reconnections and strengthening relationships within the community. Through personalized reminders and suggestions, HereIM encourages users to stay connected and engaged with their network, promoting a sense of community and support.
 
 
-### MVP
-- [ ] Users can login and add friends and set them as 'close friends'
-- [ ] Instant Messaging works
-- [ ] Users can view a friends-list
-- [ ] Users can indicate if they want to be contacted with Status
-
-### Stretch Goals
-- [ ] Users are notified to send messages to random friends with prompts
-- [ ] Allows a user to send a delayed text message
-- [ ] If messages are drafted and not sent, A notification syaing ‘someone was thinking of you’ is sent
-- [ ] Edit a sent message
-
-### CRUD
-
-User
-
-C:Create a new user account to join the HereIM community 
-U:Update account information
-
-Status
-U:Update your account status to indicate whether or not you specifically want your account promoted to your friends
-
-Friends
-C: Find your friends and all them to your friends list
-R: View all your friends to see who you should reach out to
-U: Set your friend as a close friend, Unfriend someone and set is_active to false. 
-
-Notifications
-C: Your account will automatically send you random prompt notifications
-R: View all your friends to see who you should reach out to
-U: Set your friend as a close friend, Unfriend someone and set is_active to false. 
-
-Messages
-C: Send Messages
-C: Stretch - Send Messages with a delay
-R: Get Messages
-U: Stretch - Edit a sent message
-
-
-
-
 ## Installation Instructions
 
 1. Fork and clone Git repository
@@ -68,31 +27,41 @@ U: Stretch - Edit a sent message
 
 5. Enjoy the program!
 
+## Project Goals
+### MVP
+- [ ] Users can login and add friends and set them as 'close friends'
+- [ ] Instant Messaging works
+- [ ] Users can view a friends-list
+- [ ] Users can indicate if they want to be contacted with Status
+
+### Stretch Goals
+- [ ] Users are notified to send messages to random friends with prompts
+- [ ] Allows a user to send a delayed text message
+- [ ] If messages are drafted and not sent, A notification syaing ‘someone was thinking of you’ is sent
+- [ ] Edit a sent message
+
+
 ## Backend (API)
 ### Model Relationships
 #### One to One - Message to Message
-* A `Message` can have a `Message` as a child/parent relationship
+* A `Message` will have a `Message` as a child/parent relationship
 
-#### One to One - InboxUser to Message
-* An `InboxUser` is asociated with one `Messages`
-* A `Message` belongs to one `InboxUser`
-
-#### One to Many - User to Friends, Messages, Notifications, and Inboxes
-* A `User` has many `Messages`, and `Inboxes`
+#### One to Many - User to Messages, and Inboxes
+* A `User` has many `Messages` and `Inboxes`
 * A `Message` belongs to one `User`
-* A `Inbox` belongs to one `User`
+* A `Inbox` belongs to one `User` and one `Message`... `last_message_id` is set to the most child `Message`
 
-#### One to Many - Friends to Notifications
-* A `Friend` relationship has many `Notifications`
-* A `Notification` has one `Friend` relationship
+#### One to Many - Friendships to Notifications
+* A `Friendship` relationship has many `Notifications`
+* A `Notification` has one `Friendship` relationship
 
 #### Many to One - PromptNotifications to Prompts and Notifications
 * A `PromptNotification` relationship links one `Prompt` and one `Notifications`
 * A `Notification` has one `PromptNotification` relationship
 * A `Prompt` has one `PromptNotification` relationship
 
-#### Many to Many - Users through Friends
-* `Friend`s are bi-directional, where many `Users` can have a `Friend` relationship with many other `Users`
+#### Many to Many - Users through Friendships
+* `Friendship`s are bi-directional, where many `Users` can have a `Friend` relationship with many other `Users`
 
 ### Model Validations
 
@@ -101,80 +70,82 @@ U: Stretch - Edit a sent message
 * `username` must be 7-20 characters and not already exist
 * `password` must be 7-20 characters`
 
-#### Friends
-
-
-#### Notifications
-
+#### Friendships
 
 #### Messages
 
 #### Prompts
+
+#### Notifications
 
 
 ## Controllers
 ### API routes RESTful conventions
 #### Users
 ```
-    POST/users
+POST/users
 ```
 ```
-    GET/user-<int:id>
-    PATCH/user-<int:id>
-    DELETE/user-<int:id>
+GET/user-<int:id>
+PATCH/user-<int:id>
+DELETE/user-<int:id>
+```
+#### Friendships
+```
+GET/user-<int:id>/friends
+POST/user-<int:id>/friends
+```
+```
+PATCH/user-<int:id>/friend<int:id>
+DELETE/user-<int:id>/friend<int:id>
 ```
 #### Messages
 ```
-    POST/messages
+POST/messages
 ```
 ```
-    GET/message/<int:id>
-    PATCH/message/<int:id>
-    DELETE/message/<int:id>
+GET/message/<int:id>
+PATCH/message/<int:id>
+DELETE/message/<int:id>
 ```
 ```
-    GET/user<int:id>/messages
-```
-#### Status
-```
-    GET/user-<int:id>/status
-    PATCH/user-<int:id>/status
-
-```
-#### Friends
-```
-    GET/user-<int:id>/friends
-    POST/user-<int:id>/friends
-```
-```
-    PATCH/user-<int:id>/friend<int:id>
-    DELETE/user-<int:id>/friend<int:id>
-```
-#### Notifications
-```
-    GET/user-<int:id>/notifications
-    POST/user-<int:id>/notifications
-```
-```
-    DELETE/user-<int:id>/notifications/<int:id>
+GET/user<int:id>/messages
 ```
 #### Inboxes
 ```
-    GET/user-<int:id>/inbox
+GET/user-<int:id>/inbox
+POST/user-<int:id>/inbox
 ```
-#### InboxUsers
 ```
-    GET/user-<int:id>/inbox
-    GET/user-<int:id>/inbox/<int:id>
+PATCH/user-<int:user_id>/inbox<int:inbox_id>
+DELETE/user-<int:user_id>/inbox<int:inbox_id>
 ```
+#### Notifications
+```
+GET/user-<int:id>/notifications
+POST/user-<int:id>/notifications
+```
+```
+DELETE/user-<int:id>/notifications/<int:id>
+```
+
 
 
 ### React Routes
 ```
-Home  --- (rootRoute)
-
+Landing  --- (/)
+Login  --- (/login)
+Home  --- (/home)
+Messenger  --- (/messenger)
+Friends  --- (/friends)
 ```
 ## Data Flow Visualizations
+
+ ### ERD Database Table: 
+ The entity relationship database is illustrated here: 
+
+ https://dbdiagram.io/d/65d528fdac844320ae9d8903
+![cli](./HereIM_ERD.png)
 
  ### ORD Database Table: 
  The entity relationship database is illustrated here: 
