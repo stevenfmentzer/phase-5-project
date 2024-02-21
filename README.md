@@ -9,6 +9,7 @@ The HereIM app provides users with the ability to create and customize their pro
 ### CRUD
 
 User
+
 C:Create a new user account to join the HereIM community 
 U:Update account information
 
@@ -16,26 +17,20 @@ Status
 U:Update your account status to indicate whether or not you specifically want your account promoted to your friends
 
 Friends
-````
 C: Find your friends and all them to your friends list
 R: View all your friends to see who you should reach out to
 U: Set your friend as a close friend, Unfriend someone and set is_active to false. 
-```
 
 Notifications
-```
 C: Your account will automatically send you random prompt notifications
 R: View all your friends to see who you should reach out to
 U: Set your friend as a close friend, Unfriend someone and set is_active to false. 
-```
 
 Messages
-```
 C: Send Messages
 C: Stretch - Send Messages with a delay
 R: Get Messages
 U: Stretch - Edit a sent message
-```
 
 
 
