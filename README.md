@@ -71,12 +71,34 @@ The HereIM app provides users with the ability to log on and connect with friend
 * `password` must be 7-20 characters`
 
 #### Friendships
+* `user1_id` and `user2_id` must exist
+* `is_active` and `is_close_friend` are both initialized to false
+* `creation_date` is set to time of initialization
+* `message_count` is initialized at 0
 
 #### Messages
+* `parent_message_id` must exist and must be less than self.id
+* `sender_id` and `recipient_id` must exist
+* `sent_time` is set upon initialization
+* `delivery_time` is optional and must be type DateTime
+* `message_body` must be less than 400 characters
+* `is_read` is initialized to false
 
-#### Prompts
+#### Inboxes
+* `user_id`, `contact_user_id`, and `last_message_id` must exist
 
-#### Notifications
+#### Notifications (Strech Goal)
+* `friendship_id` must exist
+* `title` must be between 0-20 characters
+* `body` must be between 0-50 characters
+* `sent_time` is type DateTime and set upon initialization
+* `repeat_interval` is optional but must be an integer between 1-48 (representing hours)
+
+#### Prompts (Strech Goal)
+* `sender_prompt` and `response_format` must be between 0-50 characters
+
+
+
 
 
 ## Controllers
@@ -148,7 +170,7 @@ Friends  --- (/friends)
 ![cli](./HereIM_ERD.png)
 
  ### ORD Database Table: 
- The entity relationship database is illustrated here: 
+ The object relationship diagram is illustrated here: 
 
 ![cli](./HereIM_ORD.png)
 
