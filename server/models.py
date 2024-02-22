@@ -11,13 +11,13 @@ class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.Varchar(20), nullable=False)
-    last_name = db.Column(db.Varchar(20), nullable=False)
-    phone_number = db.Column(db.Varchar(20), nullable=False, unique=True)
-    email = db.Column(db.Varchar(320), nullable=False, unique=True)
+    first_name = db.Column(db.VARCHAR(20), nullable=False)
+    last_name = db.Column(db.VARCHAR(20), nullable=False)
+    phone_number = db.Column(db.VARCHAR(20), nullable=False, unique=True)
+    email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     join_date = db.Column(db.DateTime, default=datetime.utcnow)
     available_status = db.Column(db.Boolean, default=False)
-    _password_hash = db.Column(db.Varchar)
+    _password_hash = db.Column(db.VARCHAR)
 
     #### RELATIONSHIPS ####
 
@@ -156,7 +156,7 @@ class Message(db.Model, SerializerMixin):
     recipient_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     sent_time = db.Column(db.DateTime, default=datetime.utcnow)
     delivery_time = db.Column(db.DateTime)
-    message_body = db.Column(db.Varchar(400))
+    message_body = db.Column(db.VARCHAR(400))
     is_read = db.Column(db.Boolean, default=False)
 
     #### RELATIONSHIPS ####
