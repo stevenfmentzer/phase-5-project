@@ -30,11 +30,11 @@ class User(db.Model, SerializerMixin):
     # Relationship with inboxes related to the user
     inboxes = db.relationship('Inbox', back_populates='user', foreign_keys='Inbox.user_id')
 
-    # # Define back references for friendships where the user is user1
-    # friendships_user1 = db.relationship('Friendship', back_populates='user1', foreign_keys='Friendship.user1_id')
+    # Define back references for friendships where the user is user1
+    friendships_user1 = db.relationship('Friendship', back_populates='user1', foreign_keys='Friendship.user1_id')
 
-    # # Define back references for friendships where the user is user2
-    # friendships_user2 = db.relationship('Friendship', back_populates='user2', foreign_keys='Friendship.user2_id')
+    # Define back references for friendships where the user is user2
+    friendships_user2 = db.relationship('Friendship', back_populates='user2', foreign_keys='Friendship.user2_id')
 
     # Define relationship with inbox
     inbox = db.relationship('Inbox', back_populates='user', foreign_keys='Inbox.user_id')
@@ -186,25 +186,13 @@ class Message(db.Model, SerializerMixin):
     is_read = db.Column(db.Boolean, default=False)
 
     #### RELATIONSHIPS ####
+#### RELATIONSHIPS ####
 
     # Relationship with the sender user
     sender = db.relationship('User', foreign_keys='Message.sender_id', back_populates='sent_messages')
+
     # Relationship with the recipient user
     recipient = db.relationship('User', foreign_keys='Message.recipient_id', back_populates='received_messages')
-
-
-    # # Add foreign key relationship to Inbox
-    # inbox_id = db.Column(db.Integer, db.ForeignKey('inboxes.id'))
-
-
-
-    # Define relationship with Inbox
-    inbox = db.relationship('Inbox', back_populates='messages')
-
-    # Back reference for the first message in the inbox
-    first_message_inbox = db.relationship('Inbox', back_populates='first_message')
-    # Back reference for the last message in the inbox
-    last_message_inbox = db.relationship('Inbox', back_populates='last_message')
 
     #### SERIALIZATION RULES ####
 
@@ -246,19 +234,10 @@ class Inbox(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     contact_user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    first_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=None)
-    last_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=None)
+    first_message_id = db.Column(db.Integer, default=None)
+    last_message_id = db.Column(db.Integer, default=None)
 
     #### RELATIONSHIP ####
-
-    # Add relationship with Message
-    messages = db.relationship('Message', back_populates='inbox')
-
-    # # Relationship with the first message in the inbox
-    # first_message = db.relationship('Message', back_populates='first_message_inbox')
-    # # Relationship with the last message in the inbox
-    # last_message = db.relationship('Message', back_populates='last_message_inbox')
-
 
     # Relationship with the user
     user = db.relationship('User', back_populates='inbox', foreign_keys='Inbox.user_id')
