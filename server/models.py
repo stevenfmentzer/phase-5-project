@@ -30,11 +30,18 @@ class User(db.Model, SerializerMixin):
     # Relationship with inboxes related to the user
     inboxes = db.relationship('Inbox', back_populates='user', foreign_keys='Inbox.user_id')
 
-    # Relationship with friendships where the user is the first user
-    friendships_user1 = db.relationship('Friendship', back_populates='user1')
+    # # Define back references for friendships where the user is user1
+    # friendships_user1 = db.relationship('Friendship', back_populates='user1', foreign_keys='Friendship.user1_id')
 
-    # Relationship with friendships where the user is the second user
-    friendships_user2 = db.relationship('Friendship', back_populates='user2')
+    # # Define back references for friendships where the user is user2
+    # friendships_user2 = db.relationship('Friendship', back_populates='user2', foreign_keys='Friendship.user2_id')
+
+    # Define relationship with inbox
+    inbox = db.relationship('Inbox', back_populates='user', foreign_keys='Inbox.user_id')
+
+    # Define relationship with inboxes where the user is a contact user
+    contact_inboxes = db.relationship('Inbox', back_populates='contact_user', foreign_keys='Inbox.contact_user_id')
+
 
     #### SERIALIZATION RULES ####
 
@@ -108,10 +115,14 @@ class Friendship(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     user1_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user2_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    is_active = db.Column(db.Boolean, default=False)
-    is_close_friend = db.Column(db.Boolean, default=False)
+    is_active = db.Column(db.Boolean, default=True)
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
     message_count = db.Column(db.Integer, default=0)
+
+    # user1 close_friend status
+    is_close_friend_user1 = db.Column(db.Boolean, default=False)
+    # user2 close_friend status
+    is_close_friend_user2 = db.Column(db.Boolean, default=False)
 
     #### RELATIONSHIPS ####
 
@@ -120,6 +131,7 @@ class Friendship(db.Model, SerializerMixin):
 
     # Relationship with the second user
     user2 = db.relationship('User', foreign_keys='Friendship.user2_id', back_populates='friendships_user2')
+    
 
     #### SERIALIZATION RULES ####
     
@@ -135,6 +147,19 @@ class Friendship(db.Model, SerializerMixin):
         if user is None:
             raise ValueError(f"No {key} found with ID: {value}")
         return value
+    
+    @validates('is_close_friend_user1', 'is_close_friend_user2')
+    def set_close_friend_status(self, user_id, close_friend_status):
+        # Check if the user is part of the friendship
+        if user_id == self.user1_id:
+            if self.is_close_friend_user1 != close_friend_status:
+                self.is_close_friend_user1 = close_friend_status
+                return close_friend_status
+        elif user_id == self.user2_id:
+            if self.is_close_friend_user2 != close_friend_status:
+                self.is_close_friend_user2 = close_friend_status
+                return close_friend_status
+        return None  # Indicate that the close friend status was not updated
 
 
     def __repr__(self):
@@ -151,20 +176,35 @@ class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
 
     id = db.Column(db.Integer, primary_key=True)
-    parent_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'))
+    parent_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=None)
+    child_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=None)
     sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     recipient_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    sent_time = db.Column(db.DateTime, default=datetime.utcnow)
+    creation_time = db.Column(db.DateTime, default=datetime.utcnow)
     delivery_time = db.Column(db.DateTime)
     message_body = db.Column(db.VARCHAR(400))
     is_read = db.Column(db.Boolean, default=False)
 
     #### RELATIONSHIPS ####
 
-    # Relationship with parent message
-    # `remote_side='Message.id` defines the relationship from the perspective of the child_message
-    child_message = db.relationship('Message', back_populates='parent_message', remote_side='Message.id')
-    parent_message = db.relationship('Message', back_populates='child_message')
+    # Relationship with the sender user
+    sender = db.relationship('User', foreign_keys='Message.sender_id', back_populates='sent_messages')
+    # Relationship with the recipient user
+    recipient = db.relationship('User', foreign_keys='Message.recipient_id', back_populates='received_messages')
+
+
+    # # Add foreign key relationship to Inbox
+    # inbox_id = db.Column(db.Integer, db.ForeignKey('inboxes.id'))
+
+
+
+    # Define relationship with Inbox
+    inbox = db.relationship('Inbox', back_populates='messages')
+
+    # Back reference for the first message in the inbox
+    first_message_inbox = db.relationship('Inbox', back_populates='first_message')
+    # Back reference for the last message in the inbox
+    last_message_inbox = db.relationship('Inbox', back_populates='last_message')
 
     #### SERIALIZATION RULES ####
 
@@ -194,7 +234,7 @@ class Message(db.Model, SerializerMixin):
                     parent_message_id: {self.parent_message_id}\n \
                     sender_id: {self.sender_id}\n \
                     recipient_id: {self.recipient_id}\n \
-                    sent_time: {self.sent_time}\n \
+                    sent_time: {self.creation_time}\n \
                     delivery_time: {self.delivery_time}\n \
                     message_body: {self.message_body}\n \
                     is_read: {self.is_read}\n \
@@ -204,15 +244,24 @@ class Inbox(db.Model, SerializerMixin):
     __tablename__ = 'inboxes'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)
-    contact_user_id = db.Column(db.Integer)
-    last_message_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    contact_user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    first_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=None)
+    last_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=None)
 
     #### RELATIONSHIP ####
 
-    # Relationship with the last message in the inbox
-    last_message = db.relationship('Message', back_populates='inbox')
+    # Add relationship with Message
+    messages = db.relationship('Message', back_populates='inbox')
 
+    # # Relationship with the first message in the inbox
+    # first_message = db.relationship('Message', back_populates='first_message_inbox')
+    # # Relationship with the last message in the inbox
+    # last_message = db.relationship('Message', back_populates='last_message_inbox')
+
+
+    # Relationship with the user
+    user = db.relationship('User', back_populates='inbox', foreign_keys='Inbox.user_id')
     # Relationship with the contact user in the inbox
     contact_user = db.relationship('User', back_populates='contact_inboxes', foreign_keys='Inbox.contact_user_id')
 
@@ -225,8 +274,10 @@ class Inbox(db.Model, SerializerMixin):
     # Ensure the provided User.ID's exist
     @validates('user_id', 'contact_user_id')
     def validates_users(self, key, value):
-        user = User.query.get(value)
+        if key == 'contact_user_id' and value == self.user_id:
+            raise ValueError("Contact user cannot be the same as the user")
 
+        user = User.query.get(value)
         if user is None:
             raise ValueError(f"No {key} found with ID: {value}")
         return value
@@ -235,9 +286,16 @@ class Inbox(db.Model, SerializerMixin):
     def validates_last_message(self, key, value):
         message = Message.query.get(value)
 
-        if message is None: 
-            raise ValueError(f"No {key} found with ID: {value}")
-        return value 
+        if message is None:
+            raise ValueError(f"No message found with ID: {value}")
+
+        if (message.sender_id != self.user_id) and (message.recipient_id != self.user_id):
+            raise ValueError("The last message is not connected to the user")
+
+        if (message.sender_id != self.contact_user_id) and (message.recipient_id != self.contact_user_id):
+            raise ValueError("The last message is not connected to the contact user")
+
+        return value
 
     def __repr__(self):
         return f'<Inbox id: {self.id}\n \
