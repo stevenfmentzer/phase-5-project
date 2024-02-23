@@ -107,40 +107,52 @@ The HereIM app provides users with the ability to log on and connect with friend
 ```
 POST/users
 ```
+#### UsersById
 ```
-GET/user-<int:id>
-PATCH/user-<int:id>
-DELETE/user-<int:id>
+GET/user/<int:id>
+PATCH/user/<int:id>
+DELETE/user/<int:id>
 ```
 #### Friendships
 ```
-GET/user-<int:id>/friends
-POST/user-<int:id>/friends
+POST/friends
 ```
+#### FriendshipsByUserId
 ```
-PATCH/user-<int:id>/friend<int:id>
-DELETE/user-<int:id>/friend<int:id>
+GET/user/<int:id>/friends
+```
+#### FriendshipById
+```
+PATCH/user/<int:id>/friend<int:id>
+DELETE/user/<int:id>/friend<int:id>
 ```
 #### Messages
 ```
 POST/messages
 ```
+#### MessagesByUserId
+```
+GET/user<int:id>/messages
+```
+#### MessageById
 ```
 GET/message/<int:id>
 PATCH/message/<int:id>
 DELETE/message/<int:id>
 ```
-```
-GET/user<int:id>/messages
-```
 #### Inboxes
 ```
-GET/user-<int:id>/inbox
 POST/user-<int:id>/inbox
 ```
+#### InboxesByUserId
 ```
-PATCH/user-<int:user_id>/inbox<int:inbox_id>
-DELETE/user-<int:user_id>/inbox<int:inbox_id>
+GET/user/<int:id>/inboxes
+```
+#### InboxById
+```
+GET/inbox/<int:id>
+PATCH/inbox/<int:id>
+DELETE/inbox/<int:id>
 ```
 #### Notifications
 ```

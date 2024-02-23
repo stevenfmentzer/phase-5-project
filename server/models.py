@@ -42,7 +42,6 @@ class User(db.Model, SerializerMixin):
     # Define relationship with inboxes where the user is a contact user
     contact_inboxes = db.relationship('Inbox', back_populates='contact_user', foreign_keys='Inbox.contact_user_id')
 
-
     #### SERIALIZATION RULES ####
 
     serialize_rules = ('-sent_messages', '-received_messages', '-friendships', '-inboxes')
@@ -131,7 +130,6 @@ class Friendship(db.Model, SerializerMixin):
 
     # Relationship with the second user
     user2 = db.relationship('User', foreign_keys='Friendship.user2_id', back_populates='friendships_user2')
-    
 
     #### SERIALIZATION RULES ####
     
@@ -186,7 +184,6 @@ class Message(db.Model, SerializerMixin):
     is_read = db.Column(db.Boolean, default=False)
 
     #### RELATIONSHIPS ####
-#### RELATIONSHIPS ####
 
     # Relationship with the sender user
     sender = db.relationship('User', foreign_keys='Message.sender_id', back_populates='sent_messages')
