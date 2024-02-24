@@ -55,7 +55,26 @@ class UserById(Resource):
         return response
     
     def patch(self, id):
-        return 
+        try: 
+            user = User.query.filter(User.id == id).first()
+            if request.headers.get('Content-Type') == 'application/json':
+                form_data = request.get_json()
+            else: 
+                form_data = request.form
+
+            # Permit specifics attrs to be updated
+            allowed_attrs = ['first_name', 'last_name', 'available_status', 'password_hash']
+            for attr in form_data: 
+                if attr in allowed_attrs:
+                    setattr(user, attr, form_data[attr])
+
+            db.session.commit()
+            response = make_response(user.to_dict(), 202)
+
+        except Exception as e:
+            response = make_response({"error" : f"An error occurred: {str(e)}"}, 500)
+
+        return response
     
     def delete(self, id):
         try:
@@ -112,7 +131,26 @@ api.add_resource(FriendshipsByUserId, '/user/<int:id>/friends')
 
 class FriendshipById(Resource):
     def patch(self, id):
-        return 
+        try: 
+            friendship = Friendship.query.filter(Friendship.id == id).first()
+            if request.headers.get('Content-Type') == 'application/json':
+                form_data = request.get_json()
+            else: 
+                form_data = request.form
+
+            # Permit specifics attrs to be updated
+            allowed_attrs = ['is_active', 'message_count']
+            for attr in form_data: 
+                if attr in allowed_attrs:
+                    setattr(friendship, attr, form_data[attr])
+
+            db.session.commit()
+            response = make_response(friendship.to_dict(), 202)
+
+        except Exception as e:
+            response = make_response({"error" : f"An error occurred: {str(e)}"}, 500)
+
+        return response
     
     def delete(self, id):
         try:
@@ -129,6 +167,7 @@ class FriendshipById(Resource):
     
 api.add_resource(FriendshipById, '/friends/<int:id>')
 
+
 class Messages(Resource):
     def post(self):
         try:
@@ -137,39 +176,81 @@ class Messages(Resource):
             else:
                 form_data = request.form
 
-
-            #### CHECK IF AN INBOX EXISTS FOR THESE TWO PEOPLE, IF NOT MAKE A NEW INBOX TO ASSIGN MESSAGES TO ####
-                
-
-            # Query the database to get the ID of the last message
-            parent_message = Message.query \
-                .filter(or_((Message.sender_id == form_data['sender_id']) & (Message.recipient_id == form_data['recipient_id']),
-                            (Message.sender_id == form_data['recipient_id']) & (Message.recipient_id == form_data['sender_id']))) \
-                .order_by(Message.id.desc()) \
-                .first()
-
             # Create the new message object
             new_message = Message(
                 sender_id=form_data['sender_id'],
                 recipient_id=form_data['recipient_id'],
                 message_body=form_data['message_body']
-                )
+            )
 
             db.session.add(new_message)
             db.session.commit()
 
-            # Set the parent_message_id and child_message_id properties
+            # Check whether or not a message already belongs to these two Users, set to parent_message
+            parent_message = Message.query.filter(
+                or_(
+                    (Message.sender_id == form_data['sender_id']) & (Message.recipient_id == form_data['recipient_id']),
+                    (Message.sender_id == form_data['recipient_id']) & (Message.recipient_id == form_data['sender_id'])
+                )
+            ).order_by(Message.id.desc()).first()
+
+            # Set the parent_message_id and child_message_id properties         
             if parent_message:
                 new_message.parent_message_id = parent_message.id
                 parent_message.child_message_id = new_message.id
                 db.session.commit()
+
+            # Check if two inboxes exis: one for each sender and recipient
+            sender_inbox = Inbox.query.filter(
+                Inbox.user_id == form_data['sender_id'], 
+                Inbox.contact_user_id == form_data['recipient_id']
+            ).first()
+
+            recipient_inbox = Inbox.query.filter(
+                Inbox.user_id == form_data['recipient_id'], 
+                Inbox.contact_user_id == form_data['sender_id']
+            ).first()
+
+            # If inboxes don't exist, create new ones
+            if not sender_inbox:
+                new_sender_inbox = Inbox(
+                    user_id=form_data['sender_id'],
+                    contact_user_id=form_data['recipient_id'],
+                    first_message_id=new_message.id,
+                    last_message_id=new_message.id
+                )
+                db.session.add(new_sender_inbox)
+
+            if not recipient_inbox:
+                new_recipient_inbox = Inbox(
+                    user_id=form_data['recipient_id'],
+                    contact_user_id=form_data['sender_id'],
+                    first_message_id=new_message.id,
+                    last_message_id=new_message.id
+                )
+                db.session.add(new_recipient_inbox)
+
+            # If inboxes were just created, update first_message_id and last_message_id
+            # Else inboxes already existed, update last_message_id
+            if new_sender_inbox:
+                sender_inbox.first_message_id = new_message.id
+                sender_inbox.last_message_id = new_message.id
+            else:                 
+                sender_inbox.last_message_id = new_message.id
+
+            if new_recipient_inbox:
+                recipient_inbox.first_message_id = new_message.id
+                recipient_inbox.last_message_id = new_message.id
+            else:
+                recipient_inbox.last_message_id = new_message.id
+
+            db.session.commit()
 
             response = make_response(new_message.to_dict(), 201)
         except Exception as e:
             response = make_response({"errors": [str(e)]}, 400)
         return response
 
-api.add_resource(Messages, '/messages')
 
 class MessageByInboxId(Resource):
     def get(self, id):
@@ -178,16 +259,18 @@ class MessageByInboxId(Resource):
             if not inbox:
                 raise Exception(f"Inbox with id {id} not found")
             
+            # Retrieve a Dict of Messages that include both Users as either sender or recipient
             inbox_message_dict = [message.to_dict() for message in Message.query.filter(
                 (Message.sender_id == inbox.user_id) | (Message.sender_id == inbox.contact_user_id),
                 (Message.recipient_id == inbox.user_id) | (Message.recipient_id == inbox.contact_user_id),
                 Message.id.between(inbox.first_message_id, inbox.last_message_id)
                 ).all()]
             
+            # Return Dictionary
             if inbox_message_dict:
                 response = make_response(inbox_message_dict, 200)
             else:
-                response = make_response({"error" : f"Message with id {id} not found"}, 404)
+                response = make_response({"error" : f"Messages for Inbox id {id} not found"}, 404)
         except Exception as e:
             response = make_response({"error" : f"An error occurred: {str(e)}"}, 500)
         return response
@@ -209,7 +292,26 @@ class MessageById(Resource):
         return response
     
     def patch(self, id):
-        return
+        try: 
+            message = Message.query.filter(Message.id == id).first()
+            if request.headers.get('Content-Type') == 'application/json':
+                form_data = request.get_json()
+            else: 
+                form_data = request.form
+
+            # Permit specific attrs to be updated
+            allowed_attrs = ['message_body', 'is_read']
+            for attr in form_data: 
+                if attr in allowed_attrs:
+                    setattr(message, attr, form_data[attr])
+
+            db.session.commit()
+            response = make_response(message.to_dict(), 202)
+
+        except Exception as e:
+            response = make_response({"error" : f"An error occurred: {str(e)}"}, 500)
+
+        return response
     
     def delete(self, id):
         try:
@@ -272,9 +374,30 @@ class InboxById(Resource):
             response = make_response({"error" : "Inbox not found"}, 404)
         return response
 
+    #### MIGHT NOT NEED THE PATCH... THINK ABOUT LOGIC AND WHERE I WANT THEM TO BE CHANGED
     def patch(self, id):
-        return 
-    
+        try: 
+            inbox = Inbox.query.filter(Inbox.id == id).first()
+            if request.headers.get('Content-Type') == 'application/json':
+                form_data = request.get_json()
+            else: 
+                form_data = request.form
+
+            # Permit specifics attrs to be updated
+            allowed_attrs = ['first_message', 'last_message']
+            for attr in form_data: 
+                if attr in allowed_attrs:
+                    setattr(inbox, attr, form_data[attr])
+
+            db.session.commit()
+            response = make_response(inbox.to_dict(), 202)
+
+        except Exception as e:
+            response = make_response({"error" : f"An error occurred: {str(e)}"}, 500)
+
+        return response
+    #### MIGHT NOT NEED THE PATCH... THINK ABOUT LOGIC AND WHERE I WANT THEM TO BE CHANGED
+
     def delete(self, id):
         try:
             inbox = Inbox.query.filter(Inbox.id == id).first()
