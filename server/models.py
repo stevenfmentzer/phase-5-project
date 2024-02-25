@@ -146,19 +146,24 @@ class Friendship(db.Model, SerializerMixin):
             raise ValueError(f"No {key} found with ID: {value}")
         return value
     
-    @validates('is_close_friend_user1', 'is_close_friend_user2')
-    def set_close_friend_status(self, user_id, close_friend_status):
-        # Check if the user is part of the friendship
-        if user_id == self.user1_id:
-            if self.is_close_friend_user1 != close_friend_status:
-                self.is_close_friend_user1 = close_friend_status
-                return close_friend_status
-        elif user_id == self.user2_id:
-            if self.is_close_friend_user2 != close_friend_status:
-                self.is_close_friend_user2 = close_friend_status
-                return close_friend_status
-        return None  # Indicate that the close friend status was not updated
+    # FIX LOGIC LATER OR DELETE 
 
+    # @validates('is_close_friend_user1', 'is_close_friend_user2')
+    # def set_close_friend_status(self, key, value):
+    #     # Check if the user is part of the friendship
+    #     print(key)
+    #     print(value)
+    #     if user_id == self.user1_id:
+    #         if self.is_close_friend_user1 != close_friend_status:
+    #             self.is_close_friend_user1 = close_friend_status
+    #             return close_friend_status
+    #     elif user_id == self.user2_id:
+    #         if self.is_close_friend_user2 != close_friend_status:
+    #             self.is_close_friend_user2 = close_friend_status
+    #             return close_friend_status
+    #     return None  # Indicate that the close friend status was not updated
+
+    # FIX LOGIC LATER OR DELETE 
 
     def __repr__(self):
         return f'<Friendship id: {self.id}\n \

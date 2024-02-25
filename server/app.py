@@ -130,7 +130,7 @@ class FriendshipsByUserId(Resource):
 api.add_resource(FriendshipsByUserId, '/user/<int:id>/friends')
 
 class FriendshipById(Resource):
-    def patch(self, id):
+    def patch(self, id):  #### !!!! CHECKED !!!! #### 
         try: 
             friendship = Friendship.query.filter(Friendship.id == id).first()
             if request.headers.get('Content-Type') == 'application/json':
@@ -139,7 +139,7 @@ class FriendshipById(Resource):
                 form_data = request.form
 
             # Permit specifics attrs to be updated
-            allowed_attrs = ['is_active', 'message_count']
+            allowed_attrs = ['is_active', 'message_count','is_close_friend_user1','is_close_friend_user2']
             for attr in form_data: 
                 if attr in allowed_attrs:
                     setattr(friendship, attr, form_data[attr])
@@ -291,7 +291,7 @@ class MessageById(Resource):
             response = make_response({"error" : f"An error occurred: {str(e)}"}, 500)
         return response
     
-    def patch(self, id):
+    def patch(self, id):  #### !!!! CHECKED !!!! #### 
         try: 
             message = Message.query.filter(Message.id == id).first()
             if request.headers.get('Content-Type') == 'application/json':
@@ -375,27 +375,27 @@ class InboxById(Resource):
         return response
 
     #### MIGHT NOT NEED THE PATCH... THINK ABOUT LOGIC AND WHERE I WANT THEM TO BE CHANGED
-    def patch(self, id):
-        try: 
-            inbox = Inbox.query.filter(Inbox.id == id).first()
-            if request.headers.get('Content-Type') == 'application/json':
-                form_data = request.get_json()
-            else: 
-                form_data = request.form
+    # def patch(self, id):
+    #     try: 
+    #         inbox = Inbox.query.filter(Inbox.id == id).first()
+    #         if request.headers.get('Content-Type') == 'application/json':
+    #             form_data = request.get_json()
+    #         else: 
+    #             form_data = request.form
 
-            # Permit specifics attrs to be updated
-            allowed_attrs = ['first_message', 'last_message']
-            for attr in form_data: 
-                if attr in allowed_attrs:
-                    setattr(inbox, attr, form_data[attr])
+    #         # Permit specifics attrs to be updated
+    #         allowed_attrs = ['first_message', 'last_message']
+    #         for attr in form_data: 
+    #             if attr in allowed_attrs:
+    #                 setattr(inbox, attr, form_data[attr])
 
-            db.session.commit()
-            response = make_response(inbox.to_dict(), 202)
+    #         db.session.commit()
+    #         response = make_response(inbox.to_dict(), 202)
 
-        except Exception as e:
-            response = make_response({"error" : f"An error occurred: {str(e)}"}, 500)
+    #     except Exception as e:
+    #         response = make_response({"error" : f"An error occurred: {str(e)}"}, 500)
 
-        return response
+    #     return response
     #### MIGHT NOT NEED THE PATCH... THINK ABOUT LOGIC AND WHERE I WANT THEM TO BE CHANGED
 
     def delete(self, id):
