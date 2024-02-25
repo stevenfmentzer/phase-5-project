@@ -17,7 +17,7 @@ class Home(Resource):
 api.add_resource(Home, '/home')
 
 class Users(Resource):
-    def post(self):
+    def post(self):  #### !!!! CHECKED !!!! #### 
         try: 
             if request.headers.get('Content-Type') == 'application/json':
                 form_data = request.get_json()
@@ -29,8 +29,8 @@ class Users(Resource):
                 last_name = form_data["last_name"],
                 phone_number = form_data["phone_number"],
                 email = form_data["email"],
-                password_hash = form_data["password"]
                 )
+            new_user.password_hash = form_data['password'] 
 
             db.session.add(new_user)
             db.session.commit()
@@ -54,7 +54,7 @@ class UserById(Resource):
             response = make_response({"error" : f"An error occurred: {str(e)}"}, 500)
         return response
     
-    def patch(self, id):
+    def patch(self, id):  #### !!!! CHECKED !!!! #### 
         try: 
             user = User.query.filter(User.id == id).first()
             if request.headers.get('Content-Type') == 'application/json':
@@ -92,23 +92,33 @@ class UserById(Resource):
 api.add_resource(UserById, '/user/<int:id>')
 
 class Friendships(Resource):
-    def post(self):
+    def post(self):  #### !!!! CHECKED !!!! #### 
         try: 
             if request.headers.get('Content-Type') == 'application/json':
                 form_data = request.get_json()
             else: 
                 form_data = request.form
 
-            new_friendship = Friendship(
-                user1_id = form_data["user1_id"],
-                user2_id = form_data["user2_id"]
-                )
+            # Check if a Friendship between User1_id and User2_id already exists
+            existing_friendship = Friendship.query.filter(                
+                or_(
+                    (Friendship.user1_id == form_data['user1_id']) & (Friendship.user2_id == form_data['user2_id']),
+                    (Friendship.user1_id == form_data['user2_id']) & (Friendship.user2_id == form_data['user1_id'])
+                )).first()
 
-            db.session.add(new_friendship)
-            db.session.commit()
+            # If there's no existing Friendship make a new one
+            if not existing_friendship:
+                new_friendship = Friendship(
+                    user1_id = form_data["user1_id"],
+                    user2_id = form_data["user2_id"]
+                    )
 
-            response = make_response(new_friendship.to_dict(), 201)
+                db.session.add(new_friendship)
+                db.session.commit()
 
+                response = make_response(new_friendship.to_dict(), 201)
+            else:
+                response = make_response({"error": "Friendship already exists"}, 400)
         except Exception as e: 
             return {"errors": [str(e)]}, 400
         return response
@@ -169,88 +179,94 @@ api.add_resource(FriendshipById, '/friends/<int:id>')
 
 
 class Messages(Resource):
-    def post(self):
+    def post(self): #### !!!! CHECKED !!!! #### 
         try:
             if request.headers.get('Content-Type') == 'application/json':
                 form_data = request.get_json()
             else:
                 form_data = request.form
 
-            # Create the new message object
-            new_message = Message(
-                sender_id=form_data['sender_id'],
-                recipient_id=form_data['recipient_id'],
-                message_body=form_data['message_body']
-            )
-
-            db.session.add(new_message)
-            db.session.commit()
-
-            # Check whether or not a message already belongs to these two Users, set to parent_message
-            parent_message = Message.query.filter(
+            # Check if a Friendship between User1_id and User2_id already exists
+            existing_friendship = Friendship.query.filter(                
                 or_(
-                    (Message.sender_id == form_data['sender_id']) & (Message.recipient_id == form_data['recipient_id']),
-                    (Message.sender_id == form_data['recipient_id']) & (Message.recipient_id == form_data['sender_id'])
+                    (Friendship.user1_id == form_data['sender_id']) & (Friendship.user2_id == form_data['recipient_id']),
+                    (Friendship.user1_id == form_data['recipient_id']) & (Friendship.user2_id == form_data['sender_id'])
+                ),Friendship.is_active == True).first()
+            
+            if existing_friendship:
+                # Create the new message object
+                new_message = Message(
+                    sender_id=form_data['sender_id'],
+                    recipient_id=form_data['recipient_id'],
+                    message_body=form_data['message_body']
                 )
-            ).order_by(Message.id.desc()).first()
 
-            # Set the parent_message_id and child_message_id properties         
-            if parent_message:
-                new_message.parent_message_id = parent_message.id
-                parent_message.child_message_id = new_message.id
+                db.session.add(new_message)
                 db.session.commit()
 
-            # Check if two inboxes exis: one for each sender and recipient
-            sender_inbox = Inbox.query.filter(
-                Inbox.user_id == form_data['sender_id'], 
-                Inbox.contact_user_id == form_data['recipient_id']
-            ).first()
+                # Check whether or not a message already belongs to these two Users, set to parent_message
+                parent_message = Message.query.filter(
+                    or_(
+                        (Message.sender_id == form_data['sender_id']) & (Message.recipient_id == form_data['recipient_id']),
+                        (Message.sender_id == form_data['recipient_id']) & (Message.recipient_id == form_data['sender_id'])
+                    )
+                ).order_by(Message.id.desc()).first()
 
-            recipient_inbox = Inbox.query.filter(
-                Inbox.user_id == form_data['recipient_id'], 
-                Inbox.contact_user_id == form_data['sender_id']
-            ).first()
+                # Set the parent_message_id and child_message_id properties         
+                if parent_message:
+                    new_message.parent_message_id = parent_message.id
+                    parent_message.child_message_id = new_message.id
+                    db.session.commit()
 
-            # If inboxes don't exist, create new ones
-            if not sender_inbox:
-                new_sender_inbox = Inbox(
-                    user_id=form_data['sender_id'],
-                    contact_user_id=form_data['recipient_id'],
-                    first_message_id=new_message.id,
-                    last_message_id=new_message.id
-                )
-                db.session.add(new_sender_inbox)
+                # Check if two inboxes exis: one for each sender and recipient
+                sender_inbox = Inbox.query.filter(
+                    Inbox.user_id == form_data['sender_id'], 
+                    Inbox.contact_user_id == form_data['recipient_id']
+                ).first()
 
-            if not recipient_inbox:
-                new_recipient_inbox = Inbox(
-                    user_id=form_data['recipient_id'],
-                    contact_user_id=form_data['sender_id'],
-                    first_message_id=new_message.id,
-                    last_message_id=new_message.id
-                )
-                db.session.add(new_recipient_inbox)
+                recipient_inbox = Inbox.query.filter(
+                    Inbox.user_id == form_data['recipient_id'], 
+                    Inbox.contact_user_id == form_data['sender_id']
+                ).first()
 
-            # If inboxes were just created, update first_message_id and last_message_id
-            # Else inboxes already existed, update last_message_id
-            if new_sender_inbox:
-                sender_inbox.first_message_id = new_message.id
-                sender_inbox.last_message_id = new_message.id
-            else:                 
-                sender_inbox.last_message_id = new_message.id
+                # If inboxes don't exist, create new ones
+                if not sender_inbox:
+                    sender_inbox = Inbox(
+                        user_id=form_data['sender_id'],
+                        contact_user_id=form_data['recipient_id'],
+                        first_message_id=new_message.id,
+                        last_message_id=new_message.id
+                    )
+                    db.session.add(sender_inbox)
+                else:
+                    sender_inbox.last_message_id = new_message.id
 
-            if new_recipient_inbox:
-                recipient_inbox.first_message_id = new_message.id
-                recipient_inbox.last_message_id = new_message.id
-            else:
-                recipient_inbox.last_message_id = new_message.id
+                recipient_inbox = Inbox.query.filter(
+                    Inbox.user_id == form_data['recipient_id'], 
+                    Inbox.contact_user_id == form_data['sender_id']
+                ).first()
 
-            db.session.commit()
+                if not recipient_inbox:
+                    recipient_inbox = Inbox(
+                        user_id=form_data['recipient_id'],
+                        contact_user_id=form_data['sender_id'],
+                        first_message_id=new_message.id,
+                        last_message_id=new_message.id
+                    )
+                    db.session.add(recipient_inbox)
+                else:
+                    recipient_inbox.last_message_id = new_message.id
 
-            response = make_response(new_message.to_dict(), 201)
+                db.session.commit()
+
+                response = make_response(new_message.to_dict(), 201)
+            else: 
+                response = make_response({"error" : f"Friendship.is_active=True for Users: {form_data['sender_id']} & {form_data['recipient_id']} not found"}, 400)
         except Exception as e:
             response = make_response({"errors": [str(e)]}, 400)
         return response
 
+api.add_resource(Messages, '/messages')
 
 class MessageByInboxId(Resource):
     def get(self, id): #### !!!! CHECKED !!!! #### 
@@ -329,25 +345,41 @@ class MessageById(Resource):
 api.add_resource(MessageById, '/message/<int:id>')
 
 class Inboxes(Resource):
-    def post(self):
+    def post(self):  #### !!!! CHECKED !!!! #### 
         try: 
             if request.headers.get('Content-Type') == 'application/json':
                 form_data = request.get_json()
             else: 
                 form_data = request.form
 
-            new_inbox = Inbox(
-                user_id = form_data['user_id'],
-                contact_user_id = form_data['contact_user_id'],
-                first_message_id = form_data['first_message_id'],
-                last_message_id = form_data['last_message_id'],
-                )
+            # Check if a Friendship between User1_id and User2_id already exists
+            existing_friendship = Friendship.query.filter(                
+                or_(
+                    (Friendship.user1_id == form_data['sender_id']) & (Friendship.user2_id == form_data['recipient_id']),
+                    (Friendship.user1_id == form_data['recipient_id']) & (Friendship.user2_id == form_data['sender_id'])
+                ),Friendship.is_active == True).first()
             
-            db.session.add(new_inbox)
-            db.session.commit()
+            if existing_friendship:
 
-            response = make_response(new_inbox.to_dict(), 201)
+                existing_inbox = Inbox.query.filter(
+                    Inbox.user_id == form_data['user_id'], 
+                    Inbox.contact_user_id == form_data['contact_user_id']
+                ).first()
 
+                if not existing_inbox:
+                    new_inbox = Inbox(
+                        user_id = form_data['user_id'],
+                        contact_user_id = form_data['contact_user_id'],
+                        )
+                    
+                    db.session.add(new_inbox)
+                    db.session.commit()
+
+                    response = make_response(new_inbox.to_dict(), 201)
+                else: 
+                    make_response({"error": "Inbox already exists"}, 400)
+            else: 
+                 make_response({"error" : f"a Friendship for Users: {form_data['user_id']} & {form_data['contact_user_id']} doesn't exist"}, 400)
         except Exception as e: 
             return {"errors": [str(e)]}, 400
         return response

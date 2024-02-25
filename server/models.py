@@ -1,3 +1,4 @@
+from sqlalchemy import UniqueConstraint
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -17,30 +18,27 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     join_date = db.Column(db.DateTime, default=datetime.utcnow)
     available_status = db.Column(db.Boolean, default=False)
-    _password_hash = db.Column(db.VARCHAR)
+    _password_hash = db.Column(db.VARCHAR, nullable=False, unique=True)
 
     #### RELATIONSHIPS ####
 
     # Relationship with messages sent by the user
-    sent_messages = db.relationship('Message', back_populates='sender', foreign_keys='Message.sender_id')
+    sent_messages = db.relationship('Message', back_populates='sender', foreign_keys='Message.sender_id', cascade='all, delete-orphan')
 
     # Relationship with messages received by the user
-    received_messages = db.relationship('Message', back_populates='recipient', foreign_keys='Message.recipient_id')
-
-    # # Relationship with inboxes related to the user
-    # inboxes = db.relationship('Inbox', back_populates='user', foreign_keys='Inbox.user_id')
+    received_messages = db.relationship('Message', back_populates='recipient', foreign_keys='Message.recipient_id', cascade='all, delete-orphan')
 
     # Define back references for friendships where the user is user1
-    friendships_user1 = db.relationship('Friendship', back_populates='user1', foreign_keys='Friendship.user1_id')
+    friendships_user1 = db.relationship('Friendship', back_populates='user1', foreign_keys='Friendship.user1_id', cascade='all, delete-orphan')
 
     # Define back references for friendships where the user is user2
-    friendships_user2 = db.relationship('Friendship', back_populates='user2', foreign_keys='Friendship.user2_id')
+    friendships_user2 = db.relationship('Friendship', back_populates='user2', foreign_keys='Friendship.user2_id', cascade='all, delete-orphan')
 
     # Define relationship with inbox
-    inbox = db.relationship('Inbox', back_populates='user', foreign_keys='Inbox.user_id')
+    inbox = db.relationship('Inbox', back_populates='user', foreign_keys='Inbox.user_id', cascade='all, delete-orphan')
 
     # Define relationship with inboxes where the user is a contact user
-    contact_inboxes = db.relationship('Inbox', back_populates='contact_user', foreign_keys='Inbox.contact_user_id')
+    contact_inboxes = db.relationship('Inbox', back_populates='contact_user', foreign_keys='Inbox.contact_user_id', cascade='all, delete-orphan')
 
     #### SERIALIZATION RULES ####
 
@@ -118,6 +116,11 @@ class Friendship(db.Model, SerializerMixin):
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
     message_count = db.Column(db.Integer, default=0)
 
+    # Add a unique constraint to ensure combinations of user_id and contact_user_id are unique
+    __table_args__ = (
+        UniqueConstraint('user1_id', 'user2_id', name='_users_friendship_uc'),
+    )
+
     # user1 close_friend status
     is_close_friend_user1 = db.Column(db.Boolean, default=False)
     # user2 close_friend status
@@ -126,10 +129,10 @@ class Friendship(db.Model, SerializerMixin):
     #### RELATIONSHIPS ####
 
     # Relationship with the first user
-    user1 = db.relationship('User', foreign_keys='Friendship.user1_id', back_populates='friendships_user1')
+    user1 = db.relationship('User', foreign_keys='Friendship.user1_id', back_populates='friendships_user1', cascade='all, delete-orphan')
 
     # Relationship with the second user
-    user2 = db.relationship('User', foreign_keys='Friendship.user2_id', back_populates='friendships_user2')
+    user2 = db.relationship('User', foreign_keys='Friendship.user2_id', back_populates='friendships_user2', cascade='all, delete-orphan')
 
     #### SERIALIZATION RULES ####
     
@@ -191,10 +194,10 @@ class Message(db.Model, SerializerMixin):
     #### RELATIONSHIPS ####
 
     # Relationship with the sender user
-    sender = db.relationship('User', foreign_keys='Message.sender_id', back_populates='sent_messages')
+    sender = db.relationship('User', foreign_keys='Message.sender_id', back_populates='sent_messages', cascade='all, delete-orphan')
 
     # Relationship with the recipient user
-    recipient = db.relationship('User', foreign_keys='Message.recipient_id', back_populates='received_messages')
+    recipient = db.relationship('User', foreign_keys='Message.recipient_id', back_populates='received_messages', cascade='all, delete-orphan')
 
     #### SERIALIZATION RULES ####
 
@@ -256,12 +259,17 @@ class Inbox(db.Model, SerializerMixin):
     first_message_id = db.Column(db.Integer, default=None)
     last_message_id = db.Column(db.Integer, default=None)
 
+    # Add a unique constraint to ensure combinations of user_id and contact_user_id are unique
+    __table_args__ = (
+        UniqueConstraint('user_id', 'contact_user_id', name='_user_contact_uc'),
+    )
+
     #### RELATIONSHIP ####
 
     # Relationship with the user
-    user = db.relationship('User', back_populates='inbox', foreign_keys='Inbox.user_id')
+    user = db.relationship('User', back_populates='inbox', foreign_keys='Inbox.user_id', cascade='all, delete-orphan')
     # Relationship with the contact user in the inbox
-    contact_user = db.relationship('User', back_populates='contact_inboxes', foreign_keys='Inbox.contact_user_id')
+    contact_user = db.relationship('User', back_populates='contact_inboxes', foreign_keys='Inbox.contact_user_id', cascade='all, delete-orphan')
 
     #### SERIALIZATION RULES ####
 
