@@ -27,8 +27,8 @@ class User(db.Model, SerializerMixin):
     # Relationship with messages received by the user
     received_messages = db.relationship('Message', back_populates='recipient', foreign_keys='Message.recipient_id')
 
-    # Relationship with inboxes related to the user
-    inboxes = db.relationship('Inbox', back_populates='user', foreign_keys='Inbox.user_id')
+    # # Relationship with inboxes related to the user
+    # inboxes = db.relationship('Inbox', back_populates='user', foreign_keys='Inbox.user_id')
 
     # Define back references for friendships where the user is user1
     friendships_user1 = db.relationship('Friendship', back_populates='user1', foreign_keys='Friendship.user1_id')
@@ -44,7 +44,7 @@ class User(db.Model, SerializerMixin):
 
     #### SERIALIZATION RULES ####
 
-    serialize_rules = ('-sent_messages', '-received_messages', '-friendships', '-inboxes')
+    serialize_rules = ('-sent_messages', '-received_messages', '-inboxes', '-friendships_user1', '-friendships_user2', '-inbox', '-contact_inboxes')
 
     #### VALIDATIONS ####
 
@@ -193,7 +193,24 @@ class Message(db.Model, SerializerMixin):
 
     #### SERIALIZATION RULES ####
 
-    serialize_rules = ('-parent_message', '-child_message')
+    def to_dict(self):
+        data = super().to_dict()
+
+        # Include only ID, first name, and last name of sender
+        data['sender'] = {
+            'id': self.sender.id,
+            'first_name': self.sender.first_name,
+            'last_name': self.sender.last_name
+        }
+
+        # Include only ID, first name, and last name of recipient
+        data['recipient'] = {
+            'id': self.recipient.id,
+            'first_name': self.recipient.first_name,
+            'last_name': self.recipient.last_name
+        }
+
+        return data
 
     #### VALIDATIONS ####
 

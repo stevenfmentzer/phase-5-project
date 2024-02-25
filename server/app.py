@@ -12,7 +12,7 @@ from config import app, api, db
 #### HOME ####
 
 class Home(Resource):
-    def get():
+    def get(self): #### !!!! CHECKED !!!! #### 
         return 'Here IM'
 api.add_resource(Home, '/home')
 
@@ -43,10 +43,10 @@ class Users(Resource):
 api.add_resource(Users, '/users')
 
 class UserById(Resource):
-    def get(self, id):
+    def get(self, id): #### !!!! CHECKED !!!! #### 
         try: 
             user_dict = User.query.filter(User.id == id).first().to_dict()
-            if user_dict():
+            if user_dict:
                 response = make_response(user_dict, 200)
             else:
                 response = make_response({"error" : f"Friendship with id {id} not found"}, 404)
@@ -116,7 +116,7 @@ class Friendships(Resource):
 api.add_resource(Friendships, '/friends')
 
 class FriendshipsByUserId(Resource):
-    def get(self, id):
+    def get(self, id):  #### !!!! CHECKED !!!! #### 
         try: 
             friendship_dict = [friendship.to_dict() for friendship in Friendship.query.filter((Friendship.user1_id == id) | (Friendship.user2_id == id))]
             if friendship_dict:
@@ -253,7 +253,7 @@ class Messages(Resource):
 
 
 class MessageByInboxId(Resource):
-    def get(self, id):
+    def get(self, id): #### !!!! CHECKED !!!! #### 
         try: 
             inbox = Inbox.query.filter(Inbox.id == id).first()
             if not inbox:
@@ -279,7 +279,7 @@ api.add_resource(MessageByInboxId, '/messages/inbox/<int:id>')
 
 
 class MessageById(Resource):
-    def get(self, id):
+    def get(self, id): #### !!!! CHECKED !!!! #### 
         try: 
             message = Message.query.filter(Message.id == id).first()
             if message:
@@ -355,7 +355,7 @@ class Inboxes(Resource):
 api.add_resource(Inboxes, '/inboxes')
 
 class InboxesByUserId(Resource):
-    def get(self, id):
+    def get(self, id):  #### !!!! CHECKED !!!! #### 
         try: 
             inbox_dict = [inbox.to_dict() for inbox in Inbox.query.filter(Inbox.user_id == id)]
             response = make_response(inbox_dict, 200)
@@ -366,7 +366,7 @@ class InboxesByUserId(Resource):
 api.add_resource(InboxesByUserId, '/user/<int:id>/inboxes')
 
 class InboxById(Resource):
-    def get(self, id):
+    def get(self, id): #### !!!! CHECKED !!!! #### 
         try: 
             inbox_dict = Inbox.query.filter(Inbox.id == id).first().to_dict()
             response = make_response(inbox_dict, 200)
