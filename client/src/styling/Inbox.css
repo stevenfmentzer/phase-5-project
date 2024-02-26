@@ -1,0 +1,15 @@
+/* Inbox.css */
+
+.container {
+    border: 1px solid #ccc; /* Add a border around the container */
+  }
+  
+  .card-container {
+    border-bottom: 1px solid #ccc; /* Add border lines between cards */
+  }
+  
+  .inbox-name {
+    font-size: 18px; /* Increase font size */
+    font-weight: bold; /* Make the font bold */
+  }
+  

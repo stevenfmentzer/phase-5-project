@@ -7,6 +7,8 @@ import Messenger from './components/Messenger';
 function App() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate()
+
+   
   // LOGIN
   const onLogin = (user) => {
     setUser(user);

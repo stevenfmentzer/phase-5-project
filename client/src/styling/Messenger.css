@@ -1,0 +1,24 @@
+/* Messenger Container */
+.messenger-container {
+    display: flex;
+    height: 100vh; /* Adjust as needed */
+  }
+  
+  /* Inboxes Container */
+  .inboxes-container {
+    width: 20%; /* Adjust as needed */
+    overflow-y: auto; /* Enable vertical scrolling if needed */
+  }
+  
+  /* Messenger Frame Container */
+  .messenger-frame-container {
+    flex: 1; /* Take remaining space */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Message Cards Container */
+  .message-cards-container {
+    flex: 1; /* Take remaining space */
+    overflow-y: auto; /* Enable vertical scrolling */
+  }

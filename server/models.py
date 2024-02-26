@@ -23,10 +23,10 @@ class User(db.Model, SerializerMixin):
     #### RELATIONSHIPS ####
 
     # Relationship with messages sent by the user
-    sent_messages = db.relationship('Message', back_populates='sender', foreign_keys='Message.sender_id', cascade='all, delete-orphan')
+    sent_messages = db.relationship('Message', foreign_keys='Message.sender_id', cascade='all, delete-orphan')
 
     # Relationship with messages received by the user
-    received_messages = db.relationship('Message', back_populates='recipient', foreign_keys='Message.recipient_id', cascade='all, delete-orphan')
+    received_messages = db.relationship('Message', foreign_keys='Message.recipient_id', cascade='all, delete-orphan')
 
     # Define back references for friendships where the user is user1
     friendships_user1 = db.relationship('Friendship', back_populates='user1', foreign_keys='Friendship.user1_id')
@@ -43,6 +43,15 @@ class User(db.Model, SerializerMixin):
     #### SERIALIZATION RULES ####
 
     serialize_rules = ('-sent_messages', '-received_messages', '-inboxes', '-friendships_user1', '-friendships_user2', '-inbox', '-contact_inboxes')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'available_status': self.available_status
+            # Add other user attributes as needed
+        }
 
     #### VALIDATIONS ####
 
@@ -148,25 +157,6 @@ class Friendship(db.Model, SerializerMixin):
         if user is None:
             raise ValueError(f"No {key} found with ID: {value}")
         return value
-    
-    # FIX LOGIC LATER OR DELETE 
-
-    # @validates('is_close_friend_user1', 'is_close_friend_user2')
-    # def set_close_friend_status(self, key, value):
-    #     # Check if the user is part of the friendship
-    #     print(key)
-    #     print(value)
-    #     if user_id == self.user1_id:
-    #         if self.is_close_friend_user1 != close_friend_status:
-    #             self.is_close_friend_user1 = close_friend_status
-    #             return close_friend_status
-    #     elif user_id == self.user2_id:
-    #         if self.is_close_friend_user2 != close_friend_status:
-    #             self.is_close_friend_user2 = close_friend_status
-    #             return close_friend_status
-    #     return None  # Indicate that the close friend status was not updated
-
-    # FIX LOGIC LATER OR DELETE 
 
     def __repr__(self):
         return f'<Friendship id: {self.id}\n \
@@ -190,35 +180,6 @@ class Message(db.Model, SerializerMixin):
     delivery_time = db.Column(db.DateTime, default=datetime.utcnow)
     message_body = db.Column(db.VARCHAR(400))
     is_read = db.Column(db.Boolean, default=False)
-
-    #### RELATIONSHIPS ####
-
-    # Relationship with the sender user
-    sender = db.relationship('User', foreign_keys='Message.sender_id', back_populates='sent_messages')
-
-    # Relationship with the recipient user
-    recipient = db.relationship('User', foreign_keys='Message.recipient_id', back_populates='received_messages')
-
-    #### SERIALIZATION RULES ####
-
-    def to_dict(self):
-        data = super().to_dict()
-
-        # Include only ID, first name, and last name of sender
-        data['sender'] = {
-            'id': self.sender.id,
-            'first_name': self.sender.first_name,
-            'last_name': self.sender.last_name
-        }
-
-        # Include only ID, first name, and last name of recipient
-        data['recipient'] = {
-            'id': self.recipient.id,
-            'first_name': self.recipient.first_name,
-            'last_name': self.recipient.last_name
-        }
-
-        return data
 
     #### VALIDATIONS ####
 
@@ -260,9 +221,7 @@ class Inbox(db.Model, SerializerMixin):
     last_message_id = db.Column(db.Integer, default=None)
 
     # Add a unique constraint to ensure combinations of user_id and contact_user_id are unique
-    __table_args__ = (
-        UniqueConstraint('user_id', 'contact_user_id', name='_user_contact_uc'),
-    )
+    __table_args__ = ( UniqueConstraint('user_id', 'contact_user_id', name='_user_contact_uc'), )
 
     #### RELATIONSHIP ####
 
@@ -271,9 +230,29 @@ class Inbox(db.Model, SerializerMixin):
     # Relationship with the contact user in the inbox
     contact_user = db.relationship('User', back_populates='contact_inboxes', foreign_keys='Inbox.contact_user_id')
 
-    #### SERIALIZATION RULES ####
+   #### SERIALIZATION RULES ####
 
-    serialize_rules = ('-last_message', '-contact_user')
+    serialize_rules = ('-last_message', )
+
+    def to_dict(self):
+        data = super().to_dict()
+
+        # Include selected user information
+        data['user'] = {
+            'id': self.user.id,
+            'first_name': self.user.first_name,
+            'last_name': self.user.last_name,
+            'available_status': self.user.available_status
+        }
+
+        data['contact_user'] = {
+            'id': self.contact_user.id,
+            'first_name': self.contact_user.first_name,
+            'last_name': self.contact_user.last_name,
+            'available_status': self.contact_user.available_status
+        }
+
+        return data
 
     #### VALIDATIONS ####
 

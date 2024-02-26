@@ -1,7 +1,7 @@
 from flask import Flask, abort, session, redirect, url_for, make_response, request, jsonify
 from models import db, User, Friendship, Message, Inbox
 from flask_restful import Resource
-from sqlalchemy import or_
+from sqlalchemy import desc, or_
 import os, math 
 
 #Import database and application from config.py
@@ -361,6 +361,51 @@ class MessageByInboxId(Resource):
         return response
 
 api.add_resource(MessageByInboxId, '/messages/inbox/<int:id>')
+
+class MessagesByUserId(Resource):
+    def get(self, id):
+        try:
+            # Retrieve all inboxes belonging to the user
+            inboxes = Inbox.query.filter(User.id == id).order_by(desc(Inbox.id)).all()
+            
+            # Create a list to store the messages for each inbox
+            messages_by_inbox = []
+            
+            # Iterate over each inbox
+            for inbox in inboxes:
+                # Retrieve messages for the current inbox ordered by message ID in ascending order
+                inbox_messages = Message.query.filter(
+                    (Message.sender_id == inbox.user_id) | (Message.sender_id == inbox.contact_user_id),
+                    (Message.recipient_id == inbox.user_id) | (Message.recipient_id == inbox.contact_user_id),
+                    Message.id.between(inbox.first_message_id, inbox.last_message_id)
+                ).order_by(Message.id).all()
+                
+                # Convert messages to dictionaries
+                inbox_messages_dict = [message.to_dict() for message in inbox_messages]
+                
+                # Include inbox information at the beginning of the list of messages
+                inbox_info = {
+                    'inbox_id': inbox.id,
+                    'user_id': inbox.user_id,
+                    'user' : inbox.user.to_dict(),
+                    'contact_user_id': inbox.contact_user_id,
+                    'contact_user' : inbox.contact_user.to_dict()
+                    # Add other inbox attributes as needed
+                }
+                inbox_messages_dict.insert(0, inbox_info)
+                
+                # Append messages for the current inbox to the list
+                messages_by_inbox.append(inbox_messages_dict)
+            
+            # Return the list of lists containing messages for each inbox
+            response = make_response(messages_by_inbox, 200)
+            
+        except Exception as e:
+            response = make_response({"error": f"An error occurred: {str(e)}"}, 500)
+
+        return response
+
+api.add_resource(MessagesByUserId, '/user/<int:id>/messages')
 
 
 class MessageById(Resource):
