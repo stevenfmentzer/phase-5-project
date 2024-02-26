@@ -3,6 +3,7 @@ from models import db, User, Friendship, Message, Inbox
 from flask_restful import Resource
 from sqlalchemy import or_
 import os, math 
+
 #Import database and application from config.py
 from config import app, api, db
 
@@ -15,6 +16,58 @@ class Home(Resource):
     def get(self): #### !!!! CHECKED !!!! #### 
         return 'Here IM'
 api.add_resource(Home, '/home')
+
+#### AUTHENTICATIONS #### 
+
+class Login(Resource):
+    def post(self):
+        # If a GET request is made to this endpoint, return 405 Method Not Allowed
+        if request.method != 'POST':
+            abort(405)
+        try: 
+            if request.headers.get("Content-Type") == 'application/json':
+                form_data = request.get_json()
+            else: 
+                form_data = request.form
+
+            email = form_data['email']
+            password = form_data['password']
+
+            user = User.query.filter(User.email == email).first()
+
+            if user.authenticate(password):
+                session['user_id'] = user.id
+                response = make_response(user.to_dict(), 200)
+
+                print("SESSION>USER SET")
+                print(session['user_id'])
+
+            else:
+                response = make_response({"Error": "Not valid password"}, 400)
+        except Exception as e: 
+            response = make_response({"errors": [str(e)]}, 400)
+        return response
+
+api.add_resource(Login, '/login')
+
+class Logout(Resource):
+    def post(self):
+        session['user_id'] = None
+        return {'message': '204: No Content'}, 204
+    
+api.add_resource(Logout, '/logout')
+
+class CheckSession(Resource):
+    def get(self):
+        user = User.query.filter(User.id == session.get('user_id')).first()
+        if user:
+            return user.to_dict()
+        else:
+            return {'message': '401: Not Authorized'}, 401
+        
+api.add_resource(CheckSession, '/check_session')
+        
+#### USERS ####
 
 class Users(Resource):
     def post(self):  #### !!!! CHECKED !!!! #### 
@@ -40,7 +93,7 @@ class Users(Resource):
         except Exception as e: 
             return {"errors": [str(e)]}, 400
         return response
-api.add_resource(Users, '/users')
+api.add_resource(Users, '/register')
 
 class UserById(Resource):
     def get(self, id): #### !!!! CHECKED !!!! #### 
@@ -98,6 +151,8 @@ class UserById(Resource):
         return response
     
 api.add_resource(UserById, '/user/<int:id>')
+
+#### FRIENDSHIPS ####
 
 class Friendships(Resource):
     def post(self):  #### !!!! CHECKED !!!! #### 
@@ -190,6 +245,7 @@ class FriendshipById(Resource):
     
 api.add_resource(FriendshipById, '/friends/<int:id>')
 
+#### MESSAGES ####
 
 class Messages(Resource):
     def post(self): #### !!!! CHECKED !!!! #### 
@@ -380,6 +436,8 @@ class MessageById(Resource):
     #     return response
 
 api.add_resource(MessageById, '/message/<int:id>')
+
+#### INBOXES ####
 
 class Inboxes(Resource):
     def post(self):  #### !!!! CHECKED !!!! #### 

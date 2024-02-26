@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from sqlalchemy import MetaData
+from key import secret_key
 from flask_cors import CORS
 import os
 
@@ -26,12 +27,10 @@ db = SQLAlchemy(metadata=metadata)
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DATABASE = os.environ.get("DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
 
-# Access variables using os.environ
-secret_key = "your_secret_key_here"
-
 # Initialize Flask App
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
+app.secret_key = secret_key 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
@@ -42,7 +41,7 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SECRET_KEY'] = secret_key
 
 # Initialize Flask extensions
-migrate = Migrate(app, db)
+migrate = Migrate(app, db) 
 
 db.init_app(app)
 
