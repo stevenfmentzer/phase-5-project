@@ -182,8 +182,8 @@ class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
 
     id = db.Column(db.Integer, primary_key=True)
-    parent_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=None)
-    child_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=None)
+    parent_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=0)
+    child_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=0)
     sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     recipient_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     creation_time = db.Column(db.DateTime, default=datetime.utcnow)
