@@ -187,7 +187,7 @@ class Message(db.Model, SerializerMixin):
     sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     recipient_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     creation_time = db.Column(db.DateTime, default=datetime.utcnow)
-    delivery_time = db.Column(db.DateTime)
+    delivery_time = db.Column(db.DateTime, default=datetime.utcnow)
     message_body = db.Column(db.VARCHAR(400))
     is_read = db.Column(db.Boolean, default=False)
 

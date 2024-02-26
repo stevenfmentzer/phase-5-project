@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function LoginForm({ user, onLogin, setEnterSite }){
+function LoginForm({ user, onLogin }){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +21,6 @@ function LoginForm({ user, onLogin, setEnterSite }){
           r.json().then((user) => {
             localStorage.setItem('authToken', user.token); // Store the token in localStorage
             onLogin(user);
-            setEnterSite(true);
           });
         }
       });

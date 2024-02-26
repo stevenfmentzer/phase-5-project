@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import SignUpForm from "./SignUpForm";
 import LoginForm from "./LoginForm";
 
-function Login({ user, onLogin, setEnterSite }) {
+function Login({ user, onLogin }) {
   const [showLogin, setShowLogin] = useState(true);
 
   return (
@@ -10,7 +10,7 @@ function Login({ user, onLogin, setEnterSite }) {
       <hr /> {/* Horizontal rule to separate sections */}
       {showLogin ? (
         <>
-          <LoginForm user={user} onLogin={onLogin} setEnterSite={setEnterSite} />
+          <LoginForm user={user} onLogin={onLogin}/>
           <br /> {/* Line break for spacing */}
           <p>
             Don't have an account?{" "}
@@ -21,7 +21,7 @@ function Login({ user, onLogin, setEnterSite }) {
         </>
       ) : (
         <>
-          <SignUpForm user={user} onLogin={onLogin} setEnterSite={setEnterSite} />
+          <SignUpForm user={user} onLogin={onLogin}/>
           <br /> {/* Line break for spacing */}
           {!user && (
             <p>
