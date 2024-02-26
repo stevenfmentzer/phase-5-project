@@ -76,17 +76,25 @@ class UserById(Resource):
 
         return response
     
-    def delete(self, id):
+    def delete(self, id): #### !!!! CHECKED !!!! #### 
         try:
             user = User.query.filter(User.id == id).first()
             if user:
+
+                # Delete associated Friendships Inboxes and Messages
+                Friendship.query.filter(or_(Friendship.user1_id == id, Friendship.user2_id == id)).delete()
+                Inbox.query.filter(or_(Inbox.user_id == id, Inbox.contact_user_id == id)).delete()
+                Message.query.filter(or_(Message.sender_id == id, Message.recipient_id == id)).delete()
+
+                # Delete User
                 db.session.delete(user)
+                
                 db.session.commit()
                 response = make_response('',204)
             else:
                 response = make_response({"error" : f"User with id {id} not found"}, 404)
-        except: 
-            response = make_response({"error" : "User not found"}, 404)
+        except Exception as e: 
+            response = make_response({"errors": [str(e)]}, 400)
         return response
     
 api.add_resource(UserById, '/user/<int:id>')
@@ -162,18 +170,23 @@ class FriendshipById(Resource):
 
         return response
     
-    def delete(self, id):
-        try:
-            friendship = Friendship.query.filter(Friendship.id == id).first()
-            if friendship:
-                db.session.delete(friendship)
-                db.session.commit()
-                response = make_response('',204)
-            else:
-                response = make_response({"error" : f"Friendship with id {id} not found"}, 404)
-        except: 
-            response = make_response({"error" : "Friendship not found"}, 404)
-        return response
+#### FRIENDSHIP DELETE WORKS BUT MIGHT NOT REALLY NEED IT
+
+    # def delete(self, id):   #### !!!! CHECKED !!!! #### 
+    #     try:
+    #         friendship = Friendship.query.filter(Friendship.id == id).first()
+    #         if friendship:
+
+    #             #### MAY WANT TO DELETE ALL INBOXES AND MESSAGES AFFLIATED WITH THIS FRIENDSHIP ####
+
+    #             db.session.delete(friendship)
+    #             db.session.commit()
+    #             response = make_response('',204)
+    #         else:
+    #             response = make_response({"error" : f"Friendship with id {id} not found"}, 404)
+    #     except: 
+    #         response = make_response({"error" : "Friendship not found"}, 404)
+    #     return response
     
 api.add_resource(FriendshipById, '/friends/<int:id>')
 
@@ -328,19 +341,43 @@ class MessageById(Resource):
             response = make_response({"error" : f"An error occurred: {str(e)}"}, 500)
 
         return response
-    
-    def delete(self, id):
-        try:
-            message = Message.query.filter(Message.id == id).first()
-            if message:
-                db.session.delete(message)
-                db.session.commit()
-                response = make_response('',204)
-            else:
-                response = make_response({"error" : f"Message with id {id} not found"}, 404)
-        except Exception as e:
-            response = make_response({"error" : f"An error occurred: {str(e)}"}, 500)
-        return response
+            
+    # def delete(self, id):
+    #     try:
+    #         message = Message.query.filter(Message.id == id).first()
+    #         if message:
+    #             # Fetch parent_message and child_message if their IDs are not None
+    #             parent_message = Message.query.get(message.parent_message_id) if message.parent_message_id is not None else None
+    #             child_message = Message.query.get(message.child_message_id) if message.child_message_id is not None else None
+
+    #             # Update parent_message and child_message
+    #             if parent_message:
+    #                 parent_message.child_message_id = message.child_message_id
+    #             elif child_message:
+    #                 child_message.parent_message_id = None
+
+    #             if child_message:
+    #                 child_message.parent_message_id = message.parent_message_id
+    #             elif parent_message:
+    #                 parent_message.child_message_id = None
+
+    #             # Handle the scenario where the message was the first or last message in an inbox
+    #             inboxes = Inbox.query.filter((Inbox.first_message_id == id) | (Inbox.last_message_id == id)).all()
+    #             for inbox in inboxes:
+    #                 if inbox.first_message_id == id:
+    #                     inbox.first_message_id = parent_message.id if parent_message else None
+    #                 if inbox.last_message_id == id:
+    #                     inbox.last_message_id = child_message.id if child_message else None
+
+    #             # Delete the message
+    #             db.session.delete(message)
+    #             db.session.commit()
+    #             response = make_response('', 204)
+    #         else:
+    #             response = make_response({"error": f"Message with id {id} not found"}, 404)
+    #     except Exception as e:
+    #         response = make_response({"error": f"An error occurred: {str(e)}"}, 500)
+    #     return response
 
 api.add_resource(MessageById, '/message/<int:id>')
 
@@ -430,7 +467,7 @@ class InboxById(Resource):
     #     return response
     #### MIGHT NOT NEED THE PATCH... THINK ABOUT LOGIC AND WHERE I WANT THEM TO BE CHANGED
 
-    def delete(self, id):
+    def delete(self, id): #### !!!! CHECKED !!!! #### 
         try:
             inbox = Inbox.query.filter(Inbox.id == id).first()
             if inbox:
