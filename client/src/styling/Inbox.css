@@ -1,15 +1,37 @@
 /* Inbox.css */
 
-.container {
-    border: 1px solid #ccc; /* Add a border around the container */
-  }
+.inboxes-container {
+  border: 1px solid #ccc; /* Add a border around the container */
+  height: 100vh;
+  background-color: #EDEDED;
   
-  .card-container {
-    border-bottom: 1px solid #ccc; /* Add border lines between cards */
-  }
-  
-  .inbox-name {
-    font-size: 18px; /* Increase font size */
-    font-weight: bold; /* Make the font bold */
-  }
-  
+  width: 25vw; /* Adjust as needed */
+  min-width: 50px;
+  overflow-y: auto; /* Enable vertical scrolling if needed */
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none;
+  /* Hide scrollbar for other browsers */
+  -ms-overflow-style: none;
+}
+
+/* Hide scrollbar for Chrome, Safari, and Opera */
+.inboxes-container::-webkit-scrollbar {
+  display: none;
+}
+
+.card-container {
+  border-bottom: 1px solid #ccc; /* Add border lines between cards */
+  min-width: 25%; /* Set minimum width to 25% of the page */
+  background-color: white;
+}
+
+.inbox-name {
+  font-size: 18px; /* Increase font size */
+  font-weight: bold; /* Make the font bold */
+  padding: 10px; /* Add padding to the inbox header */
+}
+
+/* Add padding to the text inside the InboxCard */
+.card-container .description {
+  padding: 10px; /* Adjust the padding as needed */
+}

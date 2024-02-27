@@ -1,24 +1,54 @@
 /* Messenger Container */
 .messenger-container {
-    display: flex;
-    height: 100vh; /* Adjust as needed */
-  }
-  
-  /* Inboxes Container */
-  .inboxes-container {
-    width: 20%; /* Adjust as needed */
-    overflow-y: auto; /* Enable vertical scrolling if needed */
-  }
-  
-  /* Messenger Frame Container */
-  .messenger-frame-container {
-    flex: 1; /* Take remaining space */
-    display: flex;
-    flex-direction: column;
-  }
-  
-  /* Message Cards Container */
-  .message-cards-container {
-    flex: 1; /* Take remaining space */
-    overflow-y: auto; /* Enable vertical scrolling */
-  }
+  display: flex;
+  height: 100vh; /* Adjust as needed */
+}
+
+/* Inboxes Container */
+.inboxes-container {
+  width: 25vw; /* Adjust as needed */
+  min-width: 50px;
+  overflow-y: auto; /* Enable vertical scrolling if needed */
+}
+
+.messenger-frame-container {
+  display: flex;
+  width: 75vw;
+  flex-direction: column;
+  flex: 1; /* This will make it expand to fill the available space */
+  overflow-y: auto; /* Enable vertical scrolling if needed */
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none;
+  /* Hide scrollbar for other browsers */
+  -ms-overflow-style: none;
+}
+
+/* Hide scrollbar for Chrome, Safari, and Opera */
+.messenger-frame-container::-webkit-scrollbar {
+  display: none;
+
+}
+
+.text_box_container {
+  position: sticky;
+  bottom: 0; /* Stick the text box to the bottom of the messenger frame container */
+  background-color: lightgrey;
+  padding: 0px;
+  width: 100%; /* Ensure the textbox container fills the width */
+}
+/* Message Cards Container */
+.message-cards-container {
+  flex: 1; /* Take remaining space */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-y: auto; /* Enable vertical scrolling if needed */
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none;
+  /* Hide scrollbar for other browsers */
+  -ms-overflow-style: none;
+}
+
+/* Hide scrollbar for Chrome, Safari, and Opera */
+.message-cards-container::-webkit-scrollbar {
+  display: none;
+
+}

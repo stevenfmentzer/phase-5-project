@@ -1,0 +1,29 @@
+.textbox-container {
+    background-color: lightgrey;
+    padding: 10px;
+  }
+  
+  .input-container {
+    display: flex;
+    align-items: stretch;
+  }
+  
+  .input-container input[type="text"] {
+    flex-grow: 1;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    padding: 8px;
+  }
+  
+  .text-box-button {
+    background-color: #DCF8C6;
+    border: none;
+    border-radius: 5px;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+  
+  .text-box-button:hover {
+    background-color: #bad4a5;
+  }
+  

@@ -269,7 +269,7 @@ class Messages(Resource):
                     recipient_id=form_data['recipient_id'],
                     message_body=form_data['message_body']
                 )
-
+   
                 db.session.add(new_message)
                 db.session.commit()
 
@@ -281,6 +281,7 @@ class Messages(Resource):
                     )
                 ).order_by(Message.id.desc()).first()
 
+       
                 # Set the parent_message_id and child_message_id properties         
                 if parent_message:
                     new_message.parent_message_id = parent_message.id
@@ -366,13 +367,17 @@ class MessagesByUserId(Resource):
     def get(self, id):
         try:
             # Retrieve all inboxes belonging to the user
-            inboxes = Inbox.query.filter(User.id == id).order_by(desc(Inbox.id)).all()
+            inboxes = Inbox.query.filter(Inbox.user_id == id).order_by(desc(Inbox.id)).all()
             
             # Create a list to store the messages for each inbox
             messages_by_inbox = []
             
             # Iterate over each inbox
             for inbox in inboxes:
+
+                # Retrieve the last message for the current inbox
+                last_message = Message.query.get(inbox.last_message_id)
+
                 # Retrieve messages for the current inbox ordered by message ID in ascending order
                 inbox_messages = Message.query.filter(
                     (Message.sender_id == inbox.user_id) | (Message.sender_id == inbox.contact_user_id),
@@ -386,11 +391,12 @@ class MessagesByUserId(Resource):
                 # Include inbox information at the beginning of the list of messages
                 inbox_info = {
                     'inbox_id': inbox.id,
+                    'last_message_id': inbox.last_message_id,
+                    'last_message_body': last_message.message_body if last_message else None,
                     'user_id': inbox.user_id,
                     'user' : inbox.user.to_dict(),
                     'contact_user_id': inbox.contact_user_id,
                     'contact_user' : inbox.contact_user.to_dict()
-                    # Add other inbox attributes as needed
                 }
                 inbox_messages_dict.insert(0, inbox_info)
                 

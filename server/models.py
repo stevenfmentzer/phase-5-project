@@ -163,7 +163,6 @@ class Friendship(db.Model, SerializerMixin):
                     user1_id: {self.user1_id}\n \
                     user2_id: {self.user2_id}\n \
                     is_active: {self.is_active}\n \
-                    is_close_friend: {self.is_close_friend}\n \
                     creation_date: {self.creation_date}\n \
                     message_count: {self.message_count}\n \
                     >'    
@@ -231,8 +230,6 @@ class Inbox(db.Model, SerializerMixin):
     contact_user = db.relationship('User', back_populates='contact_inboxes', foreign_keys='Inbox.contact_user_id')
 
    #### SERIALIZATION RULES ####
-
-    serialize_rules = ('-last_message', )
 
     def to_dict(self):
         data = super().to_dict()
