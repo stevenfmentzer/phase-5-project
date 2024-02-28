@@ -7,7 +7,7 @@ function TextBox({ inbox, onSubmit }) {
       recipient_id: '',
       message_body: ''
     },);
-    console.log(formData)
+
     useEffect(() => {
         // Reset formData when inbox changes
         if (inbox && inbox.length > 0) {

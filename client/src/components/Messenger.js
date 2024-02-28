@@ -7,7 +7,7 @@ import '../styling/Messenger.css';
 function Messenger({ user }) {
     const [inboxes, setInboxes] = useState([]);
     const [selectedInbox, setSelectedInbox] = useState([]);
-    const [prevSelectedInboxId, setPrevSelectedInboxId] = useState(null); // State to store the ID of the previously selected inbox
+    const [prevSelectedInboxId, setPrevSelectedInboxId] = useState(0);
 
     useEffect(() => {
         fetch(`http://localhost:5555/user/${user.id}/messages`)
@@ -27,7 +27,6 @@ function Messenger({ user }) {
     }, [user.id]);
 
     const handleInboxClick = (inboxListId) => {
-        console.log(`Click: ${inboxListId}`);
         setPrevSelectedInboxId(inboxListId); // Update the previously selected inbox ID
         setSelectedInbox(inboxes[inboxListId]);
     };
@@ -43,23 +42,15 @@ function Messenger({ user }) {
         .then(getResponse => {
             if (getResponse.ok) {
                 console.log('First fetch succeeded');
-                // Check if response has content
-                if (getResponse.headers.get('content-length') === '0') {
-                    // No content, return an empty object
-                    return {};
-                }
-                // Parse JSON response
                 return getResponse.json();
             }
             throw new Error('Network response was not ok.');
         })
         .then(data => {
-            console.log('First then block executed');
             // After successful POST, fetch messages again
             return fetch(`http://localhost:5555/user/${user.id}/messages`);
         })
         .then(getResponse => {
-            console.log('Second fetch triggered');
             if (getResponse.ok) {
                 return getResponse.json();
             }
@@ -69,7 +60,11 @@ function Messenger({ user }) {
             console.log('Received inboxes:', inboxes);
             setInboxes(inboxes);
             if (inboxes.length > 0) {
-                setSelectedInbox(inboxes[prevSelectedInboxId]);
+                setPrevSelectedInboxId(prevSelectedInboxId => {
+                    setSelectedInbox(inboxes[prevSelectedInboxId]);
+                    console.log(`SELECTED INBOX : ${selectedInbox}`)
+                    return prevSelectedInboxId;
+                });
             }
         })
         .catch(error => {
@@ -103,10 +98,12 @@ function Messenger({ user }) {
         })
         .then(inboxes => {
             if (inboxes) {
+                console.log("RECIEVED INBOXES")
                 console.log('Received inboxes:', inboxes);
                 setInboxes(inboxes);
                 if (inboxes.length > 0) {
                     setSelectedInbox(inboxes[prevSelectedInboxId]);
+                    console.log(`SELECTED INBOX : ${selectedInbox}`)
                 }
             } else {
                 console.log('No inboxes received');

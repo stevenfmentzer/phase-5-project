@@ -13,7 +13,6 @@ function App() {
   // LOGIN
   const onLogin = (user) => {
     setUser(user);
-    console.log(user)
     navigate('/user/friends')
   };
 
