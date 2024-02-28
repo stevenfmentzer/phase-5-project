@@ -194,7 +194,7 @@ class Message(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     parent_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=0)
-    child_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=0)
+    child_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=0 )
     sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     recipient_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     creation_time = db.Column(db.DateTime, default=datetime.utcnow)
@@ -212,18 +212,21 @@ class Message(db.Model, SerializerMixin):
             raise ValueError(f"No {key} found with ID: {value}")
         return value
     
-    @validates('parent_message_id')
-    def validates_parent_message(self, key, value):
-        message = Message.query.get(value)
-
-        if message is None: 
-            raise ValueError(f"No {key} found with ID: {value}")
-        return value
+    @validates('child_message_id', 'parent_message_id')
+    def validates_sibling_message(self, key, value):
+        if value == 0:
+            return 0
+        else:
+            message = Message.query.get(value)
+            if message is None: 
+                raise ValueError(f"No {key} found with ID: {value}")
+            return value
     
 
     def __repr__(self):
         return f'<Message id: {self.id}\n \
                     parent_message_id: {self.parent_message_id}\n \
+                    child_message_id: {self.child_message_id}\n \
                     sender_id: {self.sender_id}\n \
                     recipient_id: {self.recipient_id}\n \
                     sent_time: {self.creation_time}\n \
@@ -238,8 +241,8 @@ class Inbox(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     contact_user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    first_message_id = db.Column(db.Integer, default=None)
-    last_message_id = db.Column(db.Integer, default=None)
+    first_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=0)
+    last_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=0)
 
     # Add a unique constraint to ensure combinations of user_id and contact_user_id are unique
     __table_args__ = ( UniqueConstraint('user_id', 'contact_user_id', name='_user_contact_uc'), )
@@ -286,24 +289,28 @@ class Inbox(db.Model, SerializerMixin):
             raise ValueError(f"No {key} found with ID: {value}")
         return value
     
-    @validates('last_message_id')
-    def validates_last_message(self, key, value):
-        message = Message.query.get(value)
+    @validates('first_message_id', 'last_message_id')
+    def validates_index_message(self, key, value):
+        if value == 0:
+            return 0
+        else:
+            message = Message.query.get(value)
 
-        if message is None:
-            raise ValueError(f"No message found with ID: {value}")
+            if message is None:
+                raise ValueError(f"No message found with ID: {value}")
 
-        if (message.sender_id != self.user_id) and (message.recipient_id != self.user_id):
-            raise ValueError("The last message is not connected to the user")
+            if (message.sender_id != self.user_id) and (message.recipient_id != self.user_id):
+                raise ValueError("The last message is not connected to the user")
 
-        if (message.sender_id != self.contact_user_id) and (message.recipient_id != self.contact_user_id):
-            raise ValueError("The last message is not connected to the contact user")
+            if (message.sender_id != self.contact_user_id) and (message.recipient_id != self.contact_user_id):
+                raise ValueError("The last message is not connected to the contact user")
 
-        return value
+            return value
 
     def __repr__(self):
         return f'<Inbox id: {self.id}\n \
                     user_id: {self.user_id}\n \
                     contact_user_id: {self.contact_user_id}\n \
                     last_message_id: {self.last_message_id}\n \
+                    first_message_id: {self.first_message_id}\n \
                     >'    

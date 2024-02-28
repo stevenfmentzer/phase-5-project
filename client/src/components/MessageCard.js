@@ -12,8 +12,7 @@ function MessageCard({ message, user, onDelete }) {
     const [hoverDeleteButton, setHoverDeleteButton] = useState(false);
 
     const handleDelete = () => {
-        // Call onDelete function when the 'x' button is clicked
-        onDelete('', `message/${message.id}`, 'DELETE');
+        onDelete(message.id);
     };
 
     const handleRightClick = (e) => {
@@ -31,9 +30,9 @@ function MessageCard({ message, user, onDelete }) {
                 display: 'flex',
                 justifyContent: alignment,
                 margin: '10px',
-                position: 'relative', // Ensure relative positioning for the container
+                position: 'relative',
             }}
-            onMouseLeave={handleHideDeleteButton} // Hide delete button when mouse leaves the container
+            onMouseLeave={handleHideDeleteButton}
         >
             {/* Render the delete button */}
             {showDeleteButton && isSentByCurrentUser && (

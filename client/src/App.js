@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import Login from './components/Login';
 import Friends from './components/Friends';
 import Messenger from './components/Messenger';
+import NavBar from './components/NavBar';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -54,6 +55,7 @@ function App() {
 
   return (
     <>
+      <NavBar />
       <Routes>
         <Route path="/" element={<Login user={user} onLogin={onLogin} onLogOut={onLogOut} />} />
         <Route path="/user/friends" element={<Friends user={user} />} />

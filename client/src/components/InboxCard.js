@@ -5,6 +5,8 @@ import '../styling/InboxCard.css'; // Import the CSS file
 function InboxCard({ inboxData }) {
     const [truncatedDescription, setTruncatedDescription] = useState(inboxData.last_message_body);
 
+    console.log(`INBOXDATA : ${inboxData}`)
+
     useEffect(() => {
         if (inboxData.last_message_body.length > 135) {
             // Find the index of the last space character within the first 135 characters

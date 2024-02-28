@@ -291,11 +291,6 @@ class Messages(Resource):
                     message_body=form_data['message_body']
                 )
 
-                # Increment the Friendship.message_count
-                existing_friendship.message_count += 1 
-                db.session.add(new_message)
-                db.session.commit()
-
                 # Check whether or not a message already belongs to these two Users, set to parent_message
                 parent_message = Message.query.filter(
                     or_(
@@ -304,12 +299,17 @@ class Messages(Resource):
                     )
                 ).order_by(Message.id.desc()).first()
 
+                # Increment the Friendship.message_count
+                existing_friendship.message_count += 1 
+                db.session.add(new_message)
+                db.session.commit()
        
                 # Set the parent_message_id and child_message_id properties         
                 if parent_message:
                     new_message.parent_message_id = parent_message.id
                     parent_message.child_message_id = new_message.id
                     db.session.commit()
+                    print(f"UPDATED PARENT MESSAGE : {parent_message}")
 
                 # Check if two inboxes exis: one for each sender and recipient
                 sender_inbox = Inbox.query.filter(
@@ -391,13 +391,11 @@ class MessagesByUserId(Resource):
         try:
             # Retrieve all inboxes belonging to the user
             inboxes = Inbox.query.filter(Inbox.user_id == id).order_by(desc(Inbox.id)).all()
-            
             # Create a list to store the messages for each inbox
             messages_by_inbox = []
             
             # Iterate over each inbox
             for inbox in inboxes:
-
                 # Retrieve the last message for the current inbox
                 last_message = Message.query.get(inbox.last_message_id)
 
@@ -410,10 +408,11 @@ class MessagesByUserId(Resource):
                 
                 # Convert messages to dictionaries
                 inbox_messages_dict = [message.to_dict() for message in inbox_messages]
-                
+
                 # Include inbox information at the beginning of the list of messages
                 inbox_info = {
                     'inbox_id': inbox.id,
+                    'first_message_id': inbox.first_message_id,
                     'last_message_id': inbox.last_message_id,
                     'last_message_body': last_message.message_body if last_message else None,
                     'user_id': inbox.user_id,
@@ -431,7 +430,7 @@ class MessagesByUserId(Resource):
             
         except Exception as e:
             response = make_response({"error": f"An error occurred: {str(e)}"}, 500)
-
+            print(e)
         return response
 
 api.add_resource(MessagesByUserId, '/user/<int:id>/messages')
@@ -472,42 +471,42 @@ class MessageById(Resource):
 
         return response
             
-    # def delete(self, id):
-    #     try:
-    #         message = Message.query.filter(Message.id == id).first()
-    #         if message:
-    #             # Fetch parent_message and child_message if their IDs are not None
-    #             parent_message = Message.query.get(message.parent_message_id) if message.parent_message_id is not None else None
-    #             child_message = Message.query.get(message.child_message_id) if message.child_message_id is not None else None
+    def delete(self, id):
+        try:
+            message = Message.query.filter(Message.id == id).first()
+            if message:
+                # Fetch parent_message and child_message if their IDs are not None
+                parent_message = Message.query.get(message.parent_message_id) if message.parent_message_id != 0 else None
+                child_message = Message.query.get(message.child_message_id) if message.child_message_id != 0 else None
 
-    #             # Update parent_message and child_message
-    #             if parent_message:
-    #                 parent_message.child_message_id = message.child_message_id
-    #             elif child_message:
-    #                 child_message.parent_message_id = None
+                # Update parent_message and child_message
+                if parent_message and child_message and parent_message.id != child_message.id:
+                    parent_message.child_message_id = child_message.id
+                    child_message.parent_message_id = parent_message.id
+                elif parent_message:
+                    parent_message.child_message_id = 0
+                elif child_message:
+                    child_message.parent_message_id = 0
+                
 
-    #             if child_message:
-    #                 child_message.parent_message_id = message.parent_message_id
-    #             elif parent_message:
-    #                 parent_message.child_message_id = None
+                # Handle the scenario where the message was the first or last message in an inbox
+                inboxes = Inbox.query.filter((Inbox.first_message_id == id) | (Inbox.last_message_id == id)).all()
+                for inbox in inboxes:
+                    if inbox.first_message_id == id:
+                        inbox.first_message_id = child_message.id if child_message else 0
+                    if inbox.last_message_id == id:
+                        inbox.last_message_id = parent_message.id if parent_message else 0
 
-    #             # Handle the scenario where the message was the first or last message in an inbox
-    #             inboxes = Inbox.query.filter((Inbox.first_message_id == id) | (Inbox.last_message_id == id)).all()
-    #             for inbox in inboxes:
-    #                 if inbox.first_message_id == id:
-    #                     inbox.first_message_id = parent_message.id if parent_message else None
-    #                 if inbox.last_message_id == id:
-    #                     inbox.last_message_id = child_message.id if child_message else None
+                # Delete the message
+                db.session.delete(message)
+                db.session.commit()
 
-    #             # Delete the message
-    #             db.session.delete(message)
-    #             db.session.commit()
-    #             response = make_response('', 204)
-    #         else:
-    #             response = make_response({"error": f"Message with id {id} not found"}, 404)
-    #     except Exception as e:
-    #         response = make_response({"error": f"An error occurred: {str(e)}"}, 500)
-    #     return response
+                response = make_response("", 204)
+            else:
+                response = make_response({"error": f"Message with id {id} not found"}, 404)
+        except Exception as e:
+            response = make_response({"error": f"An error occurred: {str(e)}"}, 500)
+        return response
 
 api.add_resource(MessageById, '/message/<int:id>')
 
