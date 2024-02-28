@@ -78,9 +78,9 @@ def calculate_possible_friendships(num_users):
 if __name__ == '__main__':
     with app.app_context():
         # CLI Argparse for specified num_users
-        # Defaults to 20
+        # Defaults to 25
         parser = argparse.ArgumentParser(description="Seed script for database population")
-        parser.add_argument("num_users", type=int, nargs='?', default=20, help="Number of users to generate (default: 20)")
+        parser.add_argument("num_users", type=int, nargs='?', default=25, help="Number of users to generate (default: 20)")
         args = parser.parse_args()
 
         num_users = args.num_users
@@ -114,6 +114,8 @@ if __name__ == '__main__':
             for user2_id in range(user1_id + 1, num_users+1):
                 # Make Friendship
                 friendship = create_friendship_object(user1_id, user2_id)
+                # Set message_count to 10
+                friendship.message_count = 10
                 # Make two Inboxes
                 user1_inbox = create_inbox_object(user1_id, user2_id)
                 user2_inbox = create_inbox_object(user2_id, user1_id)
@@ -141,8 +143,8 @@ if __name__ == '__main__':
                     db.session.commit()
         
 
-        # Write passwords to a file
+        # Write User email & passwords to a file
         with open('user_passwords.txt', 'w') as f:
-            for password in user_passwords:
-                f.write(password + '\n')
+            for user, password in zip(User.query.all(), user_passwords):
+                f.write(f"Email: {user.email}, Password: {password}\n")
         print("Done seeding!")

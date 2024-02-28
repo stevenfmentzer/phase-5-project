@@ -1,0 +1,25 @@
+.friends-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust column width */
+    gap: 20px; /* Gap between cards */
+  }
+
+.friend-card {
+border: 1px solid #ccc; /* Add border */
+border-radius: 5px; /* Add border radius for rounded corners */
+padding: 10px; /* Add padding for spacing */
+}
+
+.friend-name {
+display: inline-block; /* Ensure the dot is aligned correctly */
+margin-right: 5px; /* Add spacing between the dot and the name */
+}
+
+.blue-dot {
+width: 8px; /* Adjust dot size as needed */
+height: 8px;
+background-color: #84abff; /* Set dot color */
+border-radius: 50%; /* Make dot circular */
+display: inline-block; /* Display dot inline with the name */
+margin-right: 5px; /* Add spacing between dot and text */
+}

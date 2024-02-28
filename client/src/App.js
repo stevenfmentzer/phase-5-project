@@ -13,7 +13,7 @@ function App() {
   const onLogin = (user) => {
     setUser(user);
     console.log(user)
-    navigate('/user/messenger')
+    navigate('/user/friends')
   };
 
   // LOGOUT

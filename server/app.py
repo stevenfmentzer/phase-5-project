@@ -152,6 +152,21 @@ class UserById(Resource):
     
 api.add_resource(UserById, '/user/<int:id>')
 
+class SearchUser(Resource):
+    def get(self, phone_number): #### !!!! CHECKED !!!! #### 
+        try: 
+            user_dict = User.query.filter(User.phone_number == phone_number).first().to_dict()
+            if user_dict:
+                response = make_response(user_dict, 200)
+            else:
+                response = make_response({"error" : f"User with phone_number {phone_number} not found"}, 404)
+        except Exception as e:
+            response = make_response({"error" : f"An error occurred: {str(e)}"}, 500)
+            print(e)
+        return response
+    
+api.add_resource(SearchUser, '/search/<int:phone_number>')
+
 #### FRIENDSHIPS ####
 
 class Friendships(Resource):
@@ -172,16 +187,22 @@ class Friendships(Resource):
             # If there's no existing Friendship make a new one
             if not existing_friendship:
                 new_friendship = Friendship(
-                    user1_id = form_data["user1_id"],
-                    user2_id = form_data["user2_id"]
-                    )
+                    user1_id=form_data["user1_id"],
+                    user2_id=form_data["user2_id"]
+                )
 
                 db.session.add(new_friendship)
                 db.session.commit()
 
                 response = make_response(new_friendship.to_dict(), 201)
             else:
-                response = make_response({"error": "Friendship already exists"}, 400)
+                # Check if the existing friendship is inactive, if so, activate it
+                if not existing_friendship.is_active:
+                    existing_friendship.is_active = True
+                    db.session.commit()
+                    response = make_response(existing_friendship.to_dict(), 200)
+                else:
+                    response = make_response({"error": "Friendship already exists"}, 400)
         except Exception as e: 
             return {"errors": [str(e)]}, 400
         return response
@@ -269,7 +290,9 @@ class Messages(Resource):
                     recipient_id=form_data['recipient_id'],
                     message_body=form_data['message_body']
                 )
-   
+
+                # Increment the Friendship.message_count
+                existing_friendship.message_count += 1 
                 db.session.add(new_message)
                 db.session.commit()
 

@@ -144,8 +144,28 @@ class Friendship(db.Model, SerializerMixin):
     user2 = db.relationship('User', foreign_keys='Friendship.user2_id', back_populates='friendships_user2')
 
     #### SERIALIZATION RULES ####
-    
-    serialize_rules = ('-user1', '-user2')
+
+    # serialize_rules = ('-user1.password_hash', '-user1.join_date', '-user1.email')
+
+    def to_dict(self):
+        data = super().to_dict()
+
+        # Include selected user information
+        data['user1'] = {
+            'id': self.user1.id,
+            'first_name': self.user1.first_name,
+            'last_name': self.user1.last_name,
+            'available_status': self.user1.available_status
+        }
+
+        data['user2'] = {
+            'id': self.user2.id,
+            'first_name': self.user2.first_name,
+            'last_name': self.user2.last_name,
+            'available_status': self.user2.available_status
+        }
+
+        return data
 
     #### VALIDATIONS ####
 
@@ -162,6 +182,8 @@ class Friendship(db.Model, SerializerMixin):
         return f'<Friendship id: {self.id}\n \
                     user1_id: {self.user1_id}\n \
                     user2_id: {self.user2_id}\n \
+                    user1: {self.user1}\n \
+                    user2: {self.user2}\n \
                     is_active: {self.is_active}\n \
                     creation_date: {self.creation_date}\n \
                     message_count: {self.message_count}\n \
