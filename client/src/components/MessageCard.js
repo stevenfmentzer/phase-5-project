@@ -54,7 +54,7 @@ function MessageCard({ message, user, onDelete }) {
                             width: '24px',
                             height: '24px',
                             borderRadius: '50%',
-                            backgroundColor: hoverDeleteButton ? '#ff7e7c' : '#ffb0af', // Darker color on hover
+                            backgroundColor: hoverDeleteButton ? '#F4A261' : '#f47d61', // Darker color on hover
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
@@ -70,6 +70,7 @@ function MessageCard({ message, user, onDelete }) {
                     maxWidth: '70%', // Adjust this value as needed
                     backgroundColor: showDeleteButton && isSentByCurrentUser && hoverDeleteButton ? '#ffc9c9' : (showDeleteButton && isSentByCurrentUser ? '#ffb0af' : (isSentByCurrentUser ? '#DCF8C6' : '#EDEDED')),                    borderRadius: '10px',
                     padding: '10px',
+                    borderRadius: '10px'
                 }}
                 onContextMenu={handleRightClick} // Show delete button on right-click
             >

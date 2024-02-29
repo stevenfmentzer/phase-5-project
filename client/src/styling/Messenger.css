@@ -11,10 +11,20 @@
   overflow-y: auto; /* Enable vertical scrolling if needed */
 }
 
+.contact_container {
+  display: flex;
+  align-items: center; /* Center the content vertically */
+  justify-content: center; /* Center the content horizontally */
+  height: 50px; /* Adjust height as needed */
+  background-color: #EDEDED;                    
+  ;
+}
+
 .messenger-frame-container {
   display: flex;
   width: 75vw;
   flex-direction: column;
+  background: white; /* Gradient from #F5F5F5 to white */
   flex: 1; /* This will make it expand to fill the available space */
   overflow-y: auto; /* Enable vertical scrolling if needed */
   /* Hide scrollbar for Firefox */

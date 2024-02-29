@@ -8,26 +8,34 @@ function Messenger({ user }) {
     const [inboxes, setInboxes] = useState([]);
     const [selectedInbox, setSelectedInbox] = useState([]);
     const [prevSelectedInboxId, setPrevSelectedInboxId] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         fetch(`http://localhost:5555/user/${user.id}/messages`)
             .then(response => {
                 if (response.ok) {
-                    response.json().then(inboxes => {
-                        setInboxes(inboxes);
-                        if (inboxes.length > 0) {
-                            setSelectedInbox(inboxes[0]);
-                        }
-                    });
+                    return response.json();
+                } else {
+                    throw new Error('Failed to fetch data');
                 }
+            })
+            .then(inboxes => {
+                setInboxes(inboxes);
+                if (inboxes.length > 0) {
+                    setSelectedInbox(inboxes[prevSelectedInboxId]);
+                }
+                setLoading(false);
             })
             .catch(error => {
                 console.error('Error fetching inbox list:', error);
+                setError(error);
+                setLoading(false);
             });
     }, [user.id]);
 
     const handleInboxClick = (inboxListId) => {
-        setPrevSelectedInboxId(inboxListId); // Update the previously selected inbox ID
+        setPrevSelectedInboxId(inboxListId);
         setSelectedInbox(inboxes[inboxListId]);
     };
 
@@ -47,7 +55,6 @@ function Messenger({ user }) {
             throw new Error('Network response was not ok.');
         })
         .then(data => {
-            // After successful POST, fetch messages again
             return fetch(`http://localhost:5555/user/${user.id}/messages`);
         })
         .then(getResponse => {
@@ -57,12 +64,10 @@ function Messenger({ user }) {
             throw new Error('Network response was not ok.');
         })
         .then(inboxes => {
-            console.log('Received inboxes:', inboxes);
             setInboxes(inboxes);
             if (inboxes.length > 0) {
                 setPrevSelectedInboxId(prevSelectedInboxId => {
                     setSelectedInbox(inboxes[prevSelectedInboxId]);
-                    console.log(`SELECTED INBOX : ${selectedInbox}`)
                     return prevSelectedInboxId;
                 });
             }
@@ -81,8 +86,6 @@ function Messenger({ user }) {
         })
         .then(response => {
             if (response.ok) {
-                console.log('DELETE request succeeded');
-                // Proceed with the second fetch
                 return fetch(`http://localhost:5555/user/${user.id}/messages`);
             } else {
                 throw new Error('Network response was not ok.');
@@ -90,7 +93,6 @@ function Messenger({ user }) {
         })
         .then(getResponse => {
             if (getResponse.ok) {
-                console.log('Second fetch triggered');
                 return getResponse.json();
             } else {
                 throw new Error('Network response was not ok.');
@@ -98,15 +100,10 @@ function Messenger({ user }) {
         })
         .then(inboxes => {
             if (inboxes) {
-                console.log("RECIEVED INBOXES")
-                console.log('Received inboxes:', inboxes);
                 setInboxes(inboxes);
                 if (inboxes.length > 0) {
                     setSelectedInbox(inboxes[prevSelectedInboxId]);
-                    console.log(`SELECTED INBOX : ${selectedInbox}`)
                 }
-            } else {
-                console.log('No inboxes received');
             }
         })
         .catch(error => {
@@ -114,6 +111,14 @@ function Messenger({ user }) {
         });
     };
     
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
+
     return (
         <div>
             <div className="messenger-container">
@@ -121,6 +126,9 @@ function Messenger({ user }) {
                     <Inboxes inboxes={inboxes} onClick={handleInboxClick} />
                 </div>
                 <div className="messenger-frame-container">
+                    <div className="contact_container">
+                        <h3 className='contact-name'>{`⭐️ ${selectedInbox[0].contact_user.first_name} ${selectedInbox[0].contact_user.last_name}`}</h3>
+                    </div>
                     <div className="message-cards-container">
                         {selectedInbox.slice(1).map(message => (
                             <MessageCard key={message.id} message={message} user={user} onDelete={handleDeleteRequest}/>

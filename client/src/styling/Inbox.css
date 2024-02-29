@@ -22,7 +22,7 @@
 .card-container {
   border-bottom: 1px solid #ccc; /* Add border lines between cards */
   min-width: 25%; /* Set minimum width to 25% of the page */
-  background-color: white;
+  background-color: #e6e6e6;
 }
 
 .inbox-name {
