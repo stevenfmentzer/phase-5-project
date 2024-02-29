@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Icon } from 'semantic-ui-react';
+import TextBox from './TextBox';
 
 function MessageCard({ message, user, onDelete }) {
     const { sender_id, message_body } = message;
@@ -40,7 +41,7 @@ function MessageCard({ message, user, onDelete }) {
                     style={{
                         position: 'absolute',
                         top: '5px',
-                        left: '5px', // Adjust this value to position the button to the left
+                        left: '5px',
                         display: 'flex',
                         alignItems: 'center',
                         cursor: 'pointer',
@@ -51,8 +52,8 @@ function MessageCard({ message, user, onDelete }) {
                 >
                     <div
                         style={{
-                            width: '23px',
-                            height: '23px',
+                            width: '22px',
+                            height: '22px',
                             borderRadius: '50%',
                             backgroundColor: hoverDeleteButton ? '#F4A261' : '#f47d61', // Darker color on hover
                             display: 'flex',
