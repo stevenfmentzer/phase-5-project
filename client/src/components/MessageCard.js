@@ -51,8 +51,8 @@ function MessageCard({ message, user, onDelete }) {
                 >
                     <div
                         style={{
-                            width: '24px',
-                            height: '24px',
+                            width: '23px',
+                            height: '23px',
                             borderRadius: '50%',
                             backgroundColor: hoverDeleteButton ? '#F4A261' : '#f47d61', // Darker color on hover
                             display: 'flex',
@@ -60,7 +60,7 @@ function MessageCard({ message, user, onDelete }) {
                             alignItems: 'center',
                         }}
                     >
-                        <Icon name="times circle" color="white" />
+                        <Icon name="times" style={{ color: 'white', marginLeft: '3.5px' }} />
                     </div>
                 </div>
             )}

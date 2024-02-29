@@ -47,11 +47,17 @@ function FriendCard({ user, friendship, handleButtonClick }) {
                 {/* Ellipsis icon button */}
                 {/* <Icon name="ellipsis" className="ellipsis-icon" onClick={toggleButtons} /> */}
                 <Card.Header className="friend-name">{`${friend.first_name} ${friend.last_name}`}</Card.Header>
-                <Button labelPosition='right' onClick={toggleButtons}>...</Button>
+                <Icon 
+                    name="ellipsis horizontal" 
+                    style={{ color: 'lightgrey'}} 
+                    labelPosition='right' 
+                    onClick={toggleButtons}
+                />
                 {showButtons ? (
                     <div className="button-container">
                         <Button icon labelPosition='left' onClick={handleCloseFriendButtonClick}>
-                            <Icon name='star' />
+                            <Icon name='star' 
+                            style={{color: close_friend ? 'gold' : 'lightgrey'}} />
                             Add to Favorites
                         </Button>
                         <Button icon labelPosition='left' color='red' onClick={handleEndFriendButtonClick}>

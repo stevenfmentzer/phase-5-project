@@ -1,9 +1,11 @@
+
 .navbar {
     background-color: white; /* Example background color */
     padding: 10px 0;
 }
 
 .navbar-container {
+    font-family: "Playfair Display", serif;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -15,7 +17,7 @@
 }
 
 .nav-links a {
-    color: #fff; /* Example link color */
+    color: #000000; /* Example link color */
     margin-left: 20px; /* Adjust as needed */
     text-decoration: none;
 }
