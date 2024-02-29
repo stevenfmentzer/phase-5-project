@@ -2,6 +2,7 @@
 .messenger-container {
   display: flex;
   height: 100vh; /* Adjust as needed */
+  background-color: transparent;
 }
 
 /* Inboxes Container */
@@ -20,16 +21,16 @@
   ;
 }
 
+
 .messenger-frame-container {
   display: flex;
   width: 75vw;
   flex-direction: column;
-  background: white; /* Gradient from #F5F5F5 to white */
-  flex: 1; /* This will make it expand to fill the available space */
-  overflow-y: auto; /* Enable vertical scrolling if needed */
-  /* Hide scrollbar for Firefox */
+  flex: 1;
+  overflow-y: auto;
   scrollbar-width: none;
-  /* Hide scrollbar for other browsers */
+  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+  backdrop-filter: blur(10px); /* Blur effect with 10px radius */
   -ms-overflow-style: none;
 }
 
@@ -42,9 +43,14 @@
 .text_box_container {
   position: sticky;
   bottom: 0; /* Stick the text box to the bottom of the messenger frame container */
-  background-color: lightgrey;
   padding: 0px;
   width: 100%; /* Ensure the textbox container fills the width */
+  background-color: transparent;
+  /* backdrop-filter: blur(6px); 
+  -webkit-backdrop-filter: blur(6px);
+  -moz-backdrop-filter: blur(6px);
+  -o-backdrop-filter: blur(6px);
+  -ms-backdrop-filter: blur(6px);  */
 }
 /* Message Cards Container */
 .message-cards-container {

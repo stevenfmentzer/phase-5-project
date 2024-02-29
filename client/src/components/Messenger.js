@@ -133,9 +133,9 @@ function Messenger({ user }) {
                         {selectedInbox.slice(1).map(message => (
                             <MessageCard key={message.id} message={message} user={user} onDelete={handleDeleteRequest}/>
                         ))}
-                    </div>
-                    <div className="text_box_container">
-                        <TextBox inbox={selectedInbox} onSubmit={handleTextBoxSubmit} />
+                        <div className="text_box_container">
+                            <TextBox inbox={selectedInbox} onSubmit={handleTextBoxSubmit} />
+                        </div>
                     </div>
                 </div>
             </div>

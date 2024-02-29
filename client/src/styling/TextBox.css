@@ -1,5 +1,33 @@
+.textbox-wrapper {
+  position: relative;
+}
+
+.textbox-background-blur {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(10px); /* Blur effect with 10px radius */
+  -webkit-filter: blur(10px);
+  -moz-filter: blur(10px);
+  -o-filter: blur(10px);
+  -ms-filter: blur(10px);
+}
+
+.textbox-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.25)); /* Gradient from more opaque (left) to less opaque (right) */
+  filter: saturate(2); /* Increases saturation by 50% */
+  filter: brightness(10); /* Adjust the value as needed */
+}
+
 .textbox-container {
-  background-color: lightgrey;
+  position: relative;
   padding: 10px;
 }
 
@@ -11,18 +39,21 @@
 .input-container input[type="text"] {
   flex-grow: 1;
   border: 1px solid lightgrey;
-  border-radius: 5px;
-  padding: 8px;
+  border-radius: 50px;
+  padding: 10px;
+  display: flex;
+  align-items: stretch;
 }
 
 .text-box-button {
-  background-color: #DCF8C6;
+  background-color: #EDEDED;
   border: none;
-  border-radius: 5px;
-  margin-left: 5px;
+  border-radius: 50px;
+  margin-left: 8px;
+  width: 55px;
   cursor: pointer;
 }
 
 .text-box-button:hover {
-  background-color: #bad4a5;
+  background-color: #DCF8C6;
 }

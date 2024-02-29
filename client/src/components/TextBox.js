@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Card, Icon } from 'semantic-ui-react';
 import '../styling/TextBox.css';
 
 function TextBox({ inbox, onSubmit }) {
@@ -28,22 +29,38 @@ function TextBox({ inbox, onSubmit }) {
         onSubmit(formData, 'messages', 'POST')
     }
   
-    return (
-      <div className="textbox-container">
-        <form onSubmit={handleSubmit}>
-          <div className="input-container">
-            <input
-              type="text"
-              name="message_body"
-              placeholder="Message"
-              value={formData.message_body}
-              onChange={handleChange}
+    return ( 
+    <div className="textbox-wrapper">
+    <div className='textbox-background-blur'></div>
+    <div className="textbox-overlay"></div> {/* Add overlay here */}
+    <div className="textbox-container">
+      <form onSubmit={handleSubmit}>
+        <div className="input-container">
+          <input
+            type="text"
+            name="message_body"
+            placeholder="Message"
+            value={formData.message_body}
+            onChange={handleChange}
+          />
+          <button 
+            className="text-box-button" 
+            type="submit">
+            <Icon 
+              name="arrow up" 
+              style={{
+                color: 'lightgrey',
+                position: 'relative',
+                top: '-1px', // Adjust the vertical position as needed
+                marginRight: '1px', // Adjust the spacing between icon and button border
+              }}
             />
-            <button className="text-box-button" type="submit">Send</button>
-          </div>
-        </form>
-      </div>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
     );
-  }
+}
 
-  export default TextBox;
+export default TextBox;
