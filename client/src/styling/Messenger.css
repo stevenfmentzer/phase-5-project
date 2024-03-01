@@ -1,26 +1,56 @@
+.contact-wrapper {
+  position: absolute;
+  width: 100%;
+  height: 60px;
+}
+
+.contact-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  position: relative;
+  z-index: 2; /* Set a higher z-index to place it above the blurred background */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.contact-name {
+  padding: 10px;
+  background-color: transparent;
+}
+
+.contact-background-blur {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(15px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(20px);
+  -moz-backdrop-filter: blur(20px);
+  -o-backdrop-filter: blur(20px);
+  -ms-backdrop-filter: blur(20px);
+  z-index: 1; /* Set a lower z-index to place it behind the contact header */
+}
+
+.contact-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.75);
+  z-index: 1;
+  filter: saturate(2); /* Increases saturation by 50% */
+  filter: brightness(10); /* Adjust the value as needed */
+}
+
+
+
 /* Messenger Container */
 .messenger-container {
   display: flex;
   height: 100vh; /* Adjust as needed */
   background-color: transparent;
 }
-
-/* Inboxes Container */
-.inboxes-container {
-  width: 25vw; /* Adjust as needed */
-  min-width: 50px;
-  overflow-y: auto; /* Enable vertical scrolling if needed */
-}
-
-.contact_container {
-  display: flex;
-  align-items: center; /* Center the content vertically */
-  justify-content: center; /* Center the content horizontally */
-  height: 50px; /* Adjust height as needed */
-  background-color: #EDEDED;                    
-  ;
-}
-
 
 .messenger-frame-container {
   display: flex;
@@ -29,7 +59,7 @@
   flex: 1;
   overflow-y: auto;
   scrollbar-width: none;
-  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+  background-color: #FEFEFA; /* Semi-transparent white background */
   backdrop-filter: blur(10px); /* Blur effect with 10px radius */
   -ms-overflow-style: none;
 }
@@ -41,30 +71,36 @@
 }
 
 .text_box_container {
-  position: sticky;
+  position: absolute;
   bottom: 0; /* Stick the text box to the bottom of the messenger frame container */
   padding: 0px;
   width: 100%; /* Ensure the textbox container fills the width */
   background-color: transparent;
-  /* backdrop-filter: blur(6px); 
+  backdrop-filter: blur(6px); 
   -webkit-backdrop-filter: blur(6px);
   -moz-backdrop-filter: blur(6px);
   -o-backdrop-filter: blur(6px);
-  -ms-backdrop-filter: blur(6px);  */
+  -ms-backdrop-filter: blur(6px); 
 }
+
 /* Message Cards Container */
 .message-cards-container {
   flex: 1; /* Take remaining space */
   overflow-y: auto; /* Enable vertical scrolling */
-  overflow-y: auto; /* Enable vertical scrolling if needed */
-  /* Hide scrollbar for Firefox */
   scrollbar-width: none;
-  /* Hide scrollbar for other browsers */
   -ms-overflow-style: none;
+  position: relative;
+  z-index: 0; /* Set a lower z-index to place it behind the contact container */
 }
 
 /* Hide scrollbar for Chrome, Safari, and Opera */
 .message-cards-container::-webkit-scrollbar {
   display: none;
+}
 
+.message-cards-textbox-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }

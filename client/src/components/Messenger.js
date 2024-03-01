@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Inboxes from './Inboxes';
 import MessageCard from './MessageCard';
 import TextBox from './TextBox';
@@ -10,6 +10,7 @@ function Messenger({ user }) {
     const [prevSelectedInboxId, setPrevSelectedInboxId] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const messageCardsContainerRef = useRef(null); // Ref for message-cards-container
 
     useEffect(() => {
         fetch(`http://localhost:5555/user/${user.id}/messages`)
@@ -34,9 +35,19 @@ function Messenger({ user }) {
             });
     }, [user.id]);
 
+    useEffect(() => {
+        scrollToBottom(); // Scroll to bottom when component mounts or selectedInbox changes
+    }, [selectedInbox]);
+
     const handleInboxClick = (inboxListId) => {
         setPrevSelectedInboxId(inboxListId);
         setSelectedInbox(inboxes[inboxListId]);
+    };
+
+    const scrollToBottom = () => {
+        if (messageCardsContainerRef.current) {
+            messageCardsContainerRef.current.scrollTop = messageCardsContainerRef.current.scrollHeight;
+        }
     };
 
     const handleTextBoxSubmit = (formData, route, fetchType) => {
@@ -71,6 +82,7 @@ function Messenger({ user }) {
                     return prevSelectedInboxId;
                 });
             }
+            scrollToBottom(); // Scroll to bottom after new messages are fetched
         })
         .catch(error => {
             console.error('Error:', error);
@@ -104,6 +116,7 @@ function Messenger({ user }) {
                 if (inboxes.length > 0) {
                     setSelectedInbox(inboxes[prevSelectedInboxId]);
                 }
+                scrollToBottom(); // Scroll to bottom after message deletion
             }
         })
         .catch(error => {
@@ -120,26 +133,29 @@ function Messenger({ user }) {
     }
 
     return (
-        <div>
-            <div className="messenger-container">
-                <div className="inboxes-container">
-                    <Inboxes inboxes={inboxes} onClick={handleInboxClick} />
-                </div>
-                <div className="messenger-frame-container">
-                    <div className="contact_container">
-                        <h3 className='contact-name'>{`⭐️ ${selectedInbox[0].contact_user.first_name} ${selectedInbox[0].contact_user.last_name}`}</h3>
-                    </div>
-                    <div className="message-cards-container">
-                        {selectedInbox.slice(1).map(message => (
-                            <MessageCard key={message.id} message={message} user={user} onDelete={handleDeleteRequest}/>
-                        ))}
-                        <div className="text_box_container">
-                            <TextBox inbox={selectedInbox} onSubmit={handleTextBoxSubmit} />
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div className="messenger-container">
+    <div className="inboxes-container">
+        <Inboxes inboxes={inboxes} onClick={handleInboxClick} />
+    </div>
+    <div className="messenger-frame-container">
+        <div className="contact-wrapper">
+        <div className="contact-background-blur"></div>
+        <div className="contact-overlay"></div>
+        <div className="contact-container">
+            <h3 className='contact-name'>{`⭐️ ${selectedInbox[0].contact_user.first_name} ${selectedInbox[0].contact_user.last_name}`}</h3>
         </div>
+        </div>
+        <div className="message-cards-container" ref={messageCardsContainerRef}>
+            {selectedInbox.slice(1).map(message => (
+                <MessageCard key={message.id} message={message} user={user} onDelete={handleDeleteRequest}/>
+            ))}
+            <div style={{ height: '50px' }}></div>
+        </div>
+        <div className="text_box_container">
+            <TextBox inbox={selectedInbox} onSubmit={handleTextBoxSubmit} />
+        </div>
+    </div>
+</div>
     );
 }
 

@@ -69,14 +69,18 @@ function MessageCard({ message, user, onDelete }) {
                 fluid
                 style={{
                     maxWidth: '70%', // Adjust this value as needed
-                    backgroundColor: showDeleteButton && isSentByCurrentUser && hoverDeleteButton ? '#ffc9c9' : (showDeleteButton && isSentByCurrentUser ? '#ffb0af' : (isSentByCurrentUser ? '#DCF8C6' : '#EDEDED')),                    borderRadius: '10px',
+                    backgroundColor: showDeleteButton && isSentByCurrentUser && hoverDeleteButton ? '#ffc9c9' : (showDeleteButton && isSentByCurrentUser ? '#ffb0af' : (isSentByCurrentUser ? '#5EA2E4' : '#DCD92E')),                    borderRadius: '10px',
                     padding: '10px',
                     borderRadius: '10px'
                 }}
                 onContextMenu={handleRightClick} // Show delete button on right-click
             >
                 <Card.Content>
-                    <Card.Description style={{ textAlign: 'left' }}>{message_body}</Card.Description>
+                    <Card.Description 
+                        style={{ 
+                            textAlign: 'left', 
+                            color: isSentByCurrentUser ? '#FEFEFB' : '#1F1F05',
+                        }}>{message_body}</Card.Description>
                 </Card.Content>
             </Card>
         </div>

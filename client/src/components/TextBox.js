@@ -36,13 +36,14 @@ function TextBox({ inbox, onSubmit }) {
     <div className="textbox-container">
       <form onSubmit={handleSubmit}>
         <div className="input-container">
-          <input
+        <input
             type="text"
             name="message_body"
             placeholder="Message"
             value={formData.message_body}
             onChange={handleChange}
-          />
+            autoComplete="off" // Add this line to disable autocomplete
+        />
           <button 
             className="text-box-button" 
             type="submit">
