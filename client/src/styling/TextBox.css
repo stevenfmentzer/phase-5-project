@@ -29,12 +29,12 @@
   padding: 10px;
 }
 
-.input-container {
+.textbox-input-container {
   display: flex;
   align-items: stretch;
 }
 
-.input-container input[type="text"] {
+.textbox-input-container input[type="text"] {
   flex-grow: 1;
   background-color: rgba(255, 255, 255, 0.8);
   border: .5px solid lightgrey;
@@ -44,7 +44,7 @@
   align-items: stretch;
 }
 
-.input-container input[type="text"]:focus {
+.textbox-input-container input[type="text"]:focus {
   outline: none;
 }
 

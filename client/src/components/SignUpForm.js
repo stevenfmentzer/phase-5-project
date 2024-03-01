@@ -1,11 +1,13 @@
+// SignUpForm.js
 import React, { useState } from "react";
+import "../styling/Login.css"; // Import CSS file
 
 function SignUpForm({ onLogin }) {
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
     email: "",
-    password: ""
+    password: "",
   });
 
   const handleChange = (e) => {
@@ -18,9 +20,9 @@ function SignUpForm({ onLogin }) {
       const response = await fetch("http://localhost:5555/register", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
@@ -30,7 +32,7 @@ function SignUpForm({ onLogin }) {
 
         const loginCredentials = {
           email: formData.username,
-          password: formData.password
+          password: formData.password,
         };
 
         console.log("LOGIN CREDENTIALS:");
@@ -39,12 +41,11 @@ function SignUpForm({ onLogin }) {
         const loginData = await fetch("http://localhost:5555/login", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(loginCredentials)
+          body: JSON.stringify(loginCredentials),
         });
 
-        // IF LOGIN WAS SUCCESSFUL > SET USER
         if (loginData.ok) {
           const loginResponse = await loginData.json();
           onLogin(loginResponse);
@@ -59,31 +60,41 @@ function SignUpForm({ onLogin }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="first_name"
-        placeholder="first name"
-        onChange={handleChange}
-      />
-      <input
-        type="text"
-        name="last_name"
-        placeholder="last name"
-        onChange={handleChange}
-      />
-      <input
-        type="text"
-        name="email"
-        placeholder="email"
-        onChange={handleChange}
-      />
-      <input
-        type="text"
-        name="password"
-        placeholder="password"
-        onChange={handleChange}
-      />
-      <button type="submit">Submit</button>
+      <div className="login-input-container"> {/* Apply input-container class */}
+        <input
+          type="text"
+          name="first_name"
+          placeholder="first name"
+          onChange={handleChange}
+        />
+      </div>
+      <div className="login-input-container"> {/* Apply input-container class */}
+        <input
+          type="text"
+          name="last_name"
+          placeholder="last name"
+          onChange={handleChange}
+        />
+      </div>
+      <div className="login-input-container"> {/* Apply input-container class */}
+        <input
+          type="text"
+          name="email"
+          placeholder="email"
+          onChange={handleChange}
+        />
+      </div>
+      <div className="login-input-container"> {/* Apply input-container class */}
+        <input
+          type="password"
+          name="password"
+          placeholder="password"
+          onChange={handleChange}
+        />
+      </div>
+      <button className="login-submit-button" type="submit">
+        Submit
+      </button>
     </form>
   );
 }

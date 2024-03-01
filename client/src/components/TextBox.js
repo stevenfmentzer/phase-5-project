@@ -35,7 +35,7 @@ function TextBox({ inbox, onSubmit }) {
     <div className="textbox-overlay"></div> {/* Add overlay here */}
     <div className="textbox-container">
       <form onSubmit={handleSubmit}>
-        <div className="input-container">
+        <div className="textbox-input-container">
         <input
             type="text"
             name="message_body"

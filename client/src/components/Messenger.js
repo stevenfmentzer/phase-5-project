@@ -133,29 +133,29 @@ function Messenger({ user }) {
     }
 
     return (
-<div className="messenger-container">
-    <div className="inboxes-container">
-        <Inboxes inboxes={inboxes} onClick={handleInboxClick} />
-    </div>
-    <div className="messenger-frame-container">
-        <div className="contact-wrapper">
-        <div className="contact-background-blur"></div>
-        <div className="contact-overlay"></div>
-        <div className="contact-container">
-            <h3 className='contact-name'>{`⭐️ ${selectedInbox[0].contact_user.first_name} ${selectedInbox[0].contact_user.last_name}`}</h3>
+        <div className="messenger-container"> {/* Wrap the entire component in a container */}
+            <div className="inboxes-container">
+                <Inboxes inboxes={inboxes} onClick={handleInboxClick} />
+            </div>
+            <div className="messenger-frame-container">
+                <div className="contact-wrapper">
+                    <div className="contact-background-blur"></div>
+                    <div className="contact-overlay"></div>
+                    <div className="contact-container">
+                        <h3 className='contact-name'>{`⭐️ ${selectedInbox[0].contact_user.first_name} ${selectedInbox[0].contact_user.last_name}`}</h3>
+                    </div>
+                </div>
+                <div className="message-cards-container" ref={messageCardsContainerRef}>
+                    {selectedInbox.slice(1).map(message => (
+                        <MessageCard key={message.id} message={message} user={user} onDelete={handleDeleteRequest}/>
+                    ))}
+                    <div style={{ height: '50px' }}></div>
+                </div>
+                <div className="text_box_container">
+                    <TextBox inbox={selectedInbox} onSubmit={handleTextBoxSubmit} />
+                </div>
+            </div>
         </div>
-        </div>
-        <div className="message-cards-container" ref={messageCardsContainerRef}>
-            {selectedInbox.slice(1).map(message => (
-                <MessageCard key={message.id} message={message} user={user} onDelete={handleDeleteRequest}/>
-            ))}
-            <div style={{ height: '50px' }}></div>
-        </div>
-        <div className="text_box_container">
-            <TextBox inbox={selectedInbox} onSubmit={handleTextBoxSubmit} />
-        </div>
-    </div>
-</div>
     );
 }
 

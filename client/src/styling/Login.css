@@ -1,0 +1,147 @@
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px); /* Move up slightly */
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0); /* Move back to original position */
+    }
+  }
+  
+  /* Apply the fade-in animation to the headers with a delay */
+  .login-header-left,
+  .login-header-right {
+    animation: fadeIn 1s ease forwards; /* Apply animation */
+    opacity: 0; /* Initially hidden */
+  }
+  
+  /* Apply a delay to the right header to appear after the left one */
+  .login-header-right {
+    animation-delay: 1s; /* Delay the animation for 1 second */
+  }
+  
+  /* Login.css */
+  
+  .login-header-container {
+    position: relative;
+    width: 80%;
+    margin-left: 40px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .login-header-left,
+  .login-header-right {
+    position: relative;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 20px;
+    z-index: 1; /* Set z-index higher than the form */
+    /* Adjust the margin-bottom to move them closer vertically */
+  }
+  
+  .login-header-left::after,
+  .login-header-right::after {
+    content: "";
+    position: absolute;
+    bottom: -12px; /* Adjust position to match the header */
+    width: 30px;
+    height: 30px;
+    background-color: inherit;
+    z-index: -1; /* Set z-index lower than the header */
+  }
+  
+  .login-header-left::after {
+    left: 0px;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+  }
+  
+  .login-header-right::after {
+    right: 0px;
+    clip-path: polygon(100% 0, 0 0, 100% 100%);
+  }
+  
+  .login-header-left {
+    background-color: #f0f0f0;
+    align-self: flex-start;
+    position: relative;
+    margin-bottom: 5px;
+  }
+  
+  .login-header-right {
+    background-color: #007bff;
+    color: #fff;
+    align-self: flex-end;
+    position: relative;
+  }
+  
+  .login-input-container {
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 0; /* Set z-index to ensure it's below the headers */
+  }
+  
+  .login-input-container input {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ededed;
+    box-sizing: border-box;
+  }
+  
+  .login-container {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 0.5px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+    text-align: center;
+    position: relative;
+    z-index: 0; /* Set z-index to ensure it's below the headers */
+  }
+  
+  .login-text {
+    font-size: 14px;
+    opacity: 0.7;
+  }
+  
+  .login-toggle-button {
+    margin-top: 10px;
+  }
+  
+  .login-toggle-button button {
+    font-size: 12px;
+    opacity: 0.7;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+  
+  .login-toggle-button button:hover {
+    color: #007bff;
+  }
+  
+  .login-submit-button {
+    width: 200px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .login-submit-button:hover {
+    background-color: #0056b3;
+  }
