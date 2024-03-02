@@ -146,14 +146,13 @@ function Messenger({ user }) {
                     </div>
                 </div>
                 <div className="message-cards-container" ref={messageCardsContainerRef}>
+                     <div style={{ height: '65px' }}></div>
                     {selectedInbox.slice(1).map(message => (
                         <MessageCard key={message.id} message={message} user={user} onDelete={handleDeleteRequest}/>
                     ))}
                     <div style={{ height: '50px' }}></div>
                 </div>
-                <div className="text_box_container">
                     <TextBox inbox={selectedInbox} onSubmit={handleTextBoxSubmit} />
-                </div>
             </div>
         </div>
     );

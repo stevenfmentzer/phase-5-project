@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import '../styling/NewFriendForm.css'; // Import CSS file
 
-function NewFriendForm({ user, friendships, setFriendships }) {
+function NewFriendForm({ user, friendships, setFriendships, onClick }) {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [foundUser, setFoundUser] = useState(null);
 
@@ -60,25 +61,32 @@ function NewFriendForm({ user, friendships, setFriendships }) {
     };
 
     return (
-        <div>
-            <h3>NEW FRIEND FORM</h3>
+        <div className="login-container"> {/* Apply the login-container class */}
+            <h3>Add New Friend</h3>
+            <button className="close-button" onClick={onClick}>x</button>
             <form onSubmit={handleSubmit}>
-                <input
-                    type="number"
-                    name="phone_number"
-                    placeholder="Search"
-                    value={phoneNumber}
-                    onChange={handleChange}
-                    inputMode="numeric"
-                    min="0"
-                />
-                <button type="submit">Search</button>
+                <div className="login-input-container"> {/* Apply the input-container class */}
+                    <input
+                        type="number"
+                        name="phone_number"
+                        placeholder="Search"
+                        value={phoneNumber}
+                        onChange={handleChange}
+                        inputMode="numeric"
+                        min="0"
+                    />
+                </div>
+                <button className="search-button" type="submit">
+                    Search
+                </button>
             </form>
             {foundUser && (
                 <div>
                     <h4>User Found:</h4>
                     <p>Name: {`${foundUser.first_name} ${foundUser.last_name}`}</p>
-                    <button onClick={handleAddFriendship}>Add</button>
+                    <button className="add-friend-button" onClick={handleAddFriendship}>
+                        Add
+                    </button>
                 </div>
             )}
         </div>

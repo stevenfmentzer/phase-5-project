@@ -5,7 +5,7 @@ import '../styling/Inbox.css';
 function Inboxes({ inboxes, onClick }) {
 
     return (
-        <div className="inboxes-container">
+        <div className="inbox">
             {inboxes.map(( inboxArray, index ) => {
                 const inboxData = inboxArray[0]; // Accessing the inbox data from the first element
                 return (

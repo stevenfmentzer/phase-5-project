@@ -2,9 +2,26 @@
 
 .card-container {
   border-bottom: 1px solid #ccc; /* Add border lines between cards */
+  height: 85px;
 }
 
-.inbox-name {
-  font-size: 18px; /* Increase font size */
+.card-container .header {
+  font-size: 16px; /* Increase font size to 13px */
   font-weight: bold; /* Make the font bold */
+  margin-bottom: -20px;
 }
+
+.inbox-description {
+  font-size: 15px; /* Set font size */
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* Limit to two lines */
+  line-height: 1.2em; /* Initial line height */
+}
+
+

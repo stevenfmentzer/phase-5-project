@@ -2,12 +2,12 @@
 
 .inboxes-container {
   border: 1px solid #ccc; /* Add a border around the container */
-  height: 100vh;
-  background-color: #EDEDED;
-  
+  border-radius: 10px; /* Add rounded borders */
+  background: linear-gradient(to bottom, #F5F5F5, #EDEDED);
   width: 25vw; /* Adjust as needed */
   min-width: 50px;
   overflow-y: auto; /* Enable vertical scrolling if needed */
+  padding: 10px; /* Add padding to create space from the border */
   /* Hide scrollbar for Firefox */
   scrollbar-width: none;
   /* Hide scrollbar for other browsers */
@@ -20,14 +20,12 @@
 }
 
 .card-container {
-  border-bottom: 1px solid #ccc; /* Add border lines between cards */
-  min-width: 25%; /* Set minimum width to 25% of the page */
-  background-color: #e6e6e6;
+  border-bottom: .5px solid lightgrey; /* Add border lines between cards */
+  background-color: transparent;
 }
 
 .inbox-name {
   font-size: 18px; /* Increase font size */
-  font-weight: bold; /* Make the font bold */
   padding: 10px; /* Add padding to the inbox header */
 }
 

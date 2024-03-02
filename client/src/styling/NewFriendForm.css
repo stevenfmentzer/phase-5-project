@@ -1,0 +1,83 @@
+/* Apply the fade-in animation to the headers with a delay */
+.new-friend-form h3 {
+    animation: fadeIn 1s ease forwards; /* Apply animation */
+    opacity: 0; /* Initially hidden */
+    position: relative;
+}
+
+/* Apply a delay to the right header to appear after the left one */
+.new-friend-form h3 {
+    animation-delay: 1s; /* Delay the animation for 1 second */
+}
+
+/* Apply the input-container class */
+.new-friend-form .login-input-container {
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 0; /* Set z-index to ensure it's below the headers */
+}
+
+/* Apply the input styling */
+.new-friend-form .login-input-container input {
+    width: 80%;
+    height: 40px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ededed;
+    box-sizing: border-box;
+}
+
+/* Apply the submit button styling */
+.new-friend-form .login-submit-button {
+    width: 200px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.new-friend-form .login-submit-button:hover {
+    background-color: #0056b3;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    color: #000;
+}
+
+/* Adjust styles for the form and its contents */
+.new-friend-form form,
+.new-friend-form input,
+.new-friend-form button {
+    margin-bottom: 15px;
+}
+
+.search-button {
+    width: 200px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .search-button:hover {
+    background-color: #0056b3;
+  }

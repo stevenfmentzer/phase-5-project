@@ -46,7 +46,7 @@ function FriendCard({ user, friendship, handleButtonClick }) {
             <Card.Content>
                 {/* Ellipsis icon button */}
                 {/* <Icon name="ellipsis" className="ellipsis-icon" onClick={toggleButtons} /> */}
-                <Card.Header className="friend-name">{`${friend.first_name} ${friend.last_name}`}</Card.Header>
+                <Card.Header className="friend-name">{`${close_friend ? '⭐️ ' : ''} ${friend.first_name} ${friend.last_name}`}</Card.Header>
                 <Icon 
                     name="ellipsis horizontal" 
                     style={{ color: 'lightgrey'}} 
@@ -68,7 +68,6 @@ function FriendCard({ user, friendship, handleButtonClick }) {
                 ) : (
                     <>
                     <Card.Description>{`Message Count: ${friendship.message_count}`}</Card.Description>
-                    <Card.Description>{`Close Friend: ${close_friend}`}</Card.Description>
                     </>
                 )}
             </Card.Content>

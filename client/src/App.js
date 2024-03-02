@@ -4,6 +4,7 @@ import Login from './components/Login';
 import Friends from './components/Friends';
 import Messenger from './components/Messenger';
 import NavBar from './components/NavBar';
+import Dashboard from './components/Dashboard';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -13,12 +14,13 @@ function App() {
   // LOGIN
   const onLogin = (user) => {
     setUser(user);
-    navigate('/user/friends')
+    navigate('/dashboard')
   };
 
   // LOGOUT
   const onLogOut = () => {
     setUser(null);
+    navigate('/')
   };
 
   // CHECK SESSION
@@ -54,9 +56,10 @@ function App() {
 
   return (
     <>
-      <NavBar />
+      <NavBar user={user} onLogOut={onLogOut}/>
       <Routes>
         <Route path="/" element={<Login user={user} onLogin={onLogin} onLogOut={onLogOut} />} />
+        <Route path="/dashboard" element={<Dashboard user={user} />} />
         <Route path="/user/friends" element={<Friends user={user} />} />
         <Route path="/user/messenger" element={<Messenger user={user} />} />
       </Routes>

@@ -1,18 +1,32 @@
-
 .navbar {
     background-color: white; /* Example background color */
     padding: 10px 0;
+    height: 40px;
 }
 
 .navbar-container {
     font-weight: 400;
-    font-size: 30px;
+    font-size: 24px; /* Updated font size */
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px;
     margin-top: -50px;
     margin-bottom: -50px;
+}
+
+.nav-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px; /* Updated font size */
+    color: inherit;
+    text-decoration: none;
+    margin-left: 10px; /* Adjust margin as needed */
+}
+
+.nav-button:hover {
+    color: #555; /* Hover color */
 }
 
 .nav-links {
@@ -23,8 +37,9 @@
     color: #000000; /* Example link color */
     margin-left: 20px; /* Adjust as needed */
     text-decoration: none;
+    font-size: 16px; /* Updated font size */
 }
 
 .nav-links a:hover {
-    text-decoration: underline;
+    color: #555; /* Hover color */
 }
