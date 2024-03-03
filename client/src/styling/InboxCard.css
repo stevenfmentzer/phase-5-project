@@ -5,6 +5,12 @@
   height: 85px;
 }
 
+.card-container.selected {
+  background-color: #5ea1e43d; /* Blue background color for selected card */
+  border-radius: 10px; /* Rounded corners */
+  border: none; /* No visible border */
+}
+
 .card-container .header {
   font-size: 16px; /* Increase font size to 13px */
   font-weight: bold; /* Make the font bold */
@@ -23,5 +29,3 @@
   -webkit-line-clamp: 2; /* Limit to two lines */
   line-height: 1.2em; /* Initial line height */
 }
-
-

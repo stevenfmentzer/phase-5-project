@@ -1,0 +1,24 @@
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 7px;
+    animation: fadeIn 0.5s ease forwards; /* Apply fade-in animation */
+    opacity: 0; /* Initially hidden */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px); /* Move up slightly */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0); /* Move back to original position */
+    }
+}
+
+@keyframes pulsate {
+    0% { filter: blur(5px); }
+    50% { filter: blur(2px); }
+    100% { filter: blur(5px); }
+  }

@@ -1,4 +1,4 @@
-
+/* TextBox.css */
 
 .textbox-background-blur {
   position: absolute;
@@ -20,64 +20,106 @@
 
 .textbox-container {
   position: relative;
-  padding: 10px;
+  min-height: 40px;
+  height: auto;
+  margin: 10px;
+  border: .5px solid lightgrey;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
 }
 
 .textbox-input-container {
-  display: flex;
+  display: flex; /* You may adjust this based on your layout requirements */
   align-items: stretch;
 }
 
-.textbox-input-container input[type="text"] {
+.textbox-input-container textarea {
+  position: relative;
   flex-grow: 1;
-  background-color: rgba(255, 255, 255, 0.8);
-  border: .5px solid lightgrey;
-  border-radius: 50px;
-  padding: 10px;
-  display: flex;
-  align-items: stretch;
+  background-color: rgba(255, 255, 255, 0.0);
+  margin-left: 5px;
+  border-radius: 15px;
+  border: none;
+  resize: none; /* Disable resize handle */
+  overflow-y: auto; /* Add vertical scrollbar when needed */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  font-family: Arial, sans-serif; /* Change font family */
+  font-size: 16px; /* Change font size */
+  line-height: 20px; /* Set line height to match height */
+  padding: 10px 110px 7px 7px; /* Add padding */
 }
 
-.textbox-input-container input[type="text"]:focus {
+.textbox-input-container textarea::-webkit-scrollbar {
+  width: 0; /* Make scrollbar invisible in WebKit browsers */
+}
+
+.textbox-input-container textarea:focus {
   outline: none;
 }
 
-
-.send-button {
-  height: 100%;
-  background-color: #EDEDED;
-  border: .5px solid lightgrey;
-  border-radius: 50px;
-  margin-left: 8px;
-  width: 60px;
-  cursor: pointer;
-  transition: opacity 2s ease;
+.textbox-input-container textarea::before,
+.textbox-input-container textarea::after {
+  content: "";
+  display: block;
+  height: 10px; /* Adjust the height to set the margin size */
+  pointer-events: none; /* Ensure the pseudo-elements do not interfere with interaction */
 }
 
+/* Button Wrapper in TextBox.js & EditTextBox.js */
+.button-wrapper {
+  height: 40px;
+  position: absolute; /* Set position to absolute */
+  bottom: 0; /* Stick to the bottom */
+  right: 0;
+}
+
+/* Send Button in TextBox.js & EditTextBox.js */
+.send-button {
+  height: 34px;
+  width: 57px;
+  background-color: #5EA2E4;
+  border: none;
+  border-radius: 50px;
+  margin-right: 3px;
+  margin-top: 3px;
+  transition: background-color 0.3s ease-out;
+}
 .send-button:hover {
   background-color: #DCF8C6;
+  transition: background-color 0.3s ease;
 }
 
+/* Delay Button in TextBox.js */
 .delay-button {
-  height: 100%;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background-color: transparent;
+  border-radius: 50px;
+}
+.delay-button .icon {
+  color: lightgrey; /* Change icon color on hover */
+  transition: background-color 0.3s ease-out;
+}
+.delay-button:hover .icon {
+  color: #5EA2E4; /* Change icon color on hover */
+  transition: background-color 0.3s ease;
+}
+
+/* Close Edit Button in EditTextBox.js */
+.close-edit-button {
+  width: 25px;
+  height: 25px;
+  margin-right: 6px;
+  margin-top: 2px;
   background-color: transparent;
   border: none;
   border-radius: 50px;
-  margin-left: 5px;
-  margin-right: -4px;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
+}
+.close-edit-button:hover .icon{
+  color: white; /* Change icon color on hover */
+}
+.close-edit-button:hover {
+  background-color: #F4A261;; /* Keep background clear on hover */
 }
 
-.delay-button:hover .icon {
-  color: #DCF8C6; /* Change icon color on hover */
-}
-
-.delay-button:hover {
-  background-color: transparent; /* Keep background clear on hover */
-}
-
-.button-wrapper {
-  height: 40px;
-}
