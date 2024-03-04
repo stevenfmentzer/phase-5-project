@@ -15,6 +15,7 @@ function Messenger({ user }) {
     const [error, setError] = useState(null);
     const [messageCardHeight, setMessageCardHeight] = useState(37);
     const messageCardsContainerRef = useRef(null);
+    const [delayTime, setDelayTime] = useState(0); // Add delayTime state
 
     useEffect(() => {
         fetch(`http://localhost:5555/user/${user.id}/messages`)
@@ -43,12 +44,17 @@ function Messenger({ user }) {
         scrollToBottom(); // Scroll to bottom when component mounts or selectedInbox changes
     }, [selectedInbox]);
 
+    // Reset delayTime when selectedInbox changes
+    useEffect(() => {
+        setDelayTime(0);
+    }, [selectedInbox]);
+
     const handleInboxClick = (inboxListId) => {
         setPrevSelectedInboxId(inboxListId);
         setSelectedInbox(inboxes[inboxListId]);
         setIsEditMode(false); // Set isEditMode to false when a new inbox is clicked
         setMessageCardHeight(37); // Reset messageCardHeight when a new inbox is chosen
-        scrollToBottom()
+        scrollToBottom();
     };
 
     const scrollToBottom = () => {

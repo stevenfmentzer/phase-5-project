@@ -85,7 +85,7 @@
   transition: background-color 0.3s ease-out;
 }
 .send-button:hover {
-  background-color: #DCF8C6;
+  background-color: #5E8EF8;
   transition: background-color 0.3s ease;
 }
 
@@ -123,3 +123,39 @@
   background-color: #F4A261;; /* Keep background clear on hover */
 }
 
+
+
+/* slider */
+.delay-slider-container {
+  position: absolute;
+  width: 20px; /* Adjust the width of the slider */
+  height: 250px; /* Adjust the height of the slider */
+  right: 70px; /* Adjust spacing as needed */
+  bottom: 10px;
+  border-radius: 10px; /* Adjust border radius as needed */
+  opacity: 1; /* Initially invisible */
+  transition: opacity 0.3s ease; /* Add transition for smooth visibility change */
+}
+
+.delay-slider-track {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px; /* Adjust the width of the track */
+  height: 100%;
+}
+
+.delay-slider-thumb {
+  color: lightgrey;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px; /* Adjust the width of the thumb */
+  height: 20px; /* Adjust the height of the thumb */
+  border-radius: 50%; /* Make the thumb round */
+}
+.delay-slider-thumb:hover { 
+  color: #4A8ED0;
+}
