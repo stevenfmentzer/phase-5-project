@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from 'semantic-ui-react';
-import '../styling/InboxCard.css'; // Import the CSS file
+import '../styling/InboxCard.css'; 
 
 function InboxCard({ inboxData, isSelected }) {
     return (

@@ -85,41 +85,58 @@
   transition: background-color 0.3s ease-out;
 }
 .send-button:hover {
-  background-color: #DCF8C6;
+  background-color: #5E8EF8;
   transition: background-color 0.3s ease;
 }
 
+.clock-icon-styling {
+  position: relative;
+  top: .1px;
+  right: .1px;
+  margin-right: 1px;
+}
+
+.clock-icon-blue {
+  color: #5EA2E4;
+}
+
+.clock-icon-styling- {
+  color: lightgrey; /* Default color */
+  transition: color 0.15s ease-out;
+}
+.clock-icon-styling-:hover {
+  color: #5EA2E4;
+}
+
+.clock-icon-styling-clock-icon-blue{
+  color: #5EA2E4;
+  transition: color 0.15s ease;
+}
+
+
 /* Delay Button in TextBox.js */
 .delay-button {
-  width: 40px;
+  width: 38px;
   height: 40px;
   border: none;
   background-color: transparent;
   border-radius: 50px;
 }
-.delay-button .icon {
-  color: lightgrey; /* Change icon color on hover */
-  transition: background-color 0.3s ease-out;
-}
-.delay-button:hover .icon {
-  color: #5EA2E4; /* Change icon color on hover */
-  transition: background-color 0.3s ease;
-}
+
 
 /* Close Edit Button in EditTextBox.js */
 .close-edit-button {
-  width: 25px;
-  height: 25px;
+  width: 23px;
+  height: 24px;
   margin-right: 6px;
   margin-top: 2px;
   background-color: transparent;
   border: none;
   border-radius: 50px;
 }
+.close-edit-button .icon{
+  color: lightgrey;
+}
 .close-edit-button:hover .icon{
-  color: white; /* Change icon color on hover */
+  color: #f47d61;
 }
-.close-edit-button:hover {
-  background-color: #F4A261;; /* Keep background clear on hover */
-}
-

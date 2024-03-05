@@ -4,12 +4,16 @@ import '../styling/TextBox.css';
 
 function EditTextBox({ onSubmit, editMessage, setEditMessage, onHeightChange, setIsEditMode }) {
     const [formData, setFormData] = useState({
-        message_body: editMessage.message_body
+        message_body: ''
     });
 
     const [textareaHeight, setTextAreaHeight] = useState(37); // State variable to hold textarea height
     const [hoverCancelButton, setHoverCancelButton] = useState(false); // State variable to track hover over cancel button
     const textareaRef = useRef(null);
+
+    useEffect(() => {
+        setFormData({ message_body: editMessage.message_body });
+    }, [editMessage]);
 
     useEffect(() => {
         if (textareaRef.current) {
@@ -44,7 +48,6 @@ function EditTextBox({ onSubmit, editMessage, setEditMessage, onHeightChange, se
         e.preventDefault();
         onSubmit(formData, `message/${editMessage.id}`, 'PATCH');
         handleCloseEdit()
-     
     };
 
     const handleKeyDown = (e) => {
@@ -57,9 +60,9 @@ function EditTextBox({ onSubmit, editMessage, setEditMessage, onHeightChange, se
     };
 
     const handleCloseEdit = (e) => {
-      onHeightChange(37)
-      setEditMessage([])
-      setIsEditMode(false); // Set isEditMode to false to switch back to the normal TextBox
+        onHeightChange(37)
+        setEditMessage([])
+        setIsEditMode(false); // Set isEditMode to false to switch back to the normal TextBox
     };
 
     return (
@@ -91,9 +94,8 @@ function EditTextBox({ onSubmit, editMessage, setEditMessage, onHeightChange, se
                                   <Icon
                                       name="times"
                                       style={{
-                                          color: hoverCancelButton ? 'white' : 'grey',
                                           position: 'relative',
-                                          top: '1px',
+                                          top: '2px',
                                           right: '1.5px',
                                           marginRight: '1px', // Adjust the spacing between icon and button border
                                       }}

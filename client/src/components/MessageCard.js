@@ -57,7 +57,7 @@ function MessageCard({ message, user, onDelete, handleEditMessage, editMessage, 
                 style={{
                     maxWidth: '70%', // Adjust this value as needed
                     backgroundColor: isSentByCurrentUser ? '#5EA2E4' : '#DCD92E',
-                    borderRadius: '10px',
+                    borderRadius: '15px',
                     padding: '10px',
                 }}
                 onContextMenu={handleRightClick} // Show delete button on right-click

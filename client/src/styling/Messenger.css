@@ -13,6 +13,7 @@
   display: flex;
   flex-direction: column;
   margin-left: 10px;
+  min-width: 215px;
   width: 75%; /* Adjust width to fill remaining space */
   border-radius: 10px; /* Add rounded borders */
   border: 0.5px solid #ccc; /* Add a light grey border */

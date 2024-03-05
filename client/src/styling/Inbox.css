@@ -3,9 +3,9 @@
 .inboxes-container {
   border: 1px solid #ccc; /* Add a border around the container */
   border-radius: 10px; /* Add rounded borders */
-  background: linear-gradient(to bottom, #F5F5F5, #EDEDED);
+  background: linear-gradient(to bottom, #F5F5F5, #edededcd);
   width: 25vw; /* Adjust as needed */
-  min-width: 50px;
+  min-width: 150px;
   overflow-y: auto; /* Enable vertical scrolling if needed */
   padding: 10px; /* Add padding to create space from the border */
   /* Hide scrollbar for Firefox */

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Inboxes from './Inboxes';
 import MessageCard from './MessageCard';
+import useInterval from '../function/useInterval'; 
 import TextBox from './TextBox';
-import EditTextBox from './EditTextBox'; // Import the EditTextBox component
+import EditTextBox from './EditTextBox';
 import '../styling/Messenger.css';
 
 function Messenger({ user }) {
@@ -11,12 +12,24 @@ function Messenger({ user }) {
     const [prevSelectedInboxId, setPrevSelectedInboxId] = useState(0);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editMessage, setEditMessage] = useState([]);
+    const [messageCardHeight, setMessageCardHeight] = useState(37);
+    const [shouldFetchMessages, setShouldFetchMessages] = useState(true);
+    const [showDelayForm, setShowDelayForm] = useState(false);
+    const prevMessageCountRef = useRef(0);
+    const messageCardsContainerRef = useRef(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [messageCardHeight, setMessageCardHeight] = useState(37);
-    const messageCardsContainerRef = useRef(null);
 
     useEffect(() => {
+        fetchInboxesAndMessages(); // Initial fetch
+    }, [user.id]);
+
+    // Fetch messages every 2 seconds, only if shouldFetchMessages is true
+    useInterval(() => {
+        fetchInboxesAndMessages();
+    }, shouldFetchMessages ? 2000 : null);
+
+    const fetchInboxesAndMessages = () => {
         fetch(`http://localhost:5555/user/${user.id}/messages`)
             .then(response => {
                 if (response.ok) {
@@ -37,18 +50,39 @@ function Messenger({ user }) {
                 setError(error);
                 setLoading(false);
             });
-    }, [user.id]);
+    };
 
     useEffect(() => {
-        scrollToBottom(); // Scroll to bottom when component mounts or selectedInbox changes
+        // Check if new messages were received
+        const messageCount = selectedInbox?.length || 0;
+        if (messageCount > prevMessageCountRef.current) {
+            scrollToBottom();
+        }
+        prevMessageCountRef.current = messageCount;
     }, [selectedInbox]);
 
-    const handleInboxClick = (inboxListId) => {
-        setPrevSelectedInboxId(inboxListId);
+    const handleInboxClick = async (inboxListId) => {
         setSelectedInbox(inboxes[inboxListId]);
-        setIsEditMode(false); // Set isEditMode to false when a new inbox is clicked
-        setMessageCardHeight(37); // Reset messageCardHeight when a new inbox is chosen
-        scrollToBottom()
+        setPrevSelectedInboxId(inboxListId);
+        //Event listener in TextBox.js made this redundant (but maybe its helpful?)
+        // setShowDelayForm(false);
+        setIsEditMode(false);
+        setMessageCardHeight(37);
+        setShouldFetchMessages(false); // Disable interval when clicking an inbox
+        
+        try {
+            const response = await fetch(`http://localhost:5555/user/${user.id}/messages`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch messages');
+            }
+            const inboxesData = await response.json();
+            setInboxes(inboxesData);
+            setSelectedInbox(inboxesData[inboxListId]); // Update the selected inbox after fetching messages
+            scrollToBottom();
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+            setError(error);
+        }
     };
 
     const scrollToBottom = () => {
@@ -88,14 +122,12 @@ function Messenger({ user }) {
                     return prevSelectedInboxId;
                 });
             }
-            scrollToBottom(); // Scroll to bottom after new messages are fetched
-            setMessageCardHeight(37); // Reset messageCardHeight after form submission
-    
-            // Reset the textarea style height
+            setMessageCardHeight(37);
             const textarea = document.querySelector('.textbox-container textarea');
             if (textarea) {
                 textarea.style.height = 'auto';
             }
+            setShouldFetchMessages(true); // Re-enable interval after submitting the text box
         })
         .catch(error => {
             console.error('Error:', error);
@@ -129,7 +161,7 @@ function Messenger({ user }) {
                 if (inboxes.length > 0) {
                     setSelectedInbox(inboxes[prevSelectedInboxId]);
                 }
-                scrollToBottom(); // Scroll to bottom after message deletion
+                scrollToBottom();
             }
         })
         .catch(error => {
@@ -138,16 +170,10 @@ function Messenger({ user }) {
     };
 
     const handleEditMessage = (message) => {
-        setEditMessage(message)
-        setIsEditMode(true)
-    }
+        setEditMessage(message);
+        setIsEditMode(true);
+    };
 
-    const toggleEditMessage = (message) => {
-        setEditMessage(message)
-        setIsEditMode(true)
-    }
-
-    // Callback function to receive height value from EditTextBox
     const handleHeightChange = (height) => {
         setMessageCardHeight(height);
     };
@@ -160,9 +186,8 @@ function Messenger({ user }) {
         return <div>Error: {error.message}</div>;
     }
 
-
     return (
-        <div className="messenger-container"> {/* Wrap the entire component in a container */}
+        <div className="messenger-container">
             <div className="inboxes-container">
                 <Inboxes inboxes={inboxes} onClick={handleInboxClick} selectedInboxIndex={prevSelectedInboxId}/>
             </div>
@@ -175,15 +200,27 @@ function Messenger({ user }) {
                     </div>
                 </div>
                 <div className="message-cards-container" ref={messageCardsContainerRef}>
-                     <div style={{ height: '60px' }}></div> {/* Use message card height here */}
+                    <div style={{ height: '60px' }}></div>
                     {selectedInbox.slice(1).map(message => (
                         <MessageCard key={message.id} message={message} user={user} onDelete={handleDeleteRequest} handleEditMessage={handleEditMessage} editMessage={editMessage} isEditMode={isEditMode}/>
                     ))}
-                   <div style={{ height: `${messageCardHeight + 14}px` }}></div>
+                    <div style={{ height: `${messageCardHeight + 14}px` }}></div>
                 </div>
                 {isEditMode
-                    ? <EditTextBox onSubmit={handleTextBoxSubmit} editMessage={editMessage} setEditMessage={setEditMessage} onHeightChange={handleHeightChange} setIsEditMode={setIsEditMode} /> 
-                    : <TextBox inbox={selectedInbox} onSubmit={handleTextBoxSubmit} onHeightChange={handleHeightChange} /> }
+                    ? <EditTextBox 
+                        onSubmit={handleTextBoxSubmit} 
+                        editMessage={editMessage} 
+                        setEditMessage={setEditMessage} 
+                        onHeightChange={handleHeightChange} 
+                        setIsEditMode={setIsEditMode} 
+                    /> 
+                    : <TextBox 
+                        inbox={selectedInbox} 
+                        onSubmit={handleTextBoxSubmit} 
+                        onHeightChange={handleHeightChange} 
+                        showDelayForm={showDelayForm}
+                        setShowDelayForm={setShowDelayForm}
+                    /> }
             </div>
         </div>
     );
