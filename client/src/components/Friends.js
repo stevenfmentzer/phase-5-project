@@ -9,7 +9,8 @@ function Friends({ user }) {
     const [selectedFriendship, setSelectedFriendship] = useState([]);
     const [showNewFriendForm, setShowNewFriendForm] = useState(false);
     const [activeFriendList, setActiveFriendList] = useState([])
-    const [friendCount, setFriendCount] = useState(null)
+    const [friendCount, setFriendCount] = useState(0)
+    const [closeFriendCount, setCloseFriendCount] = useState(0)
 
     useEffect(() => {
         fetch(`http://localhost:5555/user/${user.id}/friends`)
@@ -19,7 +20,7 @@ function Friends({ user }) {
                         setFriendships(friendshipData);
                         if (friendshipData.length > 0) {
                             setSelectedFriendship(friendshipData[0]);
-                            setFriendCount(activeFriendCount(friendshipData))
+                            activeFriendCount(friendshipData)
                         }
                     });
                 }
@@ -59,7 +60,7 @@ function Friends({ user }) {
                 if (friendshipData.length > 0) {
                     console.log(friendshipData)
                     setSelectedFriendship(friendshipData[0]);
-                    setFriendCount(activeFriendCount(friendshipData))
+                    activeFriendCount(friendshipData)
                 }
             })
             .catch(error => {
@@ -68,16 +69,24 @@ function Friends({ user }) {
     };
 
     function activeFriendCount(friendshipData) {
-        let friendCount = 0; // Initialize friendCount as a variable, not a constant
-        let friendList = []
-        friendshipData.forEach(friendship => { // Use forEach instead of map
-            if (friendship.is_active) { // Use lowercase "true" instead of "True"
-                friendCount += 1;
-                friendList.push(friendship)
+        let checkFriendCount = 0;
+        let checkCloseFriendCount = 0;
+        let friendList = [];
+    
+        friendshipData.forEach(friendship => {
+            if (friendship.is_active) {
+                checkFriendCount += 1;
+                friendList.push(friendship);
+    
+                if (friendship.user1_id == user.id && friendship.is_close_friend_user1 == true || friendship.user2_id == user.id && friendship.is_close_friend_user2 === true) {
+                    checkCloseFriendCount += 1;
+                }
             }
         });
-        setActiveFriendList(friendList)
-        return friendCount; // Return the calculated friendCount
+    
+        setActiveFriendList(friendList);
+        setCloseFriendCount(checkCloseFriendCount);
+        setFriendCount(checkFriendCount);
     }
 
     const toggleNewFriendForm = () => {
@@ -86,21 +95,25 @@ function Friends({ user }) {
 
     return (
         <div>
-            <div className="top-bar" style={{ padding: '0 20px', display: 'flex', justifyContent: 'space-between' }}>
+            <div className="top-bar">
                 <div className='friend-count-container'>
                     <h3 className='friend-count-text'>Friends </h3>
                     <p className='friend-count'>{friendCount}</p>
+                    <h3 className='close-friend-count-text'>Close Friends </h3>
+                    <p className='close-friend-count'>{closeFriendCount}</p>
                 </div>
                 <button className="add-friend-button" onClick={toggleNewFriendForm}>
                     <Icon name='user plus' className="icon-add-user" />
                 </button>
             </div>
-            {showNewFriendForm && <div className="overlay"></div>}
             {showNewFriendForm && <NewFriendForm user={user} friendships={friendships} setFriendships={setFriendships} toggleNewFriendForm={toggleNewFriendForm} handleButtonClick={handleButtonClick} />}
+            {showNewFriendForm && <div className="overlay"></div>}
+            <div>
             <div className="friends-grid">
                 {activeFriendList.map(friendship => (
                     <FriendCard key={friendship.id} user={user} friendship={friendship} handleButtonClick={handleButtonClick} />
                 ))}
+            </div>
             </div>
         </div>
     );

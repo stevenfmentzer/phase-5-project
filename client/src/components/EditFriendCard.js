@@ -7,10 +7,10 @@ function EditFriendCard({ onCloseFriendClick, onRemoveClick }) {
         <div className="edit-friend-card-container">
             <div className="button-container">
             <Button className="edit-button" onClick={onCloseFriendClick}>
-                <Icon name='star' className="icon-add-user" />
+                <Icon name='star' className="icon-edit-user" />
             </Button>
             <Button className="edit-button" onClick={onRemoveClick}>
-                <Icon name='user times' className="icon-add-user"/>
+                <Icon name='user times' className="icon-edit-user"/>
             </Button>
             </div>
         </div>

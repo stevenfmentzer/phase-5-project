@@ -33,7 +33,7 @@ function LoginForm({ onLogin }) {
 
 
   return (
-    <div>
+    <div className="form-container">
       <div className="login-header-container">
         <h1 className="login-header-left">Connect more.</h1>
         <h1 className="login-header-right">chat often.</h1>

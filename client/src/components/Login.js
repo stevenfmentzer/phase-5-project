@@ -25,7 +25,6 @@ function Login({ user, onLogin }) {
         <>
           <SignUpForm user={user} onLogin={onLogin}/>
           <br />
-          {!user && (
             <p className="login-text">
               Already have an account?{" "}
               <span className="login-toggle-button">
@@ -34,7 +33,6 @@ function Login({ user, onLogin }) {
                 </button>
               </span>
             </p>
-          )}
         </>
       )}
     </div>

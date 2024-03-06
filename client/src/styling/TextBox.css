@@ -24,7 +24,7 @@
   height: auto;
   margin: 10px;
   border: .5px solid lightgrey;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: #fefefac8;
   border-radius: 20px;
 }
 
@@ -35,8 +35,8 @@
 
 .textbox-input-container textarea {
   position: relative;
+  background-color: transparent;
   flex-grow: 1;
-  background-color: rgba(255, 255, 255, 0.0);
   margin-left: 5px;
   border-radius: 15px;
   border: none;
@@ -85,7 +85,7 @@
   transition: background-color 0.3s ease-out;
 }
 .send-button:hover {
-  background-color: #5E8EF8;
+  background-color: #3689dc;
   transition: background-color 0.3s ease;
 }
 
@@ -97,7 +97,7 @@
 }
 
 .clock-icon-blue {
-  color: #5EA2E4;
+  color: #3689dc;
 }
 
 .clock-icon-styling- {
@@ -105,11 +105,11 @@
   transition: color 0.15s ease-out;
 }
 .clock-icon-styling-:hover {
-  color: #5EA2E4;
+  color: #3689dc;
 }
 
 .clock-icon-styling-clock-icon-blue{
-  color: #5EA2E4;
+  color: #3689dc;
   transition: color 0.15s ease;
 }
 

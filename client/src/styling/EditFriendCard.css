@@ -30,3 +30,7 @@
 .edit-button:hover {
     background-color: rgba(136, 136, 136, 0.7);
 }
+
+.icon-edit-user {
+    transform: translateX(2.5px) scale(1.16);
+  }

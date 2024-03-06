@@ -1,5 +1,6 @@
 .navbar {
     background-color: #5EA2E4;
+    user-select: none;
     padding: 10px 0;
     height: 60px; /* Updated height */
     width: 100vw;
@@ -14,26 +15,21 @@
     padding: 0 20px; /* Adjusted padding */
 }
 
-.nav-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 18px; /* Updated font size */
-    color: #DCD92E; /* Updated color */
+.nav-header {
+    color: #f9f9f9; /* Updated color */
+    margin-top: -7.5px;
     text-decoration: none;
-    margin-left: 10px;
-}
-
-.nav-button:hover {
-    color: #F5F5F5; /* Hover color */
+    font-size: 80px; /* Updated font size */
+    font-weight: 700;
 }
 
 .nav-links {
     display: flex;
+    margin-right: 20px;
 }
 
 .nav-links .nav-link {
-    color: #F5F5F5; /* Updated color */
+    color: #f9f9f9; /* Updated color */
     margin-left: 20px;
     text-decoration: none;
     font-size: 16px; /* Updated font size */

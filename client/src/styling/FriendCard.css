@@ -2,9 +2,10 @@
     position: relative;
     height: 80px;
     min-width: 250px;
-    border: 1px solid #ccc; /* Add border */
+    border: .5px solid lightgrey; /* Add border */
     border-radius: 10px; /* Add border radius for rounded corners */
     padding: 10px; /* Add padding for spacing */
+    background-color: #ffffff58;
 }
 
 .friend-card-left { 
@@ -22,7 +23,7 @@
 }
 
 .icon-favorite {
-    color: #dcd92e8e;
+    color: #f0ec00;
     transform: translateY(62px) translateX(-8px);
     margin: 0px;
 }

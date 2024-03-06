@@ -6,9 +6,7 @@ function NavBar({ user, onLogOut }) {
     return (
         <nav className="navbar">
             <div className="navbar-container">
-                <Link to="/dashboard" className="navbar-brand">
-                    <h1>Here IM</h1>
-                </Link>
+            <Link to={user ? "/dashboard" : "/"} className="nav-header">Here IM</Link>
                 {user && (
                     <div className="nav-links">
                         <Link to="/messenger" className="nav-link">Messenger</Link>

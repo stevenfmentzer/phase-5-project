@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Icon } from 'semantic-ui-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import Inboxes from './Inboxes';
 import MessageCard from './MessageCard';
 import useInterval from '../function/useInterval'; 
@@ -31,12 +34,7 @@ function Messenger({ user }) {
 
     const fetchInboxesAndMessages = () => {
         const authToken = localStorage.getItem('authToken');
-        fetch(`http://localhost:5555/user/${user.id}/messages`, {
-            headers: {
-                'Authorization': `Bearer ${authToken}`, // Include the token in the Authorization header
-                'Content-Type': 'application/json'
-            },
-        })
+        fetch(`http://localhost:5555/user/${user.id}/messages`)
             .then(response => {
                 if (response.ok) {
                     return response.json();
@@ -189,7 +187,13 @@ function Messenger({ user }) {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+      return (
+        <div className="spinner-container">
+          <div className="spinner-wrapper">
+            <FontAwesomeIcon icon={faSpinner} className="fa-spin-pulse" style={{ color: 'lightgrey' }} />
+          </div>
+        </div>
+      );
     }
 
     if (error) {

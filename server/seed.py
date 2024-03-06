@@ -109,7 +109,7 @@ if __name__ == '__main__':
         # Create Max number of Friendships
         print(f"Friendships: {num_friendships}")
         print(f"Inboxes: {num_friendships*2}")
-        print(f"Messages: {num_friendships*10}")
+        print(f"Messages: {num_friendships*30}")
         print("...")
         for user1_id in range(1, num_users+1):
             for user2_id in range(user1_id + 1, num_users+1):
@@ -137,7 +137,7 @@ if __name__ == '__main__':
                 db.session.commit()
 
                 # Make Subsequent Messages
-                for _ in range(1,10):
+                for _ in range(1,30):
                     sender_id, recipient_id = random.sample([user1_id, user2_id], k=2)
                     message = create_message_object(sender_id, recipient_id)
                     db.session.commit()

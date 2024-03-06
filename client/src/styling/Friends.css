@@ -1,3 +1,10 @@
+.top-bar { 
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  user-select: none;
+}
+
 .friends-grid {
   display: grid;
   height: calc(100vh - 40px); /* Adjust as needed, considering the border and spacing */
@@ -7,28 +14,22 @@
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); /* Adjust min and max width as needed */
   grid-auto-rows: minmax(100px, 100px); /* Set minimum and maximum row height */
   gap: 20px; /* Gap between cards */
-}
-
-.blue-dot {
-width: 8px; /* Adjust dot size as needed */
-height: 8px;
-background-color: #84abff; /* Set dot color */
-border-radius: 50%; /* Make dot circular */
-display: inline-block; /* Display dot inline with the name */
-margin-right: 5px; /* Add spacing between dot and text */
+  z-index: 998; 
 }
 
 .overlay {
-  position: fixed;
+  position: relative;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100% - 200px;
   background-color: rgba(255, 255, 255, 0.5); /* Adjust the opacity as needed */
-  backdrop-filter: blur(10px); /* Add blur effect */
+  backdrop-filter: blur(5px); /* Add blur effect */
+  z-index: 999; 
 }
 
 .add-friend-button {
+  transform: translateY(20px);
   width: 60px;
   height: 40px;
   border: none;
@@ -40,19 +41,25 @@ margin-right: 5px; /* Add spacing between dot and text */
   transition: background-color 0.3s;
 }
 
+.add-friend-button:hover { 
+  background-color: #3689dc;
+}
+
 .icon-add-user {
   transform: translateX(2.5px);
 }
 
 .friend-count-container {
+  transform: translateY(10px);
   display: flex;
-  align-items: center; /* Align items vertically */
+  align-items: center;
 }
 
 .friend-count { 
   color: white;
   padding: 6px;
   margin-left: 5px;
+  margin-right: 10px;
   font-size: 14px;
   font-weight:1000;
   background-color: #5EA2E4;
@@ -62,4 +69,20 @@ margin-right: 5px; /* Add spacing between dot and text */
 .friend-count-text {
   font-size: 20px;
   color: #5EA2E4;
+}
+
+.close-friend-count { 
+  color: white;
+  padding: 6px;
+  margin-left: 5px;
+  margin-right: 10px;
+  font-size: 14px;
+  font-weight:1000;
+  background-color: #DCD92E;
+  border-radius: 10px;
+}
+
+.close-friend-count-text {
+  font-size: 20px;
+  color: #DCD92E;
 }

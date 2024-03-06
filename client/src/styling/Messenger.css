@@ -2,7 +2,7 @@
 /* Messenger Container */
 .messenger-container {
   display: flex;
-  height: calc(100vh - 100px); /* Adjust as needed, considering the border and spacing */
+  height: calc(100vh - 120px); /* Adjust as needed, considering the border and spacing */
   width: calc(100% - 40px); /* Adjust as needed, considering the border and spacing */
   margin: 20px; /* Add a 20px margin to create the border and spacing */
   border-radius: 10px; /* Add rounded borders */
@@ -18,7 +18,7 @@
   border-radius: 10px; /* Add rounded borders */
   border: 0.5px solid #ccc; /* Add a light grey border */
   overflow-y: auto; /* Enable vertical scrolling */
-  background-color: #FEFEFA; /* Semi-transparent white background */
+  background-color: #fbfbfb; /* Semi-transparent white background */
   backdrop-filter: blur(10px); /* Blur effect with 10px radius */
   -ms-overflow-style: none;
 }
@@ -100,4 +100,18 @@
   width: 100%;
   height: 60px;
   z-index: 2; /* Set a higher z-index to place it above the blurred background */
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+}
+
+.spinner-wrapper {
+  display: flex;
+  transform: translateY(-50px) scale(2);
+  justify-content: center;
+  align-items: center;
 }

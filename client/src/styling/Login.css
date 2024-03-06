@@ -1,3 +1,4 @@
+
 @keyframes fadeIn {
     from {
       opacity: 0;
@@ -65,8 +66,8 @@
   }
   
   .login-header-left {
-    background-color: #f0f0f0;
-    color: rgb(69, 69, 69);
+    background-color: #DCD92E;
+    color: rgb(255, 255, 255);
     align-self: flex-start;
     position: relative;
     margin-bottom: 5px;
@@ -96,14 +97,34 @@
     background-color: #ededed;
     box-sizing: border-box;
   }
+
+  .login-row {
+    display: flex; /* Use flexbox to display items horizontally */
+    justify-content: space-between; /* Add space between items */
+    width: calc(80%); /* Adjust width to include padding */
+    padding: 10px 0; /* Adjust padding to match other inputs */
+    margin-bottom: 12px;
+    margin-left: 40px;
+  }
+  
+  .login-split-row-input-container input {
+    width: 151px;
+    height: 40px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ededed;
+    box-sizing: border-box;
+  
+  }
   
   .login-container {
     width: 400px;
-    margin: 0 auto;
+    margin: 40px auto;
     padding: 20px;
     border: 0.5px solid #ccc;
     border-radius: 10px;
-    background-color: #fff;
+    background-color: #ffffff58;
     text-align: center;
     position: relative;
     z-index: 0; /* Set z-index to ensure it's below the headers */
@@ -146,7 +167,7 @@
   }
   
   .login-submit-button:hover {
-    background-color: #0056b3;
+    background-color: #3689dc;
   }
 
   .add-friend-button {
