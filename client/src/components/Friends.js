@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Icon } from 'semantic-ui-react';
 import FriendCard from './FriendCard';
 import NewFriendForm from './NewFriendForm';
 import '../styling/Friends.css';
@@ -7,6 +8,7 @@ function Friends({ user }) {
     const [friendships, setFriendships] = useState([]);
     const [selectedFriendship, setSelectedFriendship] = useState([]);
     const [showNewFriendForm, setShowNewFriendForm] = useState(false);
+    const [activeFriendList, setActiveFriendList] = useState([])
     const [friendCount, setFriendCount] = useState(null)
 
     useEffect(() => {
@@ -17,7 +19,7 @@ function Friends({ user }) {
                         setFriendships(friendshipData);
                         if (friendshipData.length > 0) {
                             setSelectedFriendship(friendshipData[0]);
-                            setFriendCount(friendshipData.length)
+                            setFriendCount(activeFriendCount(friendshipData))
                         }
                     });
                 }
@@ -27,9 +29,10 @@ function Friends({ user }) {
             });
     }, [user.id]);
 
-    const handleButtonClick = (formData, id) => {
+    const handleButtonClick = (formData, id, fetchType) => {
+        console.log(formData)
         fetch(`http://localhost:5555/friends/${id}`, {
-            method: 'PATCH',
+            method: `${fetchType}`,
             headers: {
                 "Content-Type": "application/json",
             },
@@ -54,13 +57,28 @@ function Friends({ user }) {
             .then(friendshipData => {
                 setFriendships(friendshipData);
                 if (friendshipData.length > 0) {
+                    console.log(friendshipData)
                     setSelectedFriendship(friendshipData[0]);
+                    setFriendCount(activeFriendCount(friendshipData))
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
             });
     };
+
+    function activeFriendCount(friendshipData) {
+        let friendCount = 0; // Initialize friendCount as a variable, not a constant
+        let friendList = []
+        friendshipData.forEach(friendship => { // Use forEach instead of map
+            if (friendship.is_active) { // Use lowercase "true" instead of "True"
+                friendCount += 1;
+                friendList.push(friendship)
+            }
+        });
+        setActiveFriendList(friendList)
+        return friendCount; // Return the calculated friendCount
+    }
 
     const toggleNewFriendForm = () => {
         setShowNewFriendForm(prevState => !prevState);
@@ -69,18 +87,19 @@ function Friends({ user }) {
     return (
         <div>
             <div className="top-bar" style={{ padding: '0 20px', display: 'flex', justifyContent: 'space-between' }}>
-                <h3>Friends ({friendCount})</h3>
+                <div className='friend-count-container'>
+                    <h3 className='friend-count-text'>Friends </h3>
+                    <p className='friend-count'>{friendCount}</p>
+                </div>
                 <button className="add-friend-button" onClick={toggleNewFriendForm}>
-                    Add Friend
+                    <Icon name='user plus' className="icon-add-user" />
                 </button>
             </div>
             {showNewFriendForm && <div className="overlay"></div>}
-            {showNewFriendForm && <NewFriendForm user={user} friendships={friendships} setFriendships={setFriendships} onClick={toggleNewFriendForm} />}
+            {showNewFriendForm && <NewFriendForm user={user} friendships={friendships} setFriendships={setFriendships} toggleNewFriendForm={toggleNewFriendForm} handleButtonClick={handleButtonClick} />}
             <div className="friends-grid">
-                {friendships.map(friendship => (
-                    friendship.is_active ? (
-                        <FriendCard key={friendship.id} user={user} friendship={friendship} handleButtonClick={handleButtonClick} />
-                    ) : null
+                {activeFriendList.map(friendship => (
+                    <FriendCard key={friendship.id} user={user} friendship={friendship} handleButtonClick={handleButtonClick} />
                 ))}
             </div>
         </div>

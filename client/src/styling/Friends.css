@@ -4,19 +4,9 @@
   width: calc(100% - 40px); /* Adjust as needed, considering the border and spacing */
   margin: 20px; /* Add a 20px margin to create the border and spacing */
   border-radius: 10px; /* Add rounded borders */
-  grid-template-columns: repeat(auto-fill, minmax(calc((100% - 40px) / 3 - 20px), 1fr)); /* Adjust column width */
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); /* Adjust min and max width as needed */
+  grid-auto-rows: minmax(100px, 100px); /* Set minimum and maximum row height */
   gap: 20px; /* Gap between cards */
-}
-
-.friend-card {
-border: 1px solid #ccc; /* Add border */
-border-radius: 5px; /* Add border radius for rounded corners */
-padding: 10px; /* Add padding for spacing */
-}
-
-.friend-name {
-display: inline-block; /* Ensure the dot is aligned correctly */
-margin-right: 5px; /* Add spacing between the dot and the name */
 }
 
 .blue-dot {
@@ -39,14 +29,37 @@ margin-right: 5px; /* Add spacing between dot and text */
 }
 
 .add-friend-button {
-  width: 120px;
+  width: 60px;
   height: 40px;
   border: none;
-  border-radius: 5px;
-  background-color: #007bff;
+  border-radius: 50px;
+  background-color: #5EA2E4;
   color: #fff;
   font-size: 16px;
   font-weight: bold;
-  cursor: pointer;
   transition: background-color 0.3s;
+}
+
+.icon-add-user {
+  transform: translateX(2.5px);
+}
+
+.friend-count-container {
+  display: flex;
+  align-items: center; /* Align items vertically */
+}
+
+.friend-count { 
+  color: white;
+  padding: 6px;
+  margin-left: 5px;
+  font-size: 14px;
+  font-weight:1000;
+  background-color: #5EA2E4;
+  border-radius: 10px;
+}
+
+.friend-count-text {
+  font-size: 20px;
+  color: #5EA2E4;
 }

@@ -1,0 +1,60 @@
+.friend-card {
+    position: relative;
+    height: 80px;
+    min-width: 250px;
+    border: 1px solid #ccc; /* Add border */
+    border-radius: 10px; /* Add border radius for rounded corners */
+    padding: 10px; /* Add padding for spacing */
+}
+
+.friend-card-left { 
+    position: absolute;
+    height: 70px;
+    width: 70px;
+    margin-left: 5px;
+    transform: translateY(.5px);
+}
+
+.icon-user {
+    position: absolute;
+    color: #d6d6d6; /* Remove the quotes around white */
+    transform: translateX(-3px) translateY(7px) scale(1.1);
+}
+
+.icon-favorite {
+    color: #dcd92e8e;
+    transform: translateY(62px) translateX(-8px);
+    margin: 0px;
+}
+
+.icon-ellipsis { 
+    position: absolute;
+    color: lightgrey; 
+    right: 10px;
+}
+
+.friend-card-right { 
+    flex-grow: 1;
+    width: 80%;
+    position: absolute;
+    left: 98px;
+}   
+
+.friend-name {
+    display: inline-block; /* Ensure the dot is aligned correctly */
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
+.friend-card .description {
+    font-size: 13px; /* Increase font size to 13px */
+}
+
+.friend-card-right.blur {
+    filter: blur(3px); /* Apply blur effect */
+}
+
+.friend-name.blur {
+    filter: blur(3px); /* Apply blur effect */
+}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styling/NewFriendForm.css'; // Import CSS file
 
-function NewFriendForm({ user, friendships, setFriendships, onClick }) {
+function NewFriendForm({ user, friendships, setFriendships, toggleNewFriendForm, handleButtonClick }) {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [foundUser, setFoundUser] = useState(null);
 
@@ -30,40 +30,25 @@ function NewFriendForm({ user, friendships, setFriendships, onClick }) {
         setPhoneNumber(e.target.value);
     };
 
-    const handleAddFriendship = async (e) => {
-        e.preventDefault(); // Prevent the default form submission behavior
-
-        // Perform fetch only if phoneNumber is not empty
+    const handleAddFriendship = () => {
+        console.log("click")
+        console.log(foundUser)
         if (foundUser) {
-            try {
-                const response = await fetch(`http://localhost:5555/friends`, {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        user1_id: user.id,
-                        user2_id: foundUser.id
-                    }),
-                });
-                if (response.ok) {
-                    const friendship = await response.json();
-                    setFriendships([...friendships, friendship]);
-                } else {
-                    console.error('Error adding friendship:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Error adding friendship:', error);
+            console.log("in function")
+            const formData={
+                user1_id: user.id,
+                user2_id: foundUser.id
             }
-        } else {
-            setFoundUser(null); // Reset foundUser if phoneNumber is empty
+            console.log(`Form Data: ${formData.user1_id}, ${formData.user2_id}`)
+            setFoundUser(null);
+            handleButtonClick(formData, '', 'POST')
         }
     };
 
     return (
         <div className="login-container"> {/* Apply the login-container class */}
             <h3>Add New Friend</h3>
-            <button className="close-button" onClick={onClick}>x</button>
+            <button className="close-button" onClick={toggleNewFriendForm}>x</button>
             <form onSubmit={handleSubmit}>
                 <div className="login-input-container"> {/* Apply the input-container class */}
                     <input

@@ -1,45 +1,44 @@
 .navbar {
-    background-color: white; /* Example background color */
+    background-color: #5EA2E4;
     padding: 10px 0;
-    height: 40px;
+    height: 60px; /* Updated height */
+    width: 100vw;
 }
 
 .navbar-container {
-    font-weight: 400;
-    font-size: 24px; /* Updated font size */
+    font-weight: 600; /* Updated font weight */
+    font-size: 20px; /* Updated font size */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    margin-top: -50px;
-    margin-bottom: -50px;
+    padding: 0 20px; /* Adjusted padding */
 }
 
 .nav-button {
     background-color: transparent;
     border: none;
     cursor: pointer;
-    font-size: 16px; /* Updated font size */
-    color: inherit;
+    font-size: 18px; /* Updated font size */
+    color: #DCD92E; /* Updated color */
     text-decoration: none;
-    margin-left: 10px; /* Adjust margin as needed */
+    margin-left: 10px;
 }
 
 .nav-button:hover {
-    color: #555; /* Hover color */
+    color: #F5F5F5; /* Hover color */
 }
 
 .nav-links {
     display: flex;
 }
 
-.nav-links a {
-    color: #000000; /* Example link color */
-    margin-left: 20px; /* Adjust as needed */
+.nav-links .nav-link {
+    color: #F5F5F5; /* Updated color */
+    margin-left: 20px;
     text-decoration: none;
     font-size: 16px; /* Updated font size */
 }
 
-.nav-links a:hover {
-    color: #555; /* Hover color */
+.nav-links .nav-link:hover {
+    color: #DCD92E; /* Hover color */
 }

@@ -7,7 +7,8 @@ function TextBox({ inbox, onSubmit, onHeightChange, showDelayForm, setShowDelayF
     const [formData, setFormData] = useState({
         sender_id: '',
         recipient_id: '',
-        message_body: ''
+        message_body: '',
+        delivery_time: ''
     });
     const [textareaHeight, setTextAreaHeight] = useState(37);
     const textBoxRef = useRef(null);

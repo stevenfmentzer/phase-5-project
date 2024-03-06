@@ -1,8 +1,8 @@
-from flask import Flask, abort, session, redirect, url_for, make_response, request, jsonify
+from datetime import datetime
+from flask import abort, session, make_response, request
 from models import db, User, Friendship, Message, Inbox
 from flask_restful import Resource
 from sqlalchemy import desc, or_
-import os, math 
 
 #Import database and application from config.py
 from config import app, api, db
@@ -39,9 +39,6 @@ class Login(Resource):
                 session['user_id'] = user.id
                 response = make_response(user.to_dict(), 200)
 
-                print("SESSION>USER SET")
-                print(session['user_id'])
-
             else:
                 response = make_response({"Error": "Not valid password"}, 400)
         except Exception as e: 
@@ -59,13 +56,21 @@ api.add_resource(Logout, '/logout')
 
 class CheckSession(Resource):
     def get(self):
+        print(request.json)  # Print JSON data sent in the request body
+        user = User.query.filter(User.id == session.get('user_id')).first()
+        if user:
+            return user.to_dict()
+        else:
+            return {'message': '401: Not Authorized'}, 401
+    def post(self):
+        print(request.json)  # Print JSON data sent in the request body
         user = User.query.filter(User.id == session.get('user_id')).first()
         if user:
             return user.to_dict()
         else:
             return {'message': '401: Not Authorized'}, 401
         
-api.add_resource(CheckSession, '/check_session')
+api.add_resource(CheckSession, '/session')
         
 #### USERS ####
 
@@ -177,6 +182,7 @@ class Friendships(Resource):
             else: 
                 form_data = request.form
 
+            print(form_data)
             # Check if a Friendship between User1_id and User2_id already exists
             existing_friendship = Friendship.query.filter(                
                 or_(
@@ -197,7 +203,9 @@ class Friendships(Resource):
                 response = make_response(new_friendship.to_dict(), 201)
             else:
                 # Check if the existing friendship is inactive, if so, activate it
+                print(f"FRIENDSHIP ACTIVE: {existing_friendship}")
                 if not existing_friendship.is_active:
+                    print(f"NOT ACTIVE")
                     existing_friendship.is_active = True
                     db.session.commit()
                     response = make_response(existing_friendship.to_dict(), 200)
@@ -207,7 +215,7 @@ class Friendships(Resource):
             return {"errors": [str(e)]}, 400
         return response
     
-api.add_resource(Friendships, '/friends')
+api.add_resource(Friendships, '/friends/')
 
 class FriendshipsByUserId(Resource):
     def get(self, id):  #### !!!! CHECKED !!!! #### 
@@ -270,6 +278,7 @@ api.add_resource(FriendshipById, '/friends/<int:id>')
 
 class Messages(Resource):
     def post(self): #### !!!! CHECKED !!!! #### 
+        print("SERVER")
         try:
             if request.headers.get('Content-Type') == 'application/json':
                 form_data = request.get_json()
@@ -283,13 +292,29 @@ class Messages(Resource):
                     (Friendship.user1_id == form_data['recipient_id']) & (Friendship.user2_id == form_data['sender_id'])
                 ),Friendship.is_active == True).first()
             
+            print(form_data)
             if existing_friendship:
                 # Create the new message object
-                new_message = Message(
-                    sender_id=form_data['sender_id'],
-                    recipient_id=form_data['recipient_id'],
-                    message_body=form_data['message_body']
-                )
+                try: 
+                    delivery_time = datetime.strptime(form_data['delivery_time'], '%Y-%m-%dT%H:%M:%S.%fZ')
+                    print(f"DATE OBJECT: {delivery_time}")
+                except:
+                    delivery_time = None
+                print(delivery_time)
+                
+                if delivery_time:
+                    new_message = Message(
+                        sender_id=form_data['sender_id'],
+                        recipient_id=form_data['recipient_id'],
+                        message_body=form_data['message_body'],
+                        delivery_time=delivery_time
+                    )
+                else: 
+                    new_message = Message(
+                        sender_id=form_data['sender_id'],
+                        recipient_id=form_data['recipient_id'],
+                        message_body=form_data['message_body']
+                    )
 
                 # Check whether or not a message already belongs to these two Users, set to parent_message
                 parent_message = Message.query.filter(
@@ -309,7 +334,6 @@ class Messages(Resource):
                     new_message.parent_message_id = parent_message.id
                     parent_message.child_message_id = new_message.id
                     db.session.commit()
-                    print(f"UPDATED PARENT MESSAGE : {parent_message}")
 
                 # Check if two inboxes exis: one for each sender and recipient
                 sender_inbox = Inbox.query.filter(
@@ -418,7 +442,8 @@ class MessagesByUserId(Resource):
                     'user_id': inbox.user_id,
                     'user' : inbox.user.to_dict(),
                     'contact_user_id': inbox.contact_user_id,
-                    'contact_user' : inbox.contact_user.to_dict()
+                    'contact_user' : inbox.contact_user.to_dict(),
+                    'friendship_is_active': inbox.friendship.is_active
                 }
                 inbox_messages_dict.insert(0, inbox_info)
                 

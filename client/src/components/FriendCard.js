@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Card, Icon, Button } from 'semantic-ui-react';
-import '../styling/Friends.css';
+import EditFriendCard from './EditFriendCard';
+import '../styling/FriendCard.css';
 
 function FriendCard({ user, friendship, handleButtonClick }) {
     const [showButtons, setShowButtons] = useState(false);
+    const editRef = useRef(null);
+    const ellipsisRef = useRef(null);
 
     let friend;
     let close_friend;
@@ -16,9 +19,6 @@ function FriendCard({ user, friendship, handleButtonClick }) {
         close_friend = friendship.is_close_friend_user2;
     }
 
-    const toggleButtons = () => {
-        setShowButtons(!showButtons);
-    };
 
     const handleCloseFriendButtonClick = () => {
         let formData;
@@ -31,46 +31,75 @@ function FriendCard({ user, friendship, handleButtonClick }) {
                 is_close_friend_user2: !friendship.is_close_friend_user2
             };
         }
-        handleButtonClick(formData, friendship.id);
+        handleButtonClick(formData, friendship.id, 'PATCH');
     };
 
     const handleEndFriendButtonClick = () => {
         const formData ={
             is_active : !friendship.is_active
           }
-        handleButtonClick(formData, friendship.id)
+          console.log(formData)
+        handleButtonClick(formData, friendship.id, 'PATCH')
+    };
+
+
+    const toggleButtons = () => {
+        setShowButtons(!showButtons);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                editRef.current &&
+                !editRef.current.contains(event.target) &&
+                event.target !== ellipsisRef.current // Check if the clicked target is the ellipsis icon
+            ) {
+                setShowButtons(false);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, []);
+
+    const handleEllipsisClick = (event) => {
+        event.stopPropagation(); // Prevent the click event from propagating to the document
+        toggleButtons(); // Toggle the visibility of the edit options
     };
 
     return (
         <Card className="friend-card">
-            <Card.Content>
-                {/* Ellipsis icon button */}
-                {/* <Icon name="ellipsis" className="ellipsis-icon" onClick={toggleButtons} /> */}
-                <Card.Header className="friend-name">{`${close_friend ? '⭐️ ' : ''} ${friend.first_name} ${friend.last_name}`}</Card.Header>
-                <Icon 
-                    name="ellipsis horizontal" 
-                    style={{ color: 'lightgrey'}} 
-                    labelPosition='right' 
-                    onClick={toggleButtons}
-                />
-                {showButtons ? (
-                    <div className="button-container">
-                        <Button icon labelPosition='left' onClick={handleCloseFriendButtonClick}>
-                            <Icon name='star' 
-                            style={{color: close_friend ? 'gold' : 'lightgrey'}} />
-                            Add to Favorites
-                        </Button>
-                        <Button icon labelPosition='left' color='red' onClick={handleEndFriendButtonClick}>
-                            <Icon name='remove' />
-                            Remove Friend
-                        </Button>
-                    </div>
+            <div className="friend-card-left">
+                <Icon name='user circle huge' className="icon-user" />
+                {close_friend ? (
+                    <Icon name='star' className='icon-favorite' />
                 ) : (
-                    <>
-                    <Card.Description>{`Message Count: ${friendship.message_count}`}</Card.Description>
-                    </>
+                    <></>
                 )}
-            </Card.Content>
+            </div>
+            <div className="friend-card-right">
+                <Card.Header className="friend-name">{`${friend.first_name} ${friend.last_name}`}</Card.Header>
+                <Card.Description>{`Message Count: ${friendship.message_count}`}</Card.Description>
+                <Card.Description>{`Reached Out: ${friendship.message_count}`}</Card.Description>
+                <Card.Description>{`Last Contact: xx/xx/xx`}</Card.Description>
+            </div>
+            <Icon
+                name="ellipsis horizontal"
+                className='icon-ellipsis'
+                onClick={handleEllipsisClick}
+                ref={ellipsisRef}
+            />
+            {showButtons ? (
+                <div ref={editRef}>
+                    <EditFriendCard
+                        onCloseFriendClick={() => handleCloseFriendButtonClick()}
+                        onRemoveClick={() => handleEndFriendButtonClick()}
+                    />
+                </div>
+            ) : <></>}
         </Card>
     );
 }

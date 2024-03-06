@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import SignUpForm from "./SignUpForm";
 import LoginForm from "./LoginForm";
-import "../styling/Login.css"; // Import CSS file
+import "../styling/Login.css";
 
 function Login({ user, onLogin }) {
   const [showLogin, setShowLogin] = useState(true);
 
   return (
-    <div className="login-container"> {/* Apply login-container class */}
+    <div className="login-container">
       {showLogin ? (
         <>
           <LoginForm user={user} onLogin={onLogin}/>
-          <br /> {/* Line break for spacing */}
+          <br />
           <p className="login-text">
             Don't have an account?{" "}
             <span className="login-toggle-button">
@@ -24,7 +24,7 @@ function Login({ user, onLogin }) {
       ) : (
         <>
           <SignUpForm user={user} onLogin={onLogin}/>
-          <br /> {/* Line break for spacing */}
+          <br />
           {!user && (
             <p className="login-text">
               Already have an account?{" "}

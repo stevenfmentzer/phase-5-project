@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import "../styling/Login.css"; // Import CSS file
 
-function LoginForm({ user, onLogin }) {
+function LoginForm({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -30,6 +30,7 @@ function LoginForm({ user, onLogin }) {
         console.error("An error occurred:", error);
       });
   }
+
 
   return (
     <div>

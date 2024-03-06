@@ -1,12 +1,27 @@
 from sqlalchemy import UniqueConstraint
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
+from sqlalchemy import func
 from sqlalchemy.ext.hybrid import hybrid_property
 from datetime import datetime
 import re
 
-#Import database and bcrypt from config.py
-from config import db, bcrypt
+# Import database and bcrypt from config.py
+from config import db, bcrypt, scheduler
+
+# Background task to periodically update is_sent
+def update_message_status():
+    print("CHECKING")
+    messages_to_update = Message.query.filter(
+        Message.is_sent == False,  # noqa
+        Message.delivery_time <= datetime.utcnow()
+    ).all()
+    for message in messages_to_update:
+        message.is_sent = True
+    db.session.commit()
+
+# Schedule the background task to run every minute
+scheduler.add_job(update_message_status, 'interval', minutes=1)
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
@@ -137,15 +152,15 @@ class Friendship(db.Model, SerializerMixin):
 
     #### RELATIONSHIPS ####
 
-    # Relationship with the first user
     user1 = db.relationship('User', foreign_keys='Friendship.user1_id', back_populates='friendships_user1')
-
-    # Relationship with the second user
     user2 = db.relationship('User', foreign_keys='Friendship.user2_id', back_populates='friendships_user2')
+    inboxes = db.relationship('Inbox', back_populates='friendship', cascade='all, delete-orphan')
+
 
     #### SERIALIZATION RULES ####
 
     # serialize_rules = ('-user1.password_hash', '-user1.join_date', '-user1.email')
+    serialize_rules = ('-inboxes',)
 
     def to_dict(self):
         data = super().to_dict()
@@ -194,13 +209,14 @@ class Message(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     parent_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=0)
-    child_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=0 )
+    child_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=0)
     sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     recipient_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     creation_time = db.Column(db.DateTime, default=datetime.utcnow)
     delivery_time = db.Column(db.DateTime, default=datetime.utcnow)
     message_body = db.Column(db.VARCHAR(400))
     is_read = db.Column(db.Boolean, default=False)
+    is_sent = db.Column(db.Boolean, default=True)
 
     #### VALIDATIONS ####
 
@@ -221,7 +237,17 @@ class Message(db.Model, SerializerMixin):
             if message is None: 
                 raise ValueError(f"No {key} found with ID: {value}")
             return value
-    
+        
+    @validates('delivery_time')
+    def validates_delivery_time(self, key, value):
+        if value is not None and not isinstance(value, datetime):
+            raise ValueError(f"'{key}' must be a valid datetime or null.")
+        return value
+
+    def __init__(self, **kwargs):
+        if 'is_sent' not in kwargs:
+            kwargs['is_sent'] = kwargs.get('delivery_time', datetime.utcnow()) <= datetime.utcnow()
+        super().__init__(**kwargs)
 
     def __repr__(self):
         return f'<Message id: {self.id}\n \
@@ -229,11 +255,12 @@ class Message(db.Model, SerializerMixin):
                     child_message_id: {self.child_message_id}\n \
                     sender_id: {self.sender_id}\n \
                     recipient_id: {self.recipient_id}\n \
+                    message_body: {self.message_body}\n \
                     sent_time: {self.creation_time}\n \
                     delivery_time: {self.delivery_time}\n \
-                    message_body: {self.message_body}\n \
+                    is_sent: {self.is_sent}\n \
                     is_read: {self.is_read}\n \
-                    >'    
+                    >'
     
 class Inbox(db.Model, SerializerMixin):
     __tablename__ = 'inboxes'
@@ -241,6 +268,7 @@ class Inbox(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     contact_user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    friendship_id = db.Column(db.Integer, db.ForeignKey('friendships.id'))
     first_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=0)
     last_message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), default=0)
 
@@ -249,12 +277,12 @@ class Inbox(db.Model, SerializerMixin):
 
     #### RELATIONSHIP ####
 
-    # Relationship with the user
     user = db.relationship('User', back_populates='inbox', foreign_keys='Inbox.user_id')
-    # Relationship with the contact user in the inbox
     contact_user = db.relationship('User', back_populates='contact_inboxes', foreign_keys='Inbox.contact_user_id')
+    friendship = db.relationship('Friendship', back_populates='inboxes')
 
-   #### SERIALIZATION RULES ####
+    #### SERIALIZATION RULES ####
+    serialize_rules = ('-friendship_id',)
 
     def to_dict(self):
         data = super().to_dict()
@@ -272,6 +300,10 @@ class Inbox(db.Model, SerializerMixin):
             'first_name': self.contact_user.first_name,
             'last_name': self.contact_user.last_name,
             'available_status': self.contact_user.available_status
+        }
+
+        data['friendship'] = {
+            'is_active': self.friendship.is_active
         }
 
         return data

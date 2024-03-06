@@ -62,9 +62,11 @@ function DelayForm({ formData, setFormData, onSubmit, textBoxRef, setShowDelayFo
             const offsetY = sliderRect.bottom - e.clientY; 
             const sliderMinutes = Math.max(0, Math.min(1440, Math.round(offsetY / sliderHeight * 1440)));
             const currentDate = new Date();
+            console.log(currentDate)
             currentDate.setMinutes(currentDate.getMinutes() + sliderMinutes);
             setFormData({ ...formData, delivery_time: currentDate });
             setThumbPosition((sliderMinutes / 1440) * 87.5); 
+            console.log(currentDate)
         }
     };
 

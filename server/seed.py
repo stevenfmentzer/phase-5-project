@@ -32,10 +32,11 @@ def create_friendship_object(user1_id, user2_id):
     )
     return new_friendship
 
-def create_inbox_object(user_id, contact_user_id):
+def create_inbox_object(user_id, contact_user_id, friendship):
     new_inbox = Inbox(
     user_id=user_id,
-    contact_user_id=contact_user_id
+    contact_user_id=contact_user_id,
+    friendship_id=friendship.id
     )
     return new_inbox
 
@@ -116,11 +117,13 @@ if __name__ == '__main__':
                 friendship = create_friendship_object(user1_id, user2_id)
                 # Set message_count to 10
                 friendship.message_count = 10
+                db.session.add(friendship)
+                db.session.commit()
                 # Make two Inboxes
-                user1_inbox = create_inbox_object(user1_id, user2_id)
-                user2_inbox = create_inbox_object(user2_id, user1_id)
+                user1_inbox = create_inbox_object(user1_id, user2_id, friendship)
+                user2_inbox = create_inbox_object(user2_id, user1_id, friendship)
                 # Commit Friendship and Inboxes
-                db.session.add_all([friendship, user1_inbox, user2_inbox])
+                db.session.add_all([user1_inbox, user2_inbox])
                 db.session.commit()
 
                 # Make Initial Message and set Inboxes first and last message to ID of Initial Message

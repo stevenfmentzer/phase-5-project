@@ -30,7 +30,13 @@ function Messenger({ user }) {
     }, shouldFetchMessages ? 2000 : null);
 
     const fetchInboxesAndMessages = () => {
-        fetch(`http://localhost:5555/user/${user.id}/messages`)
+        const authToken = localStorage.getItem('authToken');
+        fetch(`http://localhost:5555/user/${user.id}/messages`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`, // Include the token in the Authorization header
+                'Content-Type': 'application/json'
+            },
+        })
             .then(response => {
                 if (response.ok) {
                     return response.json();
@@ -92,6 +98,9 @@ function Messenger({ user }) {
     };
 
     const handleTextBoxSubmit = (formData, route, fetchType) => {
+        console.log(route)
+        console.log(fetchType)
+        console.log(formData)
         fetch(`http://localhost:5555/${route}`, {
             method: `${fetchType}`,
             headers: {
@@ -100,6 +109,7 @@ function Messenger({ user }) {
             body: JSON.stringify(formData),
         })
         .then(getResponse => {
+            console.log(getResponse)
             if (getResponse.ok) {
                 return getResponse.json();
             }
@@ -196,13 +206,15 @@ function Messenger({ user }) {
                     <div className="contact-background-blur"></div>
                     <div className="contact-overlay"></div>
                     <div className="contact-container">
-                        <h3 className='contact-name'>{`⭐️ ${selectedInbox[0].contact_user.first_name} ${selectedInbox[0].contact_user.last_name}`}</h3>
+                        <h3 className='contact-name'>{selectedInbox[0].contact_user.first_name} {selectedInbox[0].contact_user.last_name}</h3>
                     </div>
                 </div>
                 <div className="message-cards-container" ref={messageCardsContainerRef}>
                     <div style={{ height: '60px' }}></div>
                     {selectedInbox.slice(1).map(message => (
+                        message.is_sent ? 
                         <MessageCard key={message.id} message={message} user={user} onDelete={handleDeleteRequest} handleEditMessage={handleEditMessage} editMessage={editMessage} isEditMode={isEditMode}/>
+                        :<></>
                     ))}
                     <div style={{ height: `${messageCardHeight + 14}px` }}></div>
                 </div>

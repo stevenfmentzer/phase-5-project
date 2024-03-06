@@ -66,6 +66,7 @@
   
   .login-header-left {
     background-color: #f0f0f0;
+    color: rgb(69, 69, 69);
     align-self: flex-start;
     position: relative;
     margin-bottom: 5px;
@@ -73,7 +74,7 @@
   }
   
   .login-header-right {
-    background-color: #007bff;
+    background-color: #5EA2E4;
     color: #fff;
     align-self: flex-end;
     position: relative;
@@ -128,7 +129,7 @@
   }
   
   .login-toggle-button button:hover {
-    color: #007bff;
+    color: #5EA2E4;
   }
   
   .login-submit-button {
@@ -136,7 +137,7 @@
     height: 40px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #5EA2E4;
     color: #fff;
     font-size: 16px;
     font-weight: bold;
@@ -153,7 +154,7 @@
     height: 40px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #5EA2E4;
     color: #fff;
     font-size: 16px;
     font-weight: bold;

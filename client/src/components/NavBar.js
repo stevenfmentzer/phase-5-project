@@ -11,9 +11,9 @@ function NavBar({ user, onLogOut }) {
                 </Link>
                 {user && (
                     <div className="nav-links">
-                        <Link to="/user/messenger">Messenger</Link>
-                        <Link to="/user/friends">Friends</Link>
-                        <button className="nav-button" onClick={onLogOut}>Log Out</button>
+                        <Link to="/messenger" className="nav-link">Messenger</Link>
+                        <Link to="/friends" className="nav-link">Friends</Link>
+                        <Link to="/" className="nav-link">Log-out</Link>
                     </div>
                 )}
             </div>

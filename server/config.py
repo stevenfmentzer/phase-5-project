@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from sqlalchemy import MetaData
@@ -34,6 +35,9 @@ app.secret_key = secret_key
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
+
+# Create the scheduler instance
+scheduler = BackgroundScheduler()
 
 #Handle Cookies and Sessions
 app.config['SESSION_COOKIE_SECURE'] = True

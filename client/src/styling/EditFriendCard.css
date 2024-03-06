@@ -1,0 +1,32 @@
+.edit-friend-card-container {
+    width: 80px;
+    padding: 10px;
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    border-radius: 9px;
+    backdrop-filter: blur(15px);
+    z-index: 1;
+}
+
+.button-container { 
+    background-color: transparent; /* Set background color to transparent */
+    display: flex;
+    gap: 10px; /* Add spacing between buttons */
+}
+
+/* Adjust button styles as needed */
+.edit-button {
+    height: 35px;
+    width: 35px;
+    border-radius: 50px;
+    border: none;
+    color: white;
+    background-color: rgba(170, 169, 169, 0.7); /* Slight transparency */
+}
+
+.edit-button:hover {
+    background-color: rgba(136, 136, 136, 0.7);
+}

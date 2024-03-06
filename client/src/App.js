@@ -8,63 +8,32 @@ import Dashboard from './components/Dashboard';
 
 function App() {
   const [user, setUser] = useState(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-   
   // LOGIN
   const onLogin = (user) => {
     setUser(user);
-    navigate('/dashboard')
+    navigate('/dashboard');
   };
 
   // LOGOUT
   const onLogOut = () => {
     setUser(null);
-    navigate('/')
-  };
-
-  // CHECK SESSION
-  useEffect(() => {
-    // Check localStorage for JWT token
-    const authToken = localStorage.getItem('authToken');
-    if (authToken) {
-      // Send token to server to verify validity
-      fetch("http://localhost:5555/session", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ token: authToken }) // Include token in the request body
-      })
-      .then((response) => {
-        if (response.ok) {
-          return response.json(); // parse response body as JSON
-        }
-        throw new Error('Failed to verify user session');
-      })
-      .then((userData) => {
-        setUser(userData); // update user state with fetched user data
-      })
-      .catch((error) => {
-        console.error('Error verifying user session:', error);
-        // Clear invalid token from localStorage
-        localStorage.removeItem('authToken');
-      });
-    }
-  }, []);
-
+    navigate('/');
+  }
 
   return (
-    <>
-      <NavBar user={user} onLogOut={onLogOut}/>
+    <div>
+    <NavBar user={user} onLogOut={onLogOut}/>
       <Routes>
-        <Route path="/" element={<Login user={user} onLogin={onLogin} onLogOut={onLogOut} />} />
+        <Route path="/" element={<Login user={user} onLogin={onLogin} />} />
         <Route path="/dashboard" element={<Dashboard user={user} />} />
-        <Route path="/user/friends" element={<Friends user={user} />} />
-        <Route path="/user/messenger" element={<Messenger user={user} />} />
+        <Route path="/friends" element={<Friends user={user} />} />
+        <Route path="/messenger" element={<Messenger user={user} />} />
       </Routes>
-    </>
+    </div>
   );
 }
+
 
 export default App;
