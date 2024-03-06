@@ -1,40 +1,60 @@
 .navbar {
+    position: relative; /* Make sure it has a positioning context for the absolute positioned color shift effect */
     background-color: #5EA2E4;
     user-select: none;
     padding: 10px 0;
-    height: 60px; /* Updated height */
+    height: 60px;
     width: 100vw;
 }
 
 .navbar-container {
-    font-weight: 600; /* Updated font weight */
-    font-size: 20px; /* Updated font size */
+    position: relative;
+    font-weight: 600;
+    font-size: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px; /* Adjusted padding */
+    padding: 0 20px;
 }
 
 .nav-header {
-    color: #f9f9f9; /* Updated color */
+    color: #f9f9f9;
     margin-top: -7.5px;
     text-decoration: none;
-    font-size: 80px; /* Updated font size */
+    font-size: 80px;
     font-weight: 700;
+    z-index: 1;
 }
 
 .nav-links {
     display: flex;
     margin-right: 20px;
+    z-index: 2;
 }
 
 .nav-links .nav-link {
-    color: #f9f9f9; /* Updated color */
+    color: #f9f9f9;
     margin-left: 20px;
     text-decoration: none;
-    font-size: 16px; /* Updated font size */
+    font-size: 16px;
 }
 
 .nav-links .nav-link:hover {
-    color: #DCD92E; /* Hover color */
+    color: #DCD92E;
+}
+
+.color-shift-effect {
+    position: absolute;
+    top: -17px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(255, 255, 255, 0.4));
+    pointer-events: none;
+    transition: background 0.3s ease; /* Add transition for color change */
+    z-index: 0;
+}
+
+.color-shift-effect-active {
+    background: transparent
 }

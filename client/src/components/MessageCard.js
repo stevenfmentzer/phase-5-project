@@ -1,3 +1,4 @@
+import { Linear } from 'gsap';
 import React, { useEffect, useState } from 'react';
 import { Card, Icon } from 'semantic-ui-react';
 

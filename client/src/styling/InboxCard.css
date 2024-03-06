@@ -6,7 +6,7 @@
 }
 
 .card-container.selected {
-  background: linear-gradient(to right, rgba(220, 220, 220, 0.85), rgba(220, 220, 220, 0.6));
+  background: linear-gradient(to right, #6d6b3a1d, #8b892227);
   border-radius: 10px; 
   border: none; 
 }
