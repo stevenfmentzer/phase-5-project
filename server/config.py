@@ -37,7 +37,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
 # Create the scheduler instance
-scheduler = BackgroundScheduler()
+scheduler = BackgroundScheduler(daemon=True)
 
 #Handle Cookies and Sessions
 app.config['SESSION_COOKIE_SECURE'] = True

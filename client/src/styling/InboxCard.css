@@ -6,9 +6,11 @@
 }
 
 .card-container.selected {
-  background: linear-gradient(to right, #6d6b3a1d, #8b892227);
+  background: linear-gradient(to right, #6d6b3a1d, #8d8b2727);
+  box-shadow: inset 0px 0px 12px #8d8b2727;
+  box-shadow: 2px 2px 5px #c4c22711;
   border-radius: 10px; 
-  border: none; 
+
 }
 
 .card-container .header {

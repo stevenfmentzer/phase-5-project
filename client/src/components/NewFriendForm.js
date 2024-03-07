@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from 'semantic-ui-react';
 import '../styling/NewFriendForm.css'; // Import CSS file
 
 function NewFriendForm({ user, friendships, setFriendships, toggleNewFriendForm, handleButtonClick }) {
@@ -47,19 +48,33 @@ function NewFriendForm({ user, friendships, setFriendships, toggleNewFriendForm,
 
     return (
         <div className="login-container"> {/* Apply the login-container class */}
-            <h3>Add New Friend</h3>
-            <button className="close-button" onClick={toggleNewFriendForm}>x</button>
+            <h3>Find Your Friend</h3>
+            <div className='close-add-friend'
+                        style={{
+                            width: '25px',
+                            height: '25px',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            cursor: 'pointer',
+                            marginRight: '7px', // Adjust spacing between buttons
+                        }}
+                        onClick={toggleNewFriendForm}
+                    >
+                        <Icon name="small times" style={{ color: 'white', marginLeft: '3.5px' }} />
+                    </div>
             <form onSubmit={handleSubmit}>
                 <div className="login-input-container"> {/* Apply the input-container class */}
-                    <input
-                        type="number"
-                        name="phone_number"
-                        placeholder="Search"
-                        value={phoneNumber}
-                        onChange={handleChange}
-                        inputMode="numeric"
-                        min="0"
-                    />
+                <input
+                    type="text"
+                    name="phone_number"
+                    placeholder="Phone Number"
+                    value={phoneNumber}
+                    onChange={handleChange}
+                    inputMode="numeric"
+                    min="0"
+                />
                 </div>
                 <button className="search-button" type="submit">
                     Search

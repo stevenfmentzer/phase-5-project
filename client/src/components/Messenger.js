@@ -18,22 +18,24 @@ function Messenger({ user }) {
     const [messageCardHeight, setMessageCardHeight] = useState(37);
     const [shouldFetchMessages, setShouldFetchMessages] = useState(true);
     const [showDelayForm, setShowDelayForm] = useState(false);
-    const prevMessageCountRef = useRef(0);
-    const messageCardsContainerRef = useRef(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const prevMessageCountRef = useRef(0);
+    const messageCardsContainerRef = useRef(null);
 
+    
     useEffect(() => {
+        setShouldFetchMessages(false)
         fetchInboxesAndMessages(); // Initial fetch
+        setShouldFetchMessages(true)
     }, [user.id]);
 
     // Fetch messages every 2 seconds, only if shouldFetchMessages is true
     useInterval(() => {
         fetchInboxesAndMessages();
-    }, shouldFetchMessages ? 2000 : null);
+    }, shouldFetchMessages ? 1000 : null);
 
     const fetchInboxesAndMessages = () => {
-        const authToken = localStorage.getItem('authToken');
         fetch(`http://localhost:5555/user/${user.id}/messages`)
             .then(response => {
                 if (response.ok) {
@@ -66,13 +68,11 @@ function Messenger({ user }) {
     }, [selectedInbox]);
 
     const handleInboxClick = async (inboxListId) => {
+        setShouldFetchMessages(false); // Disable interval when clicking an inbox
         setSelectedInbox(inboxes[inboxListId]);
         setPrevSelectedInboxId(inboxListId);
-        //Event listener in TextBox.js made this redundant (but maybe its helpful?)
-        // setShowDelayForm(false);
         setIsEditMode(false);
         setMessageCardHeight(37);
-        setShouldFetchMessages(false); // Disable interval when clicking an inbox
         
         try {
             const response = await fetch(`http://localhost:5555/user/${user.id}/messages`);
@@ -83,10 +83,11 @@ function Messenger({ user }) {
             setInboxes(inboxesData);
             setSelectedInbox(inboxesData[inboxListId]); // Update the selected inbox after fetching messages
             scrollToBottom();
+            setShouldFetchMessages(true);
         } catch (error) {
             console.error('Error fetching messages:', error);
             setError(error);
-        }
+        };
     };
 
     const scrollToBottom = () => {

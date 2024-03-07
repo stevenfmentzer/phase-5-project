@@ -1,4 +1,3 @@
-import { Linear } from 'gsap';
 import React, { useEffect, useState } from 'react';
 import { Card, Icon } from 'semantic-ui-react';
 
@@ -57,7 +56,7 @@ function MessageCard({ message, user, onDelete, handleEditMessage, editMessage, 
                 fluid
                 style={{
                     maxWidth: '70%', // Adjust this value as needed
-                    backgroundColor: isSentByCurrentUser ? '#5EA2E4' : '#DCD92E',
+                    background: isSentByCurrentUser ? 'radial-gradient(circle at 0% 50%, #5EA2E4, #4494e3)' : 'radial-gradient(circle at 100% 50%, #DCD93C, #DCD92E)',
                     borderRadius: '15px',
                     padding: '10px',
                 }}

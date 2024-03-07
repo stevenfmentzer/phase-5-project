@@ -40,7 +40,7 @@
 }
 
 .nav-links .nav-link:hover {
-    color: #DCD92E;
+    color: #f7f303;
 }
 
 .color-shift-effect {
@@ -56,5 +56,5 @@
 }
 
 .color-shift-effect-active {
-    background: transparent
+    background: transparent;
 }

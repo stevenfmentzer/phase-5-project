@@ -5,6 +5,7 @@ import Friends from './components/Friends';
 import Messenger from './components/Messenger';
 import NavBar from './components/NavBar';
 import Dashboard from './components/Dashboard';
+import EditUser from './components/EditUser';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -30,6 +31,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard user={user} />} />
         <Route path="/friends" element={<Friends user={user} />} />
         <Route path="/messenger" element={<Messenger user={user} />} />
+        <Route path="/account" element={<EditUser user={user} />} />
       </Routes>
     </div>
   );

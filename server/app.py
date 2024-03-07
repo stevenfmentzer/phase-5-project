@@ -3,9 +3,63 @@ from flask import abort, session, make_response, request
 from models import db, User, Friendship, Message, Inbox
 from flask_restful import Resource
 from sqlalchemy import desc, or_
+from config import app, api, db, scheduler
 
-#Import database and application from config.py
-from config import app, api, db
+# Background task to periodically update is_sent on Delayed Messages
+def update_message_status():
+    with app.app_context():
+        # Retrieve unsent messages with a delivery time in the past
+        messages_to_update = Message.query.filter(
+            Message.is_sent == False, 
+            Message.delivery_time < datetime.utcnow()
+        ).all()
+
+        # Iterate over each unsent message
+        for message in messages_to_update:
+            print(message)
+            # Step 1: If the message is not the most child message
+            if message.child_message_id == 0:
+                # Step 2: Find the most recent message in the conversation
+                most_recent_message = Message.query.filter(
+                    Message.sender_id == message.sender_id,
+                    Message.recipient_id == message.recipient_id
+                ).order_by(Message.id.desc()).first()
+
+                # Step 3: If there's a most recent message, update its child_message_id
+                if most_recent_message:
+                    most_recent_message.child_message_id = message.id
+
+                    # Step 4: If the message has a parent message
+                    if message.parent_message_id:
+                        # Step 5: Retrieve the parent message, update parent message's child_message_id to the current message's child
+                        parent_message = Message.query.get(message.parent_message_id)
+                        parent_message.child_message_id = message.child_message_id
+                        # Step 6: Retreive the child message, update child message's parent_message_id to the current message's parent
+                        child_message = Message.query.get(message.child_message_id)
+                        child_message.parent_message_id = parent_message.id
+
+                    # Step 7: Ensure the message becomes the most child message
+                    message.child_message_id = 0
+                    # Step 8: Ensure the message's parent is the most_recent_message
+                    message.parent_message_id = most_recent_message.id
+                    # Step 9: Update message status to sent
+                    message.is_sent = True
+                    # Commit changes to the database after processing each message
+                    db.session.commit()
+            
+                # Step 9: Update message status to sent
+                message.is_sent = True
+                # Commit changes to the database after processing each message
+                db.session.commit()
+
+#Initiate Background Task
+# Schedule the background task to run every minute
+scheduler.add_job(update_message_status, 'interval', seconds=5)
+scheduler.start()
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
 
 
 ######### ROUTES / VIEWS #########
@@ -261,7 +315,6 @@ class FriendshipById(Resource):
     #         friendship = Friendship.query.filter(Friendship.id == id).first()
     #         if friendship:
 
-    #             #### MAY WANT TO DELETE ALL INBOXES AND MESSAGES AFFLIATED WITH THIS FRIENDSHIP ####
 
     #             db.session.delete(friendship)
     #             db.session.commit()
@@ -292,15 +345,14 @@ class Messages(Resource):
                     (Friendship.user1_id == form_data['recipient_id']) & (Friendship.user2_id == form_data['sender_id'])
                 ),Friendship.is_active == True).first()
             
-            print(form_data)
+            # Once Friendship exists, Create the new Message object
             if existing_friendship:
-                # Create the new message object
+
+                #Check if the message is sent delayed
                 try: 
                     delivery_time = datetime.strptime(form_data['delivery_time'], '%Y-%m-%dT%H:%M:%S.%fZ')
-                    print(f"DATE OBJECT: {delivery_time}")
                 except:
                     delivery_time = None
-                print(delivery_time)
                 
                 if delivery_time:
                     new_message = Message(
@@ -335,7 +387,7 @@ class Messages(Resource):
                     parent_message.child_message_id = new_message.id
                     db.session.commit()
 
-                # Check if two inboxes exis: one for each sender and recipient
+                # Check if two inboxes exist: one for each sender and recipient
                 sender_inbox = Inbox.query.filter(
                     Inbox.user_id == form_data['sender_id'], 
                     Inbox.contact_user_id == form_data['recipient_id']
@@ -420,15 +472,18 @@ class MessagesByUserId(Resource):
             
             # Iterate over each inbox
             for inbox in inboxes:
-                # Retrieve the last message for the current inbox
-                last_message = Message.query.get(inbox.last_message_id)
+                # Find the last sent message for the current inbox
+                last_message = Message.query.filter(
+                    Message.id.between(inbox.first_message_id, inbox.last_message_id),
+                    Message.is_sent == True  # Ensure only sent messages are considered
+                    ).order_by(Message.delivery_time.desc()).first() 
 
                 # Retrieve messages for the current inbox ordered by message ID in ascending order
                 inbox_messages = Message.query.filter(
                     (Message.sender_id == inbox.user_id) | (Message.sender_id == inbox.contact_user_id),
                     (Message.recipient_id == inbox.user_id) | (Message.recipient_id == inbox.contact_user_id),
                     Message.id.between(inbox.first_message_id, inbox.last_message_id)
-                ).order_by(Message.id).all()
+                ).order_by(Message.delivery_time).all()
                 
                 # Convert messages to dictionaries
                 inbox_messages_dict = [message.to_dict() for message in inbox_messages]
@@ -457,6 +512,7 @@ class MessagesByUserId(Resource):
             response = make_response({"error": f"An error occurred: {str(e)}"}, 500)
             print(e)
         return response
+    
 
 api.add_resource(MessagesByUserId, '/user/<int:id>/messages')
 

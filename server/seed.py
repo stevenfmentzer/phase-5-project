@@ -52,7 +52,7 @@ def create_message_object(sender_id, recipient_id):
     new_message = Message(
         sender_id=sender_id,
         recipient_id=recipient_id,
-        message_body = fake.paragraph(nb_sentences=1, variable_nb_sentences=True, ext_word_list=None)
+        message_body = fake.paragraph(nb_sentences=4, variable_nb_sentences=True, ext_word_list=None)
     )
     db.session.add(new_message)
     db.session.commit()

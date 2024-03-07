@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from 'semantic-ui-react';
+import { Icon, Card } from 'semantic-ui-react';
 import '../styling/InboxCard.css'; 
 
 function InboxCard({ inboxData, isSelected }) {

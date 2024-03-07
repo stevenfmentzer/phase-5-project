@@ -1,10 +1,10 @@
 /* Inbox.css */
 
 .inboxes-container {
-  border: 1px solid #ccc; /* Add a border around the container */
+  border: .5px solid #ccc; /* Add a border around the container */
   border-radius: 10px; /* Add rounded borders */
   user-select: none;
-  background: linear-gradient(to bottom, #F5F5F5, #edededcd);
+  background: linear-gradient(to bottom, #F5F5F5, #f0f0f0);
   width: 25vw; /* Adjust as needed */
   min-width: 150px;
   overflow-y: auto; /* Enable vertical scrolling if needed */

@@ -55,7 +55,8 @@ function TextBox({ inbox, onSubmit, onHeightChange, showDelayForm, setShowDelayF
         onSubmit(formData, 'messages', 'POST');
         setFormData(prevFormData => ({
             ...prevFormData,
-            message_body: '' // Clear the message body after submission
+            message_body: '',
+            delivery_time: '' // Clear the message body after submission
         }));
         setTextAreaHeight(37);
         setShowDelayForm(false);

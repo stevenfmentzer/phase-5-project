@@ -3,7 +3,6 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f4f4f4;
   }
   
   .welcome-container {
@@ -20,3 +19,18 @@
     font-size: 1.2rem;
     color: #666;
   }
+
+  .color-shift-effect {
+    position: absolute;
+    top: -17px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    transition: background 0.3s ease; /* Add transition for color change */
+    z-index: -1;
+}
+
+.color-shift-effect-active {
+    background: transparent
+}

@@ -10,17 +10,15 @@ function NavBar({ user, onLogOut }) {
     };
 
     return (
-        <nav className="navbar" onMouseMove={handleMouseMove}>
+        <nav className="navbar">
             <div className="navbar-container">
                 <Link to={user ? "/dashboard" : "/"} className="nav-header">Here IM</Link>
-                <div className="color-shift-effect" style={{ background: `radial-gradient(circle at ${cursorPosition.x}px ${cursorPosition.y}px, #3689dcb8, transparent)` }}></div>
-                {user && (
                     <div className="nav-links">
                         <Link to="/messenger" className="nav-link">Messenger</Link>
                         <Link to="/friends" className="nav-link">Friends</Link>
+                        <Link to="/account" className="nav-link">Account</Link>
                         <Link to="/" className="nav-link">Log-out</Link>
                     </div>
-                )}
             </div>
         </nav>
     );

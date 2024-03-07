@@ -1,27 +1,15 @@
 from sqlalchemy import UniqueConstraint
 from sqlalchemy_serializer import SerializerMixin
-from sqlalchemy.orm import validates
-from sqlalchemy import func
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import validates
 from datetime import datetime
 import re
 
 # Import database and bcrypt from config.py
-from config import db, bcrypt, scheduler
+from config import db, bcrypt
 
-# Background task to periodically update is_sent
-def update_message_status():
-    print("CHECKING")
-    messages_to_update = Message.query.filter(
-        Message.is_sent == False,  # noqa
-        Message.delivery_time <= datetime.utcnow()
-    ).all()
-    for message in messages_to_update:
-        message.is_sent = True
-    db.session.commit()
 
-# Schedule the background task to run every minute
-scheduler.add_job(update_message_status, 'interval', minutes=1)
+# -----------------------------------------
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'

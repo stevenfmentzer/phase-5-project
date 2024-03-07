@@ -79,5 +79,30 @@
   }
   
   .search-button:hover {
-    background-color: #0056b3;
+    background-color: #3689dc;
+  }
+
+  .add-friend-button {
+    transform: translateY(20px);
+    margin-bottom: 20px;
+    width: 60px;
+    height: 40px;
+    border: none;
+    border-radius: 50px;
+    background-color: #5EA2E4;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+
+  .close-add-friend { 
+    background-color:lightgrey;
+    position: absolute;
+    right: 10px;
+    top: 15px;
+  }
+
+  .close-add-friend:hover { 
+    background-color: rgb(204, 204, 204);
   }
