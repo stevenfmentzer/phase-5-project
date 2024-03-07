@@ -30,7 +30,7 @@ function Messenger({ user }) {
         setShouldFetchMessages(true)
     }, [user.id]);
 
-    // Fetch messages every 2 seconds, only if shouldFetchMessages is true
+    // Fetch messages every second, only if shouldFetchMessages is true
     useInterval(() => {
         fetchInboxesAndMessages();
     }, shouldFetchMessages ? 1000 : null);
