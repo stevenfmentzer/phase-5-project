@@ -42,15 +42,21 @@ function DelayForm({ formData, setFormData, onSubmit, textBoxRef, setShowDelayFo
 
         const mouseUpTime = Date.now();
         const timeDifference = mouseUpTime - mouseDownTime;
-        console.log(`Click Time: ${timeDifference}`);
         if (timeDifference < 250) {
+            const currentDate = new Date();
             if (!delayTime) {
                 const random = Math.floor(Math.random() * 1440) + 1;
                 setDelayTime(random);
                 console.log(`Set Random Value: ${random}`);
+                currentDate.setMinutes(currentDate.getMinutes() + random);
+                setFormData({ ...formData, delivery_time: currentDate });
+                setThumbPosition((random / 1440) * 87.5); 
+                console.log(currentDate)
             } else {
                 setDelayTime(0);
                 console.log("Turn Off Delay");
+                setFormData({ ...formData, delivery_time: currentDate });
+                setThumbPosition((0 / 1440) * 87.5); 
             }
         }
     };
