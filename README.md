@@ -145,13 +145,15 @@ https://www.figma.com/file/VS2cu5JyvLj5hw440Iv1Yz/Final-Project?type=whiteboard&
     
 3. Navigate to `server` directory in your terminal and run the following code: 
 
-    ```python seed.py [number of desired fake users; default 20]```
+    ```python seed.py [number of desired fake users; default 25]```
 
     ```export FLASK_APP=app.py```
     
     ```export FLASK_RUN_PORT=5555```
 
-4. Navigate to `client` directory in your terminal and run the following code: 
+    ```flask run```
+
+4. Navigate to `client` directory in a second terminal and run the following code: 
 
     ```npm start```
 
