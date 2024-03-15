@@ -135,6 +135,10 @@ Friends  --- (/friends)
 
 https://www.figma.com/file/VS2cu5JyvLj5hw440Iv1Yz/Final-Project?type=whiteboard&node-id=0%3A1&t=EZPzWHMwZd3h14gG-1
 
+## Licenses
+
+### Project Code
+This project is licensed under the [MIT License](link/to/MIT/license).
 
 ## Installation Instructions
 
