@@ -1,24 +1,95 @@
-.button-wrapper {
+.message-span {
+    display: flex;
+    flex-direction: column;  
+    margin: 13px;
+    position: relative;
+    z-index: 1; /* The z-index is already defined in CSS */
+}
+
+.message-span .card {
+    max-width: 70%;
+    border-radius: 20px;
+    padding: 11px;
+    padding-left: 13px;
+    padding-right: 13px;
+}
+
+.message-sent-by-current-user {
+    background: radial-gradient(circle at 0% 50%, #5EA2E4, #4494e3);
+    color: #FEFEFB;
+    justify-content: flex-end; /* Align to the end for messages sent by the current user */
+    margin-left: auto; /* Push the card to the right for the current user */
+    max-width: 70%; /* Adjust this value as needed */
+}
+
+/* CSS for message sent by other users */
+.message-sent-by-other-user {
+    background: radial-gradient(circle at 100% 50%, #DCD93C, #DCD92E);
+    color: #1F1F05;
+    justify-content: flex-start; /* Align to the start for messages sent by other users */
+    margin-right: auto; /* Push the card to the left for other users */
+    max-width: 70%; /* Adjust this value as needed */
+}
+
+/* Define the animation and initial opacity for the button wrapper */
+.edit-message-button-wrapper {
+    display: flex;
+    justify-content: right;
+    margin-top: 7px;
+}
+
+/* Delete button styling */
+.message-delete {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #f47d61;
+    color: white;
     display: flex;
     justify-content: center;
-    margin-top: 7px;
-    animation: fadeIn 0.5s ease forwards; /* Apply fade-in animation */
-    opacity: 0; /* Initially hidden */
+    align-items: center;
+    cursor: pointer;
+    margin-right: 7px;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px); /* Move up slightly */
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0); /* Move back to original position */
-    }
+.message-delete:hover {
+    background-color: #F4A261;
 }
 
+.message-delete .icon {
+    margin-left: 15%;
+    margin-top: 3%;
+}
+
+/* Edit button styling */
+.message-edit {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #5EA2E4;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 4px;
+}
+
+.message-edit:hover {
+    background-color: #5EA2E4;
+}
+
+.message-edit .icon {
+    margin-left: 20%;
+}
+
+/* Define the pulsate animation */
 @keyframes pulsate {
-    0% { filter: blur(5px); }
-    50% { filter: blur(2px); }
-    100% { filter: blur(5px); }
-  }
+    0% { filter: blur(6px); }
+    50% { filter: blur(3px); }
+    100% { filter: blur(6px); }
+}
+
+.pulsating {
+    animation: pulsate 3s infinite;
+}

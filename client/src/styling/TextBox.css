@@ -4,11 +4,8 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  backdrop-filter: blur(10px); /* Blur effect with 10px radius */
-  -webkit-filter: blur(10px);
-  -moz-filter: blur(10px);
-  -o-filter: blur(10px);
-  -ms-filter: blur(10px);
+  backdrop-filter: blur(10px);
+
 }
 
 .textbox-overlay {

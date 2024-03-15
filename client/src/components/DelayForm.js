@@ -12,18 +12,14 @@ function DelayForm({ formData, setFormData, onSubmit, textBoxRef, setShowDelayFo
 
     useEffect(() => {
         const handleClickOutside = (e) => {
-            e.preventDefault()
             if (
-                delayFormRef.current && 
+                delayFormRef.current &&
                 !delayFormRef.current.contains(e.target) &&
-                textBoxRef && 
-                textBoxRef.current && 
-                !textBoxRef.current.contains(e.target)
+                !(textBoxRef && textBoxRef.current && textBoxRef.current.contains(e.target))
             ) {
                 setShowDelayForm(false);
             }
         };
-    
         document.addEventListener('mousedown', handleClickOutside);
     
         return () => {
