@@ -135,51 +135,12 @@ Friends  --- (/friends)
 
 https://www.figma.com/file/VS2cu5JyvLj5hw440Iv1Yz/Final-Project?type=whiteboard&node-id=0%3A1&t=EZPzWHMwZd3h14gG-1
 
+## Technologies Used
 
-## Installation Instructions
-
-1. Fork and clone Git repository
-2. Navigate to base directory in your terminal and run the following code: 
-
-    ```pipenv install && pipenv shell```
-    
-3. Navigate to `server` directory in your terminal and run the following code: 
-
-    ```python seed.py [number of desired fake users; default 25]```
-
-    ```export FLASK_APP=app.py```
-    
-    ```export FLASK_RUN_PORT=5555```
-
-    ```flask run```
-
-4. Navigate to `client` directory in a second terminal and run the following code: 
-
-    ```npm start```
-
-5. Enjoy the program!
-
-
-## Licenses
-
-MIT License
-
-Copyright (c) 2024, Steven Mentzer
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+- **Python**: The primary language used for backend development.
+- **Flask**: A micro web framework written in Python.
+- **Flask-Bcrypt**: A data encryption package used to hide password values.
+- **React**: A JavaScript library for building user interfaces.
+- **REST APIs**: Handles requests and responses between the client and server.
+- **SQLAlchemy**: An SQL toolkit and Object-Relational Mapping (ORM) for Python.
+- **Dbdiagram.io**: An ORD visualization software
