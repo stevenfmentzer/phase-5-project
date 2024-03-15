@@ -15,7 +15,7 @@ The HereIM app provides users with the ability to log on and connect with friend
     
 3. Navigate to `server` directory in your terminal and run the following code: 
 
-    ```python seed.py```
+    ```python seed.py [number of desired fake users; default 20]```
 
     ```export FLASK_APP=app.py```
     
@@ -26,20 +26,6 @@ The HereIM app provides users with the ability to log on and connect with friend
     ```npm start```
 
 5. Enjoy the program!
-
-## Project Goals
-### MVP
-- [ ] Users can login and add friends and set them as 'close friends'
-- [ ] Instant Messaging works
-- [ ] Users can view a friends-list
-- [ ] Users can indicate if they want to be contacted with Status
-
-### Stretch Goals
-- [ ] Users are notified to send messages to random friends with prompts
-- [ ] Allows a user to send a delayed text message
-- [ ] If messages are drafted and not sent, A notification syaing ‘someone was thinking of you’ is sent
-- [ ] Edit a sent message
-
 
 ## Backend (API)
 ### Model Relationships
@@ -106,6 +92,7 @@ The HereIM app provides users with the ability to log on and connect with friend
 #### Users
 ```
 POST/users
+GET/users
 ```
 #### UsersById
 ```
@@ -136,13 +123,8 @@ GET/user<int:id>/messages
 ```
 #### MessageById
 ```
-GET/message/<int:id>
 PATCH/message/<int:id>
 DELETE/message/<int:id>
-```
-#### Inboxes
-```
-POST/user-<int:id>/inbox
 ```
 #### InboxesByUserId
 ```
@@ -150,17 +132,7 @@ GET/user/<int:id>/inboxes
 ```
 #### InboxById
 ```
-GET/inbox/<int:id>
-PATCH/inbox/<int:id>
 DELETE/inbox/<int:id>
-```
-#### Notifications
-```
-GET/user-<int:id>/notifications
-POST/user-<int:id>/notifications
-```
-```
-DELETE/user-<int:id>/notifications/<int:id>
 ```
 
 
