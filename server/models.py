@@ -53,7 +53,6 @@ class User(db.Model, SerializerMixin):
             'first_name': self.first_name,
             'last_name': self.last_name,
             'available_status': self.available_status
-            # Add other user attributes as needed
         }
 
     #### VALIDATIONS ####
@@ -70,7 +69,7 @@ class User(db.Model, SerializerMixin):
     def authenticate(self, password):
         return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
 
-    # Check name values are between 1-20 characters, strip spaces ' ', capitalize first letter of each
+    # Check name values are between 1-20 characters, strip spaces ' ' from front and back, capitalize first letter of each
     @validates('first_name', 'last_name')
     def validate_name(self, key, value):
         value = value.strip().title()
