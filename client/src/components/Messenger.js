@@ -21,8 +21,8 @@ function Messenger({ user }) {
     const [error, setError] = useState(null);
     const prevMessageCountRef = useRef(0);
     const messageCardsContainerRef = useRef(null);
+    const [isContentVisible, setIsContentVisible] = useState(false); // Add state to control visibility of message cards container
 
-    
     useEffect(() => {
         setShouldFetchMessages(false)
         fetchInboxesAndMessages(); // Initial fetch
@@ -49,6 +49,7 @@ function Messenger({ user }) {
                     setSelectedInbox(inboxes[prevSelectedInboxId]);
                 }
                 setLoading(false);
+                setIsContentVisible(true); // Show the message cards container after loading data
             })
             .catch(error => {
                 console.error('Error fetching inbox list:', error);
@@ -68,28 +69,27 @@ function Messenger({ user }) {
 
     const handleInboxClick = async (inboxListId) => {
         setShouldFetchMessages(false); // Disable interval when clicking an inbox
-        setSelectedInbox(inboxes[inboxListId]);
-        setPrevSelectedInboxId(inboxListId);
         setIsEditMode(false);
-        setMessageCardHeight(37);
-        
+        setPrevSelectedInboxId(inboxListId);
+
         try {
             const response = await fetch(`http://localhost:5555/user/${user.id}/messages`);
             if (!response.ok) {
                 throw new Error('Failed to fetch messages');
             }
             const inboxesData = await response.json();
-            setInboxes(inboxesData);
             setSelectedInbox(inboxesData[inboxListId]); // Update the selected inbox after fetching messages
-            scrollToBottom();
-            setShouldFetchMessages(true);
+            scrollToBottom()
         } catch (error) {
             console.error('Error fetching messages:', error);
             setError(error);
-        };
+        }
+        setShouldFetchMessages(true);
     };
 
+
     const scrollToBottom = () => {
+        console.log(messageCardsContainerRef.current.scrollHeight);
         if (messageCardsContainerRef.current) {
             messageCardsContainerRef.current.scrollTop = messageCardsContainerRef.current.scrollHeight;
         }
@@ -202,10 +202,12 @@ function Messenger({ user }) {
 
     return (
         <div className="messenger-container">
-            <div className="inboxes-container">
-                <Inboxes inboxes={inboxes} onClick={handleInboxClick} selectedInboxIndex={prevSelectedInboxId}/>
+            <div className={`inboxes-container ${isContentVisible ? 'visible' : 'hidden'}`}> {/* Apply classes based on content visibility */}
+                {isContentVisible && (
+                    <Inboxes inboxes={inboxes} onClick={handleInboxClick} selectedInboxIndex={prevSelectedInboxId}/>
+                )}
             </div>
-            <div className="messenger-frame-container">
+            <div className={`messenger-frame-container ${isContentVisible ? 'visible' : 'hidden'}`}> {/* Apply classes based on content visibility */}
                 <div className="contact-wrapper">
                     <div className="contact-background-blur"></div>
                     <div className="contact-overlay"></div>
