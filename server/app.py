@@ -462,14 +462,24 @@ class MessageByInboxId(Resource):
 
 api.add_resource(MessageByInboxId, '/messages/inbox/<int:id>')
 
-class MessagesByUserId(Resource):
-    def get(self, id):
+class InboxesByUserId(Resource):
+    def get(self, user_id, inbox_id=None):
         try:
             # Retrieve all inboxes belonging to the user
-            inboxes = Inbox.query.filter(Inbox.user_id == id).order_by(desc(Inbox.id)).all()
+            inboxes = Inbox.query.filter(Inbox.user_id == user_id).order_by(desc(Inbox.id)).all()
             # Create a list to store the messages for each inbox
             messages_by_inbox = []
             
+            # If inbox_id is provided and not 0, find the corresponding inbox and move it to the front
+            if inbox_id:
+                inbox_index = next((index for index, inbox in enumerate(inboxes) if inbox.id == inbox_id), None)
+                if inbox_index is not None:
+                    inbox = inboxes.pop(inbox_index)
+                    inboxes.insert(0, inbox)
+                else:
+                    # If the provided inbox_id does not exist or does not belong to the user, return an empty response
+                    return make_response({"error": "Inbox not found or does not belong to the user"}, 404)
+
             # Iterate over each inbox
             for inbox in inboxes:
                 # Find the last sent message for the current inbox
@@ -514,7 +524,7 @@ class MessagesByUserId(Resource):
         return response
     
 
-api.add_resource(MessagesByUserId, '/user/<int:id>/messages')
+api.add_resource(InboxesByUserId, '/user/<int:user_id>/inbox/', '/user/<int:user_id>/inbox/<int:inbox_id>')
 
 
 class MessageById(Resource):
@@ -635,49 +645,7 @@ class Inboxes(Resource):
     
 api.add_resource(Inboxes, '/inboxes')
 
-class InboxesByUserId(Resource):
-    def get(self, id):  #### !!!! CHECKED !!!! #### 
-        try: 
-            inbox_dict = [inbox.to_dict() for inbox in Inbox.query.filter(Inbox.user_id == id)]
-            response = make_response(inbox_dict, 200)
-        except: 
-            response = make_response({"error" : "Inbox not found"}, 404)
-        return response
-    
-api.add_resource(InboxesByUserId, '/user/<int:id>/inboxes')
-
 class InboxById(Resource):
-    def get(self, id): #### !!!! CHECKED !!!! #### 
-        try: 
-            inbox_dict = Inbox.query.filter(Inbox.id == id).first().to_dict()
-            response = make_response(inbox_dict, 200)
-        except: 
-            response = make_response({"error" : "Inbox not found"}, 404)
-        return response
-
-    #### MIGHT NOT NEED THE PATCH... THINK ABOUT LOGIC AND WHERE I WANT THEM TO BE CHANGED
-    # def patch(self, id):
-    #     try: 
-    #         inbox = Inbox.query.filter(Inbox.id == id).first()
-    #         if request.headers.get('Content-Type') == 'application/json':
-    #             form_data = request.get_json()
-    #         else: 
-    #             form_data = request.form
-
-    #         # Permit specifics attrs to be updated
-    #         allowed_attrs = ['first_message', 'last_message']
-    #         for attr in form_data: 
-    #             if attr in allowed_attrs:
-    #                 setattr(inbox, attr, form_data[attr])
-
-    #         db.session.commit()
-    #         response = make_response(inbox.to_dict(), 202)
-
-    #     except Exception as e:
-    #         response = make_response({"error" : f"An error occurred: {str(e)}"}, 500)
-
-    #     return response
-    #### MIGHT NOT NEED THE PATCH... THINK ABOUT LOGIC AND WHERE I WANT THEM TO BE CHANGED
 
     def delete(self, id): #### !!!! CHECKED !!!! #### 
         try:

@@ -11,20 +11,18 @@ import '../styling/Messenger.css';
 function Messenger({ user }) {
     const [inboxes, setInboxes] = useState([]);
     const [selectedInbox, setSelectedInbox] = useState([]);
-    const [prevSelectedInboxId, setPrevSelectedInboxId] = useState(0);
+    const [prevSelectedInbox, setPrevSelectedInbox] = useState(null);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editMessage, setEditMessage] = useState([]);
     const [messageCardHeight, setMessageCardHeight] = useState(37);
-    const [shouldFetchMessages, setShouldFetchMessages] = useState(true);
+    const [shouldFetchMessages, setShouldFetchMessages] = useState(false);
     const [showDelayForm, setShowDelayForm] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const prevMessageCountRef = useRef(0);
     const messageCardsContainerRef = useRef(null);
-    const [isContentVisible, setIsContentVisible] = useState(false); // Add state to control visibility of message cards container
 
     useEffect(() => {
-        setShouldFetchMessages(false)
         fetchInboxesAndMessages(); // Initial fetch
         setShouldFetchMessages(true)
     }, [user.id]);
@@ -32,10 +30,10 @@ function Messenger({ user }) {
     // Fetch messages every second, only if shouldFetchMessages is true
     useInterval(() => {
         fetchInboxesAndMessages();
-    }, shouldFetchMessages ? 1000 : null);
+    }, shouldFetchMessages ? 10000 : null);
 
     const fetchInboxesAndMessages = () => {
-        fetch(`http://localhost:5555/user/${user.id}/messages`)
+        fetch(`http://localhost:5555/user/${user.id}/inbox/`)
             .then(response => {
                 if (response.ok) {
                     return response.json();
@@ -43,13 +41,20 @@ function Messenger({ user }) {
                     throw new Error('Failed to fetch data');
                 }
             })
-            .then(inboxes => {
-                setInboxes(inboxes);
-                if (inboxes.length > 0) {
-                    setSelectedInbox(inboxes[prevSelectedInboxId]);
+            .then(newInboxes => {
+                // Update inboxes state
+                setInboxes(newInboxes);
+                if (newInboxes.length > 0) {
+                    if (prevSelectedInbox === null) {
+                        setSelectedInbox(newInboxes[0]);
+                        setPrevSelectedInbox(newInboxes[0]);
+                    } else {
+                        const updatedSelectedInbox = newInboxes.find(inboxArray => inboxArray[0].inbox_id === prevSelectedInbox[0].inbox_id);
+                        setSelectedInbox(updatedSelectedInbox);
+                        setPrevSelectedInbox(updatedSelectedInbox);
+                    }
                 }
                 setLoading(false);
-                setIsContentVisible(true); // Show the message cards container after loading data
             })
             .catch(error => {
                 console.error('Error fetching inbox list:', error);
@@ -57,6 +62,7 @@ function Messenger({ user }) {
                 setLoading(false);
             });
     };
+    
 
     useEffect(() => {
         // Check if new messages were received
@@ -67,29 +73,15 @@ function Messenger({ user }) {
         prevMessageCountRef.current = messageCount;
     }, [selectedInbox]);
 
-    const handleInboxClick = async (inboxListId) => {
-        setShouldFetchMessages(false); // Disable interval when clicking an inbox
+    function handleInboxClick(inboxListId) {
         setIsEditMode(false);
-        setPrevSelectedInboxId(inboxListId);
-
-        try {
-            const response = await fetch(`http://localhost:5555/user/${user.id}/messages`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch messages');
-            }
-            const inboxesData = await response.json();
-            setSelectedInbox(inboxesData[inboxListId]); // Update the selected inbox after fetching messages
-            scrollToBottom()
-        } catch (error) {
-            console.error('Error fetching messages:', error);
-            setError(error);
-        }
-        setShouldFetchMessages(true);
+        const inbox = inboxes.find(inboxArray => inboxArray[0].inbox_id === inboxListId);
+        setSelectedInbox(inbox)
+        setPrevSelectedInbox(inbox);
+        scrollToBottom()
     };
 
-
     const scrollToBottom = () => {
-        console.log(messageCardsContainerRef.current.scrollHeight);
         if (messageCardsContainerRef.current) {
             messageCardsContainerRef.current.scrollTop = messageCardsContainerRef.current.scrollHeight;
         }
@@ -114,28 +106,8 @@ function Messenger({ user }) {
             throw new Error('Network response was not ok.');
         })
         .then(data => {
-            return fetch(`http://localhost:5555/user/${user.id}/messages`);
-        })
-        .then(getResponse => {
-            if (getResponse.ok) {
-                return getResponse.json();
-            }
-            throw new Error('Network response was not ok.');
-        })
-        .then(inboxes => {
-            setInboxes(inboxes);
-            if (inboxes.length > 0) {
-                setPrevSelectedInboxId(prevSelectedInboxId => {
-                    setSelectedInbox(inboxes[prevSelectedInboxId]);
-                    return prevSelectedInboxId;
-                });
-            }
-            setMessageCardHeight(37);
-            const textarea = document.querySelector('.textbox-container textarea');
-            if (textarea) {
-                textarea.style.height = 'auto';
-            }
-            setShouldFetchMessages(true); // Re-enable interval after submitting the text box
+            // Refetch inboxes and messages
+            fetchInboxesAndMessages();
         })
         .catch(error => {
             console.error('Error:', error);
@@ -151,25 +123,9 @@ function Messenger({ user }) {
         })
         .then(response => {
             if (response.ok) {
-                return fetch(`http://localhost:5555/user/${user.id}/messages`);
+                fetchInboxesAndMessages(); // Fetch updated inboxes after successful message deletion
             } else {
                 throw new Error('Network response was not ok.');
-            }
-        })
-        .then(getResponse => {
-            if (getResponse.ok) {
-                return getResponse.json();
-            } else {
-                throw new Error('Network response was not ok.');
-            }
-        })
-        .then(inboxes => {
-            if (inboxes) {
-                setInboxes(inboxes);
-                if (inboxes.length > 0) {
-                    setSelectedInbox(inboxes[prevSelectedInboxId]);
-                }
-                scrollToBottom();
             }
         })
         .catch(error => {
@@ -202,12 +158,10 @@ function Messenger({ user }) {
 
     return (
         <div className="messenger-container">
-            <div className={`inboxes-container ${isContentVisible ? 'visible' : 'hidden'}`}> {/* Apply classes based on content visibility */}
-                {isContentVisible && (
-                    <Inboxes inboxes={inboxes} onClick={handleInboxClick} selectedInboxIndex={prevSelectedInboxId}/>
-                )}
+            <div className='inboxes-container'> 
+                <Inboxes inboxes={inboxes} onClick={handleInboxClick} selectedInbox={selectedInbox}/>
             </div>
-            <div className={`messenger-frame-container ${isContentVisible ? 'visible' : 'hidden'}`}> {/* Apply classes based on content visibility */}
+            <div className='messenger-frame-container'>
                 <div className="contact-wrapper">
                     <div className="contact-background-blur"></div>
                     <div className="contact-overlay"></div>
