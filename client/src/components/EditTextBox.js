@@ -41,21 +41,22 @@ function EditTextBox({ onSubmit, editMessage, setEditMessage, onHeightChange, se
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit(formData, `message/${editMessage.id}`, 'PATCH');
-        handleCloseEdit()
+        handleCloseEdit();
     };
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
             if (formData.message_body.length > 1) {
-                onSubmit(formData, 'messages', 'PATCH');
+                onSubmit(formData, `message/${editMessage.id}`, 'PATCH');
             }
+            handleCloseEdit();
         }
     };
 
     const handleCloseEdit = (e) => {
-        onHeightChange(37)
-        setEditMessage([])
+        onHeightChange(37);
+        setEditMessage([]);
         setIsEditMode(false); // Set isEditMode to false to switch back to the normal TextBox
     };
 
@@ -99,7 +100,7 @@ function EditTextBox({ onSubmit, editMessage, setEditMessage, onHeightChange, se
                                 >
                                     <Icon
                                         name="check large"
-                                        style={{ color: 'white' }}
+                                        className='confirm-edit-icon'
                                     />
                                 </button>
                             </div>

@@ -90,9 +90,13 @@
   color: white;
   position: relative;
   top: -9%;
-
   margin-right: 3px;
   transform: rotate(29deg);
+}
+
+.confirm-edit-icon {
+  color: white;
+  transform: translateX(8%);
 }
 
 .clock-icon-styling {
