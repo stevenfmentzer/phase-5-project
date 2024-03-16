@@ -25,17 +25,16 @@
 }
 
 .inbox-name {
-  font-size: 18px; /* Increase font size */
-  padding: 10px; /* Add padding to the inbox header */
+  font-size: 18px;
+  padding: 10px;
 }
 
-/* Add padding to the text inside the InboxCard */
 .card-container .description {
-  padding: 10px; /* Adjust the padding as needed */
+  padding: 10px;
 }
 
 .horizontal-line {
-  height: .5px; /* Line height */
-  background-color: lightgrey; /* Line color */
+  height: .5px;
+  background-color: lightgrey;
   margin: 0px;
 }
