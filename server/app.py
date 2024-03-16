@@ -478,7 +478,7 @@ class MessagesByUserId(Resource):
                     Message.is_sent == True  # Ensure only sent messages are considered
                     ).order_by(Message.delivery_time.desc()).first() 
 
-                # Retrieve messages for the current inbox ordered by message ID in ascending order
+                # Retrieve messages for the current inbox ordered by delivery_time in ascending order
                 inbox_messages = Message.query.filter(
                     (Message.sender_id == inbox.user_id) | (Message.sender_id == inbox.contact_user_id),
                     (Message.recipient_id == inbox.user_id) | (Message.recipient_id == inbox.contact_user_id),
