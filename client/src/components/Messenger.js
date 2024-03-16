@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Icon } from 'semantic-ui-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import Inboxes from './Inboxes';
