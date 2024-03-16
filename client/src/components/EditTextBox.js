@@ -8,7 +8,6 @@ function EditTextBox({ onSubmit, editMessage, setEditMessage, onHeightChange, se
     });
 
     const [textareaHeight, setTextAreaHeight] = useState(37); // State variable to hold textarea height
-    const [hoverCancelButton, setHoverCancelButton] = useState(false); // State variable to track hover over cancel button
     const textareaRef = useRef(null);
 
     useEffect(() => {
@@ -19,8 +18,9 @@ function EditTextBox({ onSubmit, editMessage, setEditMessage, onHeightChange, se
         if (textareaRef.current) {
             textareaRef.current.focus();
             textareaRef.current.selectionStart = textareaRef.current.selectionEnd = formData.message_body.length;
+            adjustTextareaHeight(textareaRef.current);
         }
-    }, [formData.message_body]);
+    }, [formData.message_body, editMessage]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,17 +28,11 @@ function EditTextBox({ onSubmit, editMessage, setEditMessage, onHeightChange, se
     };
 
     const adjustTextareaHeight = (textarea) => {
-        textarea.style.height = 'auto'; // Reset the height to auto to recalculate the scroll height
-        const newHeight = textarea.scrollHeight; // Get the new height
-        setTextAreaHeight(newHeight); // Update the state with the new height
-        textarea.style.height = `${newHeight}px`; // Set the height to match scrollHeight
+        textarea.style.height = 'auto';
+        const newHeight = textarea.scrollHeight;
+        setTextAreaHeight(newHeight);
+        textarea.style.height = `${newHeight}px`;
     };
-
-    useEffect(() => {
-        if (textareaRef.current) {
-            adjustTextareaHeight(textareaRef.current);
-        }
-    }, []);
 
     useEffect(() => {
         onHeightChange(textareaHeight);
@@ -81,14 +75,12 @@ function EditTextBox({ onSubmit, editMessage, setEditMessage, onHeightChange, se
                             onKeyDown={handleKeyDown}
                             onChange={handleChange}
                             autoComplete="off"
-                            style={{ height: 'auto' }}
+                            style={{ height: '100%' }}
                         />
                         {formData.message_body.length > 0 && (
                             <div className="button-wrapper" >
                                 <button className="close-edit-button"
                                     onClick={handleCloseEdit}
-                                    onMouseEnter={() => setHoverCancelButton(true)}
-                                    onMouseLeave={() => setHoverCancelButton(false)}
                                     type="submit"
                                 >
                                   <Icon
