@@ -85,6 +85,16 @@
   transition: background-color 0.3s ease;
 }
 
+/* Paper Plane Icon */
+.paper-plane-icon {
+  color: white;
+  position: relative;
+  top: -9%;
+
+  margin-right: 3px;
+  transform: rotate(29deg);
+}
+
 .clock-icon-styling {
   position: relative;
   top: .1px;

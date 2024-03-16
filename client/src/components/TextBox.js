@@ -126,13 +126,7 @@ function TextBox({ inbox, onSubmit, onHeightChange, showDelayForm, setShowDelayF
                                     >
                                         <Icon
                                             name="paper plane large"
-                                            style={{
-                                                color: 'white',
-                                                position: 'relative',
-                                                top: '-2.5px', 
-                                                marginRight: '3px', 
-                                                transform: 'rotate(29deg)'
-                                            }}
+                                            className='paper-plane-icon'
                                         />
                                     </button>
                                 </div>
