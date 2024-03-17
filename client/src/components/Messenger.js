@@ -119,8 +119,7 @@ function Messenger({ user }) {
 
     const scrollToBottom = () => {
         if (messageCardsContainerRef.current) {
-            messageCardsContainerRef.current.scrollTop = messageCardsContainerRef.current.scrollHeight;
-        }
+            messageCardsContainerRef.current.scrollTop = messageCardsContainerRef.current.scrollHeight;}
     };
 
     const handleEditMessage = (message) => {

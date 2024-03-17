@@ -20,6 +20,7 @@ function DelayForm({ formData, setFormData, onSubmit, textBoxRef, setShowDelayFo
                 setShowDelayForm(false);
             }
         };
+
         document.addEventListener('mousedown', handleClickOutside);
     
         return () => {
