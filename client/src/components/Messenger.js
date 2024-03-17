@@ -40,6 +40,7 @@ function Messenger({ user }) {
 
     useInterval(() => {
         // Fetch messages every second, only if shouldFetchMessages is true
+        console.log("cycle")
         fetchInboxesAndMessages();
     }, shouldFetchMessages ? 1000 : null);
 
@@ -74,12 +75,18 @@ function Messenger({ user }) {
 
 
     function handleInboxClick(inboxListId) {
+        setShouldFetchMessages(false); // Disable interval fetching
         setIsEditMode(false);
         const inbox = inboxes.find(inboxArray => inboxArray[0].inbox_id === inboxListId);
-        setSelectedInbox(inbox)
+        setSelectedInbox(inbox);
         setPrevSelectedInbox(inbox);
-        scrollToBottom()
-    };
+        scrollToBottom();
+        
+        // Set a delay before re-enabling interval fetching
+        setTimeout(() => {
+            setShouldFetchMessages(true);
+        }, 250);
+    }
 
     const handleTextBoxSubmit = (formData, route, fetchType) => {
         fetch(`http://localhost:5555/${route}`, {
