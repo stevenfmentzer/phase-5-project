@@ -515,6 +515,9 @@ class InboxesByUserId(Resource):
                 # Append messages for the current inbox to the list
                 messages_by_inbox.append(inbox_messages_dict)
             
+            # Sort inboxes by the delivery date of their last message
+            messages_by_inbox.sort(key=lambda inbox_messages: inbox_messages[0]['last_message_id'], reverse=True)
+            
             # Return the list of lists containing messages for each inbox
             response = make_response(messages_by_inbox, 200)
             
@@ -524,7 +527,7 @@ class InboxesByUserId(Resource):
         return response
     
 
-api.add_resource(InboxesByUserId, '/user/<int:user_id>/inbox/', '/user/<int:user_id>/inbox/<int:inbox_id>')
+api.add_resource(InboxesByUserId, '/user/<int:user_id>/inbox', '/user/<int:user_id>/inbox/<int:inbox_id>')
 
 
 class MessageById(Resource):

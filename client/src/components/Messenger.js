@@ -33,7 +33,7 @@ function Messenger({ user }) {
     }, shouldFetchMessages ? 10000 : null);
 
     const fetchInboxesAndMessages = () => {
-        fetch(`http://localhost:5555/user/${user.id}/inbox/`)
+        fetch(`http://localhost:5555/user/${user.id}/inbox`)
             .then(response => {
                 if (response.ok) {
                     return response.json();
