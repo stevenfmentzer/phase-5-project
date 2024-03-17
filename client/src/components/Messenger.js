@@ -23,14 +23,25 @@ function Messenger({ user }) {
     const messageCardsContainerRef = useRef(null);
 
     useEffect(() => {
-        fetchInboxesAndMessages(); // Initial fetch
+        // Initial fetch for all Inboxes and Messages
+        fetchInboxesAndMessages(); 
+        //Turn on useInterval fetch after content loads
         setShouldFetchMessages(true)
     }, [user.id]);
 
-    // Fetch messages every second, only if shouldFetchMessages is true
+    useEffect(() => {
+        // Check if new messages were received
+        const messageCount = selectedInbox?.length || 0;
+        if (messageCount > prevMessageCountRef.current) {
+            scrollToBottom();
+        }
+        prevMessageCountRef.current = messageCount;
+    }, [selectedInbox]);
+
     useInterval(() => {
+        // Fetch messages every second, only if shouldFetchMessages is true
         fetchInboxesAndMessages();
-    }, shouldFetchMessages ? 10000 : null);
+    }, shouldFetchMessages ? 1000 : null);
 
     const fetchInboxesAndMessages = () => {
         fetch(`http://localhost:5555/user/${user.id}/inbox`)
@@ -42,7 +53,6 @@ function Messenger({ user }) {
                 }
             })
             .then(newInboxes => {
-                // Update inboxes state
                 setInboxes(newInboxes);
                 if (newInboxes.length > 0) {
                     if (prevSelectedInbox === null) {
@@ -52,8 +62,7 @@ function Messenger({ user }) {
                         const updatedSelectedInbox = newInboxes.find(inboxArray => inboxArray[0].inbox_id === prevSelectedInbox[0].inbox_id);
                         setSelectedInbox(updatedSelectedInbox);
                         setPrevSelectedInbox(updatedSelectedInbox);
-                    }
-                }
+                }}
                 setLoading(false);
             })
             .catch(error => {
@@ -62,16 +71,7 @@ function Messenger({ user }) {
                 setLoading(false);
             });
     };
-    
 
-    useEffect(() => {
-        // Check if new messages were received
-        const messageCount = selectedInbox?.length || 0;
-        if (messageCount > prevMessageCountRef.current) {
-            scrollToBottom();
-        }
-        prevMessageCountRef.current = messageCount;
-    }, [selectedInbox]);
 
     function handleInboxClick(inboxListId) {
         setIsEditMode(false);
@@ -81,32 +81,14 @@ function Messenger({ user }) {
         scrollToBottom()
     };
 
-    const scrollToBottom = () => {
-        if (messageCardsContainerRef.current) {
-            messageCardsContainerRef.current.scrollTop = messageCardsContainerRef.current.scrollHeight;
-        }
-    };
-
     const handleTextBoxSubmit = (formData, route, fetchType) => {
-        console.log(route)
-        console.log(fetchType)
-        console.log(formData)
         fetch(`http://localhost:5555/${route}`, {
             method: `${fetchType}`,
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json",},
             body: JSON.stringify(formData),
         })
-        .then(getResponse => {
-            console.log(getResponse)
-            if (getResponse.ok) {
-                return getResponse.json();
-            }
-            throw new Error('Network response was not ok.');
-        })
-        .then(data => {
-            // Refetch inboxes and messages
+        .then(response => {
+            // Refetch inboxes and messages w/ new data
             fetchInboxesAndMessages();
         })
         .catch(error => {
@@ -117,20 +99,21 @@ function Messenger({ user }) {
     const handleDeleteRequest = (message_id) => {
         fetch(`http://localhost:5555/message/${message_id}`, {
             method: 'DELETE',
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json",},
         })
         .then(response => {
-            if (response.ok) {
-                fetchInboxesAndMessages(); // Fetch updated inboxes after successful message deletion
-            } else {
-                throw new Error('Network response was not ok.');
-            }
+            // Fetch updated inboxes after successful message deletion
+            fetchInboxesAndMessages();
         })
         .catch(error => {
             console.error('Error:', error);
         });
+    };
+
+    const scrollToBottom = () => {
+        if (messageCardsContainerRef.current) {
+            messageCardsContainerRef.current.scrollTop = messageCardsContainerRef.current.scrollHeight;
+        }
     };
 
     const handleEditMessage = (message) => {
