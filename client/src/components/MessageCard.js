@@ -3,8 +3,7 @@ import { Card, Icon } from 'semantic-ui-react';
 import '../styling/MessageCard.css';
 
 function MessageCard({ message, user, onDelete, handleEditMessage, editMessage, isEditMode }) {
-    const { sender_id, message_body } = message;
-    const isSentByCurrentUser = sender_id === user.id;
+    const isSentByCurrentUser = message.sender_id === user.id;
 
     const [showDeleteButton, setShowDeleteButton] = useState(false);
     const [isBlurred, setIsBlurred] = useState(false);
@@ -19,7 +18,6 @@ function MessageCard({ message, user, onDelete, handleEditMessage, editMessage, 
     };
 
     const handleHideDeleteButton = () => {
-        // Only hide the delete button if not in edit mode
         if (!isEditMode) {
             setShowDeleteButton(false);
         }
@@ -27,7 +25,6 @@ function MessageCard({ message, user, onDelete, handleEditMessage, editMessage, 
 
     const handleEdit = () => {
         handleEditMessage(message);
-        // Reset the delete button visibility
         setShowDeleteButton(false);
     };
 
@@ -49,7 +46,7 @@ function MessageCard({ message, user, onDelete, handleEditMessage, editMessage, 
             >
                 <Card.Content>
                     <Card.Description className={isBlurred ? 'pulsating' : ''}>
-                        {message_body}
+                        {message.message_body}
                     </Card.Description>
                 </Card.Content>
             </Card>
